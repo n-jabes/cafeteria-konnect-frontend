@@ -50,14 +50,14 @@ const Sidebar = ({ isOpen, toggleSidebar, sidebarFields }) => {
         {sidebarFields.map((field) => (
           <li
             key={field.id}
-            className={`p-3 w-[85%] mb-2 rounded-l-full font-semibold ${
+            className={`p-2 w-[87.5%] mb-3 rounded-l-full font-semibold ${
               activeItem === field.id
                 ? 'bg-white text-[#4069B0]'
                 : 'hover:bg-white hover:text-[#4069B0]'
             }`}
             onClick={() => handleItemClick(field.id)}
           >
-            <Link to={field.destination} className="flex items-center">
+            <Link to={field.destination} className="ml-6 flex items-center">
               {field.icon}
               {field.title}
             </Link>

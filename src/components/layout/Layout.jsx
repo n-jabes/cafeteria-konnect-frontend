@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import Header from '../header/Header';
 import Sidebar from '../sidebar/Sidebar';
-import { FaChartBar, FaHome } from 'react-icons/fa';
+import { FaChartBar } from 'react-icons/fa';
 import { FaFileInvoiceDollar, FaPeopleGroup } from 'react-icons/fa6';
 import { BsPeopleFill } from 'react-icons/bs';
 
@@ -12,6 +12,8 @@ const Layout = ({ children }) => {
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
+
+  const headerTitle = 'HR Dashboard';
 
   const sidebarFields = [
     {
@@ -48,7 +50,7 @@ const Layout = ({ children }) => {
         sidebarFields={sidebarFields}
       />
       <div className="flex-1 flex flex-col ml-0 md:ml-64 transition-all duration-300">
-        <Header toggleSidebar={toggleSidebar} />
+        <Header toggleSidebar={toggleSidebar} headerTitle={headerTitle} />
         <main className="flex-1 p-4 overflow-y-auto">{children}</main>
       </div>
     </div>
