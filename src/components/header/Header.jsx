@@ -4,9 +4,9 @@ import { FaBars } from 'react-icons/fa';
 
 const Header = ({ toggleSidebar, headerTitle }) => {
   return (
-    <header className="bg-white shadow-md p-4 flex justify-between items-center">
+    <header className="bg-white shadow-md p-4 flex w-[100vw] md:w-full justify-between items-center">
       <div className="flex items-center">
-        <button className="block md:hidden" onClick={toggleSidebar}>
+        <button className="block lg:hidden" onClick={toggleSidebar}>
           <FaBars className="text-[#4069B0] mr-6" />
         </button>
         <h1 className="text-[#4069B0] text-xl sm:text-2xl font-bold select-none">

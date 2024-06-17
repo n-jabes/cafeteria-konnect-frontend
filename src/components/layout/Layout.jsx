@@ -49,9 +49,11 @@ const Layout = ({ children }) => {
         toggleSidebar={toggleSidebar}
         sidebarFields={sidebarFields}
       />
-      <div className="flex-1 flex flex-col ml-0 md:ml-64 transition-all duration-300">
+      <div className="flex-1 flex flex-col ml-0 lg:ml-64 transition-all duration-300">
         <Header toggleSidebar={toggleSidebar} headerTitle={headerTitle} />
-        <main className="flex-1 p-4 overflow-y-auto">{children}</main>
+        <main className="flex-1 p-4 overflow-y-auto w-[100vw] md:w-full ">
+          {children}
+        </main>
       </div>
     </div>
   );
