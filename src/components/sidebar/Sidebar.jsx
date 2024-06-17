@@ -20,7 +20,6 @@ const Sidebar = ({ isOpen, toggleSidebar, sidebarFields }) => {
 
   const handleLogout = () => {
     // Implement your logout logic here
-    // Example: clear authentication tokens, redirect, etc.
     console.log('Logged out');
   };
 
@@ -33,14 +32,14 @@ const Sidebar = ({ isOpen, toggleSidebar, sidebarFields }) => {
     <div
       className={`fixed top-0 left-0 h-full bg-[#4069B0] text-white w-64 transform ${
         isOpen ? 'translate-x-0' : '-translate-x-full'
-      } md:translate-x-0 transition-transform duration-300 ease-in-out z-40`}
+      } lg:translate-x-0 transition-transform duration-300 ease-in-out z-40`}
     >
       <div className="p-4 flex items-center justify-evenly">
         <Link to="/hr/statistics" className="flex items-center justify-center">
           <img src="/Logo.png" />
         </Link>
         <button
-          className="block md:hidden absolute right-4 top-4"
+          className="block lg:hidden absolute right-4 top-4"
           onClick={toggleSidebar}
         >
           <RiCloseLargeLine />
