@@ -17,7 +17,7 @@ function Guests(props) {
     [5, 'John Doe', 'intern', 'Pending', <GuestButtons />],
     [6, 'Jane Smith', 'Consultant', 'Approved', <GuestButtons />],
     [7, 'Sam Johnson', 'intern', 'Declined', <GuestButtons />],
-    [8, 'Nshuti Ruranga Jabes', 'New', <GuestButtons />],
+    [8, 'Nshuti Ruranga Jabes', 'Consultant', 'New', <GuestButtons />],
     [9, 'John Doe', 'intern', 'Pending', <GuestButtons />],
     [10, 'Jane Smith', 'Consultant', 'Approved', <GuestButtons />],
     [11, 'Sam Johnson', 'intern', 'Declined', <GuestButtons />],
