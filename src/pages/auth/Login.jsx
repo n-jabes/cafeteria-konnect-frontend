@@ -1,12 +1,30 @@
 // src/routes/Login.jsx
 import React from 'react';
+import  {Formik,Form,Field, ErrorMessage} from 'formik'
+import * as Yup from 'yup'
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 
+
+
+const validationSchema = Yup.object().shape({
+  email: Yup.string().email('Invalid email format').required('Email is required'),
+  password: Yup.string().min(8, 'Password must be at least 8 characters').required('Password is required'),
+})
+
+
 const Login = () => {
 
-   
   return (
+   <div>
+    <Formik>
+    initialValues ={{email:'', password:''}}
+
+
+    </Formik>
+    
+
+    
     <div className="flex flex-col justify-center items-center h-screen bg-cover bg-no-repeat bg-center" style={{backgroundImage: `url('public/login.png')`}}>
 
       <div className='flex flex-col w-[43%] bg-white h-[27rem] rounded-md shadow-md items-center justify-content '>
@@ -29,7 +47,7 @@ const Login = () => {
         </div>
 
         <div className='w-[70%]'>
-          <p className='text-sm text-[#8F8F8F]'>Forgot your password?</p>
+          <p className='text-xs text-[#8F8F8F]'>Forgot your password?</p>
         </div>
 
       </div>
@@ -40,6 +58,7 @@ const Login = () => {
         </div>
       </div>
       
+    </div>
     </div>
   );
 };
