@@ -46,7 +46,7 @@ const TableComponent = ({ headers, data }) => {
   const [filter, setFilter] = useState('');
   const [selectedRows, setSelectedRows] = useState([]);
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
   const [order, setOrder] = useState('asc');
   const [orderBy, setOrderBy] = useState(0);
 
@@ -88,7 +88,7 @@ const TableComponent = ({ headers, data }) => {
   return (
     <Box sx={{ width: '100%', overflowX: 'auto', height: '100%' }}>
       <TableContainer component={Paper}>
-        <h1 className="text-[#4069B0] font-semibold">Guests</h1>
+        <h1 className="text-blue font-semibold">Guests</h1>
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>
