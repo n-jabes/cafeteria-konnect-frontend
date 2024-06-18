@@ -4,12 +4,13 @@ export default {
   theme: {
     extend: {
       colors: {
-        blue: '#4069B0',
-        red: '#FF0000',
+        mainBlue: '#4069B0',
+        mainRed: '#FF0000',
         darkRed: '#C53131',
         bgBlue: '#4069B085',
-        gray: '#30415F',
-        green: '#479E47'
+        mainGray: '#30415F',
+        mainGreen: '#479E47',
+        mainOrange: '#E79602'
       },
     },
   },
