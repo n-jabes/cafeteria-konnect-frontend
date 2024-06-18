@@ -27,62 +27,21 @@ function Guests(props) {
   return (
     <div className="">
       {showForm && (
-        <div className="formParentContainer fixed top-0 left-0 bg-[#4069B085] z-[40] h-screen w-screen overflow-y-auto overflow-x-auto flex items-center justify-center">
+        <div className="formParentContainer fixed top-0 left-0 bg-bgBlue z-[40] h-screen w-screen overflow-y-auto overflow-x-auto flex items-center justify-center">
           <div className="patientFormContainer relative bg-white w-[90%] lg:w-[45%] h-[60%] px-[5%] py-[2%] rounded-md">
             <button
-              className="close border-2 border-[#FF0000] rounded-md px-2 text-[#FF0000] absolute right-6 top-6"
+              className="close border-2 border-red rounded-md px-2 text-red absolute right-6 top-6"
               onClick={() => setShowForm(false)}
             >
               x
             </button>
-            <h1 className="text-[#4069B0] font-semibold text-xl">
+            <h1 className="text-blue font-semibold text-xl">
               Add New Guest
             </h1>
             <form action="#" className="w-full">
-              <div className="item">
-                <label htmlFor="fullName">Name</label>
-                <input
-                  type="text"
-                  placeholder="Enter patient Full Names"
-                  name="fullName"
-                  // onChange={handleFullNameChange}
-                  required
-                />
-              </div>
-
-              <div className="item">
-                <label htmlFor="email">Email</label>
-                <input
-                  type="email"
-                  name="email"
-                  placeholder="Enter patient Email"
-                  // onChange={handleEmailChange}
-                  required
-                />
-              </div>
-
-              <div className="item">
-                <label htmlFor="password">Password</label>
-                <input
-                  type="password"
-                  name="password"
-                  placeholder="Enter patient Password"
-                  // onChange={handlePasswordChange}
-                  required
-                />
-              </div>
-
-              <div className="item">
-                <label htmlFor="cardId">Card Id</label>
-                <input
-                  type="text"
-                  name="cardId"
-                  placeholder="Enter patient Card Id"
-                  // onChange={handleCardIdChange}
-                  required
-                />
-              </div>
-              <button type="submit">Submit</button>
+              <button type="submit" className="btn">
+                Create Guest
+              </button>
             </form>
           </div>
         </div>
@@ -93,7 +52,7 @@ function Guests(props) {
           <MainButton text={'+ Add Guest(s)'} />
         </div>
       </div>
-      <div className="overflow-x-auto h-[70vh] border border-3 border-[#30415F] rounded-md pl-4 py-4">
+      <div className="overflow-x-auto h-[70vh] border border-3 border-gray rounded-md pl-4 py-4">
         <TableComponent headers={headers} data={data} />
       </div>
     </div>

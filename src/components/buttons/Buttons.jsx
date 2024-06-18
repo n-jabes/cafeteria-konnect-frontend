@@ -9,7 +9,7 @@ export function MainButton({ text }) {
 }
 export function SendAllNewGuestsToCBMButton() {
   return (
-    <button className="btn btn-primary bg-[#479E47] border-2 rounded-md mb-2 py-2 px-4 hover:bg-white hover:text-[#479E47] hover:border-2 hover:border-[#479E47]">
+    <button className="btn btn-primary bg-green border-2 rounded-md mb-2 py-2 px-4 hover:bg-white hover:text-green hover:border-2 hover:border-green">
       Send All New Guests To CBM
     </button>
   );
@@ -17,7 +17,7 @@ export function SendAllNewGuestsToCBMButton() {
 
 export function UpdateButton() {
   return (
-    <button className="btn btn-primary border-[#4069B0] border-2 rounded-[8px] py-[2px] px-[6px] text-[#4069B0] ">
+    <button className="btn btn-primary border-blue border-2 rounded-[8px] py-[2px] px-[6px] text-blue ">
       update
     </button>
   );
@@ -25,7 +25,7 @@ export function UpdateButton() {
 
 export function DeleteButton() {
   return (
-    <button className="btn btn-primary border-[#C53131] border-2 rounded-[8px] py-[2px] px-[6px] text-[#C53131] ">
+    <button className="btn btn-primary border-darkRed border-2 rounded-[8px] py-[2px] px-[6px] text-darkRed ">
       delete
     </button>
   );
@@ -50,7 +50,7 @@ export function SendToCBMButton() {
   return (
     <button
       className={` border-[#2DB94C] border-2 rounded-[8px] py-[2px] px-[6px] text-[#2DB94C] text-nowrap${
-        isSent ? 'border-gray-400  text-gray-600 cursor-not-allowed' : ''
+        isSent ? 'border-gray-400  text-gray cursor-not-allowed' : ''
       } ${isLoading ? 'opacity-50 pointer-events-none' : ''}`}
       onClick={handleClick}
       disabled={isSent || isLoading} // Disable the button when sent or loading
