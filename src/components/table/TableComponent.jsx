@@ -100,7 +100,7 @@ const TableComponent = ({ headers, data }) => {
                   backgroundColor: 'background.paper',
                 }}
               >
-                <Checkbox />
+                {/* <Checkbox /> */}
               </TableCell>
               {headers.map((header, index) => (
                 <TableCell
@@ -150,7 +150,27 @@ const TableComponent = ({ headers, data }) => {
                     <Checkbox checked={selectedRows.includes(rowIndex)} />
                   </TableCell>
                   {row.map((cell, cellIndex) => (
-                    <TableCell key={cellIndex}>{cell}</TableCell>
+                    <TableCell
+                      key={cellIndex}
+                      sx={{
+                        fontWeight:
+                          headers[cellIndex] === 'Status' ? `font-bold` : 400,
+                        color:
+                          headers[cellIndex] === 'Status'
+                            ? cell === 'New'
+                              ? '#4069B0'
+                              : cell === 'Pending'
+                              ? '#E79602'
+                              : cell === 'Approved'
+                              ? '#479E47'
+                              : cell === 'Declined'
+                              ? '#FF0000'
+                              : '#30415F'
+                            : '#30415F',
+                      }}
+                    >
+                      {cell}
+                    </TableCell>
                   ))}
                 </TableRow>
               ))}
