@@ -2,7 +2,7 @@
 import { React, useEffect, useState } from 'react';
 import { IoIosLogOut, IoIosCloseCircleOutline } from 'react-icons/io';
 import { RiCloseLargeLine } from 'react-icons/ri';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, Navigate, useLocation } from 'react-router-dom';
 
 const Sidebar = ({ isOpen, toggleSidebar, sidebarFields }) => {
   const [activeItem, setActiveItem] = useState(null);
