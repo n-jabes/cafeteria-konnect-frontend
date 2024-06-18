@@ -42,7 +42,7 @@ const stableSort = (array, comparator) => {
   return stabilizedThis.map((el) => el[0]);
 };
 
-const TableComponent = ({ headers, data }) => {
+const TableComponent = ({ headers, data, title }) => {
   const [filter, setFilter] = useState('');
   const [selectedRows, setSelectedRows] = useState([]);
   const [page, setPage] = useState(0);
@@ -88,7 +88,7 @@ const TableComponent = ({ headers, data }) => {
   return (
     <Box sx={{ width: '100%', overflowX: 'auto', height: '100%' }}>
       <TableContainer component={Paper}>
-        <h1 className="text-blue font-semibold">Guests</h1>
+        <h1 className="text-blue font-semibold">{title}</h1>
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>
