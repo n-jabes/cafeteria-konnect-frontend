@@ -1,5 +1,10 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import Layout from './components/layout/Layout';
 import HRRoutes from './pages/HRRoutes';
@@ -31,7 +36,11 @@ function App() {
           <Route
             path="/"
             element={
-              isAuthenticated ? <Navigate to="/hr/statistics" /> : <Navigate to="/login" />
+              isAuthenticated ? (
+                <Navigate to="/hr/statistics" />
+              ) : (
+                <Navigate to="/login" />
+              )
             }
           />
         </Routes>
