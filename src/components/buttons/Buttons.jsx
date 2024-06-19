@@ -17,7 +17,7 @@ export function SendAllNewGuestsToCBMButton() {
 
 export function UpdateButton() {
   return (
-    <button className="btn btn-primary border-mainBlue border-[1px] rounded-[8px] py-[2px] px-[6px] text-mainBlue font-medium">
+    <button className="btn btn-primary hover:bg-mainBlue hover:text-white border-mainBlue border-[1px] rounded-[8px] py-[2px] px-[6px] text-mainBlue font-medium text-xs">
       update
     </button>
   );
@@ -25,7 +25,7 @@ export function UpdateButton() {
 
 export function DeleteButton() {
   return (
-    <button className="btn btn-primary border-darkRed border-[1px] rounded-[8px] py-[2px] px-[6px] text-darkRed font-medium">
+    <button className="btn btn-primary hover:bg-darkRed hover:text-white  border-darkRed border-[1px] rounded-[8px] py-[2px] px-[6px] text-darkRed font-medium text-xs">
       delete
     </button>
   );
@@ -49,7 +49,7 @@ export function SendToCBMButton() {
 
   return (
     <button
-      className={`font-medium border-[#2DB94C] border-[1px] rounded-[8px] py-[2px] px-[6px] text-[#2DB94C] text-nowrap${
+      className={`font-medium text-xs hover:bg-[#2DB94C] hover:text-white border-[#2DB94C] border-[1px] rounded-[8px] py-[2px] px-[6px] text-[#2DB94C] text-nowrap${
         isSent ? 'border-gray-400  text-gray cursor-not-allowed' : ''
       } ${isLoading ? 'opacity-50 pointer-events-none' : ''}`}
       onClick={handleClick}
