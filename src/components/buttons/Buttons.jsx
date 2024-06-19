@@ -7,9 +7,10 @@ export function MainButton({ text }) {
     </button>
   );
 }
+
 export function SendAllNewGuestsToCBMButton() {
   return (
-    <button className="btn btn-primary bg-green border-2 rounded-md mb-2 py-2 px-4 hover:bg-white hover:text-green hover:border-2 hover:border-green">
+    <button className="btn btn-primary bg-mainGreen border-2 rounded-md mb-2 py-2 px-4 hover:bg-white hover:text-mainGreen hover:border-2 hover:border-mainGreen">
       Send All New Guests To CBM
     </button>
   );
@@ -60,12 +61,80 @@ export function SendToCBMButton() {
   );
 }
 
+export function ApproveButton() {
+  const [isApproved, setIsApproved] = useState(false);
+  const [isApproving, setIsApproving] = useState(false);
+
+  const handleClick = () => {
+    setIsApproving(true);
+
+    // Simulate approving with a delay (replace with actual logic)
+    setTimeout(() => {
+      setIsApproved(true);
+      setIsApproving(false);
+    }, 1000);
+
+    console.log('Approving...');
+  };
+
+  return (
+    <button
+      className={` border-[#2DB94C] border-2 rounded-[8px] py-[2px] px-[6px] text-[#2DB94C] text-nowrap${
+        isApproved ? 'border-gray-400  text-gray cursor-not-allowed' : ''
+      } ${isApproving ? 'opacity-50 pointer-events-none' : ''}`}
+      onClick={handleClick}
+      disabled={isApproved || isApproving} // Disable the button when approved or loading
+    >
+      {isApproving ? 'Approving...' : isApproved ? 'Approved' : ''}
+    </button>
+  );
+}
+
+export function DeclineButton() {
+  const [isDeclined, setIsDeclined] = useState(false);
+  const [isDeclining, setIsDeclining] = useState(false);
+
+  const handleClick = () => {
+    setIsDeclining(true);
+
+    // Simulate declining with a delay (replace with actual logic)
+    setTimeout(() => {
+      setIsDeclined(true);
+      setIsDeclining(false);
+    }, 1000);
+
+    console.log('Declining...');
+  };
+
+  return (
+    <button
+      className={` border-[#2DB94C] border-2 rounded-[8px] py-[2px] px-[6px] text-[#2DB94C] text-nowrap${
+        isDeclined ? 'border-gray-400  text-gray cursor-not-allowed' : ''
+      } ${isDeclining ? 'opacity-50 pointer-events-none' : ''}`}
+      onClick={handleClick}
+      disabled={isDeclined || isDeclining} // Disable the button when declined or loading
+    >
+      {isDeclining ? 'Approving...' : isDeclined ? 'Approved' : ''}
+    </button>
+  );
+}
+
+
 export function GuestButtons() {
   return (
     <div className="flex gap-2">
       <UpdateButton />
       <DeleteButton />
       <SendToCBMButton />
+    </div>
+  );
+}
+
+export function RestaurantButtons() {
+  return (
+    <div className="flex gap-2">
+      <ApproveButton />
+      <DeclineButton />
     </div>
   );
 }
