@@ -42,7 +42,7 @@ const stableSort = (array, comparator) => {
   return stabilizedThis.map((el) => el[0]);
 };
 
-const TableComponent = ({ headers, data, title }) => {
+const TableComponent = ({ headers, data, title, showCheckBox }) => {
   const [filter, setFilter] = useState('');
   const [selectedRows, setSelectedRows] = useState([]);
   const [page, setPage] = useState(0);
@@ -93,15 +93,17 @@ const TableComponent = ({ headers, data, title }) => {
           <TableHead>
             <TableRow>
               {/* Comment out this tableCell if you don't want the checkboxes */}
-              <TableCell
-                padding="checkbox"
-                sx={{
-                  fontWeight: 'bold',
-                  backgroundColor: 'background.paper',
-                }}
-              >
-                {/* <Checkbox /> */}
-              </TableCell>
+              {showCheckBox && (
+                <TableCell
+                  padding="checkbox"
+                  sx={{
+                    fontWeight: 'bold',
+                    backgroundColor: 'background.paper',
+                  }}
+                >
+                  {/* <Checkbox /> */}
+                </TableCell>
+              )}
               {headers.map((header, index) => (
                 <TableCell
                   key={index}
@@ -146,9 +148,11 @@ const TableComponent = ({ headers, data, title }) => {
                   onClick={() => handleSelectRow(rowIndex)}
                 >
                   {/* Comment out this tableCell if you don't want the checkboxes */}
-                  <TableCell padding="checkbox">
-                    <Checkbox checked={selectedRows.includes(rowIndex)} />
-                  </TableCell>
+                  {showCheckBox && (
+                    <TableCell padding="checkbox">
+                      <Checkbox checked={selectedRows.includes(rowIndex)} />
+                    </TableCell>
+                  )}
                   {row.map((cell, cellIndex) => (
                     <TableCell
                       key={cellIndex}
