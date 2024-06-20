@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 export function MainButton({ text }) {
   return (
@@ -114,9 +114,12 @@ export function DeleteButton() {
 }
 
 export function SendToCBMButton({ guest }) {
-  const [isSent, setIsSent] = useState(guest.status != 'New' ? true : false);
-
   const [isLoading, setIsLoading] = useState(false);
+  const [isSent, setIsSent] = useState(guest.status !== 'New');
+  
+  useEffect(() => {
+    setIsSent(guest.status !== 'New');
+  }, [guest.status]);
 
   const handleClick = () => {
     setIsLoading(true);
