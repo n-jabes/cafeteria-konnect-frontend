@@ -151,7 +151,12 @@ export function SendToCBMButton({ guest }) {
 
 export function ApproveButton({ invoice }) {
   const [showApproveForm, setShowApproveForm] = useState(false);
-  const [actionPerfomed, setActionPerformed] = useState(invoice.status != 'New');
+  const [actionPerfomed, setActionPerformed] = useState(invoice.status !== 'New');
+
+    
+  useEffect(() => {
+    setActionPerformed(invoice.status !== 'New');
+  }, [invoice.status]);
 
   return (
     <div>
@@ -173,12 +178,16 @@ export function ApproveButton({ invoice }) {
           </div>
         </div>
       )}
-        <button
-        className={`btn btn-primary hover:bg-darkRed hover:text-white border-darkRed border-[1px] rounded-[8px] py-[2px] px-[6px] text-darkRed font-medium text-xs ${actionPerfomed? 'border-[1px] border-gray-400  text-gray-300 cursor-not-allowed hover:bg-gray-100 hover:text-gray-300' : ''}`}
-        onClick={() => setShowApproveForm(true)}  disabled={actionPerfomed}
-      >
-        approve
-      </button>
+     <button
+      className={`btn btn-primary hover:bg-mainGreen hover:text-white border-mainGreen border-[1px] rounded-[8px] py-[2px] px-[6px] text-mainGreen font-medium text-xs ${
+        actionPerfomed ? 'border-gray-400 text-gray-300 cursor-not-allowed hover:bg-gray-100 hover:text-gray-300' : ''
+      }`}
+      onClick={() => setShowApproveForm(true)}
+      disabled={actionPerfomed}
+    >
+      approve
+    </button>
+
     </div>
   );
 }
@@ -218,6 +227,7 @@ export function DeclineButton({ invoice }) {
     </div>
   );
 }
+
 export function GuestButtons({ guest }) {
   return (
     <div className="flex gap-2">
