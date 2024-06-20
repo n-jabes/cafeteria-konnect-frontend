@@ -42,11 +42,11 @@ const stableSort = (array, comparator) => {
   return stabilizedThis.map((el) => el[0]);
 };
 
-const TableComponent = ({ headers, data }) => {
+const TableComponent = ({ headers, data, title, showCheckBox }) => {
   const [filter, setFilter] = useState('');
   const [selectedRows, setSelectedRows] = useState([]);
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
   const [order, setOrder] = useState('asc');
   const [orderBy, setOrderBy] = useState(0);
 
@@ -88,20 +88,22 @@ const TableComponent = ({ headers, data }) => {
   return (
     <Box sx={{ width: '100%', overflowX: 'auto', height: '100%' }}>
       <TableContainer component={Paper}>
-        <h1 className="text-[#4069B0] font-semibold">Guests</h1>
+        <h1 className="text-blue font-semibold">{title}</h1>
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>
               {/* Comment out this tableCell if you don't want the checkboxes */}
-              <TableCell
-                padding="checkbox"
-                sx={{
-                  fontWeight: 'bold',
-                  backgroundColor: 'background.paper',
-                }}
-              >
-                <Checkbox />
-              </TableCell>
+              {showCheckBox && (
+                <TableCell
+                  padding="checkbox"
+                  sx={{
+                    fontWeight: 'bold',
+                    backgroundColor: 'background.paper',
+                  }}
+                >
+                  {/* <Checkbox /> */}
+                </TableCell>
+              )}
               {headers.map((header, index) => (
                 <TableCell
                   key={index}
@@ -146,11 +148,33 @@ const TableComponent = ({ headers, data }) => {
                   onClick={() => handleSelectRow(rowIndex)}
                 >
                   {/* Comment out this tableCell if you don't want the checkboxes */}
-                  <TableCell padding="checkbox">
-                    <Checkbox checked={selectedRows.includes(rowIndex)} />
-                  </TableCell>
+                  {showCheckBox && (
+                    <TableCell padding="checkbox">
+                      <Checkbox checked={selectedRows.includes(rowIndex)} />
+                    </TableCell>
+                  )}
                   {row.map((cell, cellIndex) => (
-                    <TableCell key={cellIndex}>{cell}</TableCell>
+                    <TableCell
+                      key={cellIndex}
+                      sx={{
+                        fontWeight:
+                          headers[cellIndex] === 'Status' ? `font-bold` : 400,
+                        color:
+                          headers[cellIndex] === 'Status'
+                            ? cell === 'New'
+                              ? '#4069B0'
+                              : cell === 'Pending'
+                              ? '#E79602'
+                              : cell === 'Approved'
+                              ? '#479E47'
+                              : cell === 'Declined'
+                              ? '#FF0000'
+                              : '#30415F'
+                            : '#30415F',
+                      }}
+                    >
+                      {cell}
+                    </TableCell>
                   ))}
                 </TableRow>
               ))}
