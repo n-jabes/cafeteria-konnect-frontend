@@ -70,6 +70,15 @@ const TableComponent = ({ headers, data, title, showCheckBox }) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
+  
+const getSelectedRowData = (rowIndex) =>{
+  const rowData = sortedData[rowIndex].map((cell)=> cell);
+  console.log('Selected row data:', rowData);
+  return rowData;
+
+}
+
+
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -77,6 +86,7 @@ const TableComponent = ({ headers, data, title, showCheckBox }) => {
     setOrderBy(property);
   };
 
+  
   const filteredData = data.filter((row) =>
     row.some((cell) =>
       cell.toString().toLowerCase().includes(filter.toLowerCase())
