@@ -10,37 +10,153 @@ function Guests(props) {
   const [showForm, setShowForm] = useState(false);
   const [sendGuestsToCBM, setSendGuestsToCBM] = useState(false);
   const [uploadFormat, setUploadFormat] = useState('form');
-  const headers = ['Id', 'Name', 'Purpose', 'Status', 'Actions'];
-  const data = [
-    [1, 'John Doe', 'intern', 'Pending', <GuestButtons />],
-    [2, 'Jane Smith', 'Consultant', 'Approved', <GuestButtons />],
-    [3, 'Sam Johnson', 'intern', 'Declined', <GuestButtons />],
-    [4, 'Nshuti Ruranga Jabes', 'Consultant', 'New', <GuestButtons />],
-    [5, 'John Doe', 'intern', 'Pending', <GuestButtons />],
-    [6, 'Jane Smith', 'Consultant', 'Approved', <GuestButtons />],
-    [7, 'Sam Johnson', 'intern', 'Declined', <GuestButtons />],
-    [8, 'Nshuti Ruranga Jabes', 'Consultant', 'New', <GuestButtons />],
-    [9, 'John Doe', 'intern', 'Pending', <GuestButtons />],
-    [10, 'Jane Smith', 'Consultant', 'Approved', <GuestButtons />],
-    [11, 'Sam Johnson', 'intern', 'Declined', <GuestButtons />],
-    [12, 'Nshuti Ruranga Jabes', 'Consultant', 'New', <GuestButtons />],
+
+  const allGuests = [
+    {
+      id: 1,
+      name: 'John Doe',
+      purpose: 'intern',
+      status: 'Pending',
+      startDate: '2024-01-01',
+      endDate: '2024-01-10',
+    },
+    {
+      id: 2,
+      name: 'Jane Smith',
+      purpose: 'Consultant',
+      status: 'Approved',
+      startDate: '2024-01-01',
+      endDate: '2024-01-10',
+    },
+    {
+      id: 3,
+      name: 'Sam Johnson',
+      purpose: 'intern',
+      status: 'Declined',
+      startDate: '2024-01-01',
+      endDate: '2024-01-10',
+    },
+    {
+      id: 4,
+      name: 'Nshuti Ruranga Jabes',
+      purpose: 'Consultant',
+      status: 'New',
+      startDate: '2024-01-01',
+      endDate: '2024-01-10',
+    },
+    {
+      id: 1,
+      name: 'John Doe',
+      purpose: 'intern',
+      status: 'Pending',
+      startDate: '2024-01-01',
+      endDate: '2024-01-10',
+    },
+    {
+      id: 2,
+      name: 'Jane Smith',
+      purpose: 'Consultant',
+      status: 'Approved',
+      startDate: '2024-01-01',
+      endDate: '2024-01-10',
+    },
+    {
+      id: 3,
+      name: 'Sam Johnson',
+      purpose: 'intern',
+      status: 'Declined',
+      startDate: '2024-01-01',
+      endDate: '2024-01-10',
+    },
+    {
+      id: 4,
+      name: 'Nshuti Ruranga Jabes',
+      purpose: 'Consultant',
+      status: 'New',
+      startDate: '2024-01-01',
+      endDate: '2024-01-10',
+    },
+    {
+      id: 1,
+      name: 'John Doe',
+      purpose: 'intern',
+      status: 'Pending',
+      startDate: '2024-01-01',
+      endDate: '2024-01-10',
+    },
+    {
+      id: 2,
+      name: 'Jane Smith',
+      purpose: 'Consultant',
+      status: 'Approved',
+      startDate: '2024-01-01',
+      endDate: '2024-01-10',
+    },
+    {
+      id: 3,
+      name: 'Sam Johnson',
+      purpose: 'intern',
+      status: 'Declined',
+      startDate: '2024-01-01',
+      endDate: '2024-01-10',
+    },
+    {
+      id: 4,
+      name: 'Nshuti Ruranga Jabes',
+      purpose: 'Consultant',
+      status: 'New',
+      startDate: '2024-01-01',
+      endDate: '2024-01-10',
+    },
+    {
+      id: 1,
+      name: 'John Doe',
+      purpose: 'intern',
+      status: 'Pending',
+      startDate: '2024-01-01',
+      endDate: '2024-01-10',
+    },
+    {
+      id: 2,
+      name: 'Jane Smith',
+      purpose: 'Consultant',
+      status: 'Approved',
+      startDate: '2024-01-01',
+      endDate: '2024-01-10',
+    },
+    {
+      id: 3,
+      name: 'Sam Johnson',
+      purpose: 'intern',
+      status: 'Declined',
+      startDate: '2024-01-01',
+      endDate: '2024-01-10',
+    },
+    {
+      id: 4,
+      name: 'Nshuti Ruranga Jabes',
+      purpose: 'Consultant',
+      status: 'New',
+      startDate: '2024-01-01',
+      endDate: '2024-01-10',
+    },
   ];
 
+  const guestHeaders = ['Id', 'Name', 'Purpose', 'Status', 'Actions'];
+  const guestData = allGuests.map((guest) => [
+    guest.id,
+    guest.name,
+    guest.purpose,
+    guest.status,
+    <GuestButtons guest={guest} />,
+  ]);
+
+  // filter the all guests array to find the newly created guests and send them to the CBM
   const sendToCBMHeaders = ['Id', 'Name', 'Purpose'];
-  const sendToCBMData = [
-    [1, 'John Doe', 'intern'],
-    [2, 'Jane Smith', 'Consultant'],
-    [3, 'Sam Johnson', 'intern'],
-    [4, 'Nshuti Ruranga Jabes', 'Consultant'],
-    [1, 'John Doe', 'intern'],
-    [2, 'Jane Smith', 'Consultant'],
-    [3, 'Sam Johnson', 'intern'],
-    [4, 'Nshuti Ruranga Jabes', 'Consultant'],
-    [1, 'John Doe', 'intern'],
-    [2, 'Jane Smith', 'Consultant'],
-    [3, 'Sam Johnson', 'intern'],
-    [4, 'Nshuti Ruranga Jabes', 'Consultant'],
-  ];
+  const sendToCBMData = allGuests
+    .filter((guest) => guest.status === 'New')
+    .map((guest) => [guest.id, guest.name, guest.purpose]);
+
   return (
     <div className="">
       {sendGuestsToCBM && (
@@ -79,7 +195,7 @@ function Guests(props) {
                     </p>
                   </div>
                   <button className="my-4 w-full h-full md:h-max text-white bg-mainGreen border-2 border-mainGreen rounded-md py-2 hover:bg-white hover:text-mainGreen">
-                    Send All Guest To CPM
+                    Send All Guest To CBM
                   </button>
                 </div>
               </div>
@@ -207,8 +323,8 @@ function Guests(props) {
       </div>
       <div className="overflow-x-auto h-[70vh] border border-3 border-gray rounded-md pl-4 py-4">
         <TableComponent
-          headers={headers}
-          data={data}
+          headers={guestHeaders}
+          data={guestData}
           title="Guests"
           showCheckBox={true}
         />
