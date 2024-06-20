@@ -117,7 +117,7 @@ export function DeleteButton() {
 export function SendToCBMButton({ guest }) {
   const [isLoading, setIsLoading] = useState(false);
   const [isSent, setIsSent] = useState(guest.status !== 'New');
-  
+
   useEffect(() => {
     setIsSent(guest.status !== 'New');
   }, [guest.status]);
@@ -136,10 +136,10 @@ export function SendToCBMButton({ guest }) {
 
   return (
     <button
-      className={`font-medium text-xs hover:bg-[#2DB94C] hover:text-white border-[#2DB94C] border-[1px] rounded-[8px] py-[2px] px-[6px] text-[#2DB94C] text-nowrap${
-        isSent
-          ? 'border-[1px] border-gray-400  text-gray-300 cursor-not-allowed hover:bg-gray-100 hover:text-gray-400'
-          : ''
+      className={`font-medium text-xs border-[1px] rounded-[8px] py-[2px] px-[6px] text-nowrap ${
+        isSent ? 
+          'border-gray-400 text-gray-300 cursor-not-allowed hover:bg-gray-100' : 
+          'text-[#2DB94C] border-[#2DB94C] hover:bg-[#2DB94C] hover:text-white'
       } ${isLoading ? 'opacity-50 pointer-events-none' : ''}`}
       onClick={handleClick}
       disabled={isSent || isLoading} // Disable the button when sent or loading
@@ -151,9 +151,10 @@ export function SendToCBMButton({ guest }) {
 
 export function ApproveButton({ invoice }) {
   const [showApproveForm, setShowApproveForm] = useState(false);
-  const [actionPerfomed, setActionPerformed] = useState(invoice.status !== 'New');
+  const [actionPerfomed, setActionPerformed] = useState(
+    invoice.status !== 'New'
+  );
 
-    
   useEffect(() => {
     setActionPerformed(invoice.status !== 'New');
   }, [invoice.status]);
@@ -170,31 +171,38 @@ export function ApproveButton({ invoice }) {
               x
             </button>
             <h1 className="text-gray-400 font-medium text-md md:text-xl">
-              Are you sure you want to <span className="text-mainBlue">approve</span> ?
+              Are you sure you want to{' '}
+              <span className="text-mainBlue">approve</span> ?
             </h1>
-            <button className="btn mt-4 text-white font-semibold btn-primary bg-mainGreen border-2 rounded-md mb-2 py-2 px-4 hover:bg-white hover:text-mainGreen hover:border-2 hover:border-mainGreen" onClick={() => setShowApproveForm(false)}>
+            <button
+              className="btn mt-4 text-white font-semibold btn-primary bg-mainGreen border-2 rounded-md mb-2 py-2 px-4 hover:bg-white hover:text-mainGreen hover:border-2 hover:border-mainGreen"
+              onClick={() => setShowApproveForm(false)}
+            >
               approve
             </button>
           </div>
         </div>
       )}
-     <button
-      className={`btn btn-primary hover:bg-mainGreen hover:text-white border-mainGreen border-[1px] rounded-[8px] py-[2px] px-[6px] text-mainGreen font-medium text-xs ${
-        actionPerfomed ? 'border-gray-400 text-gray-300 cursor-not-allowed hover:bg-gray-100 hover:text-gray-300' : ''
-      }`}
-      onClick={() => setShowApproveForm(true)}
-      disabled={actionPerfomed}
-    >
-      approve
-    </button>
-
+      <button
+        className={`btn btn-primary  border-[1px] rounded-[8px] py-[2px] px-[6px] font-medium text-xs ${
+          actionPerfomed
+            ? 'border-gray-400 text-gray-300 cursor-not-allowed hover:bg-gray-100 hover:text-gray-300'
+            : 'hover:bg-mainGreen hover:text-white border-mainGreen text-mainGreen'
+        }`}
+        onClick={() => setShowApproveForm(true)}
+        disabled={actionPerfomed}
+      >
+        approve
+      </button>
     </div>
   );
 }
 
 export function DeclineButton({ invoice }) {
   const [showDeclineForm, setShowDeclineForm] = useState(false);
-  const [actionPerfomed, setActionPerformed] = useState(invoice.status != 'New' ? true : false);
+  const [actionPerfomed, setActionPerformed] = useState(
+    invoice.status != 'New' ? true : false
+  );
 
   return (
     <div>
@@ -208,10 +216,14 @@ export function DeclineButton({ invoice }) {
               x
             </button>
             <h1 className="text-gray-400 font-medium text-md md:text-xl">
-              Are you sure you want to <span className="text-mainBlue">decline</span> ?
-            </h1> 
+              Are you sure you want to{' '}
+              <span className="text-mainBlue">decline</span> ?
+            </h1>
             <form action="">
-              <button className="btn mt-4 text-white font-semibold btn-primary bg-darkRed border-2 rounded-md mb-2 py-2 px-4 hover:bg-white hover:text-darkRed hover:border-2 hover:border-darkRed" onClick={() => setShowDeclineForm(false)}>
+              <button
+                className="btn mt-4 text-white font-semibold btn-primary bg-darkRed border-2 rounded-md mb-2 py-2 px-4 hover:bg-white hover:text-darkRed hover:border-2 hover:border-darkRed"
+                onClick={() => setShowDeclineForm(false)}
+              >
                 decline
               </button>
             </form>
@@ -219,8 +231,13 @@ export function DeclineButton({ invoice }) {
         </div>
       )}
       <button
-        className={`btn btn-primary hover:bg-darkRed hover:text-white border-darkRed border-[1px] rounded-[8px] py-[2px] px-[6px] text-darkRed font-medium text-xs ${actionPerfomed? 'border-[1px] border-gray-400  text-gray-300 cursor-not-allowed hover:bg-gray-100 hover:text-gray-300' : ''}`}
-        onClick={() => setShowDeclineForm(true)}  disabled={actionPerfomed}
+        className={`btn btn-primary border-[1px] rounded-[8px] py-[2px] px-[6px]  font-medium text-xs ${
+          actionPerfomed
+            ? 'border-[1px] border-gray-400  text-gray-300 cursor-not-allowed hover:bg-gray-100 hover:text-gray-300'
+            : 'hover:bg-darkRed hover:text-white border-darkRed text-darkRed'
+        }`}
+        onClick={() => setShowDeclineForm(true)}
+        disabled={actionPerfomed}
       >
         decline
       </button>
@@ -236,7 +253,6 @@ export function GuestButtons({ guest }) {
       <SendToCBMButton guest={guest} />
     </div>
   );
-
 }
 export function RestaurantButtons({ invoice }) {
   return (
