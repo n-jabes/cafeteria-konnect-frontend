@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { FaRegEye } from 'react-icons/fa6';
 
 export function MainButton({ text }) {
   return (
@@ -244,7 +245,30 @@ export function DeclineButton({ invoice }) {
     </div>
   );
 }
+export function ViewInvoiceButton({invoice }) {
+  const [viewInvoice, setViewInvoice] = useState(false);
 
+  return (
+    <div>
+      {viewInvoice && (
+        <div className="fixed top-0 left-0 bg-bgBlue z-[40] h-screen w-screen overflow-y-auto overflow-x-auto flex items-center justify-center">
+          <div className="relative bg-white w-[90%] lg:w-[45%] h-max px-[3.5%] py-[4%] rounded-md">
+            <button
+              className="close border-2 border-mainRed rounded-md px-2 text-mainRed absolute right-4 top-4"
+              onClick={() => setViewInvoice(false)}
+            >
+              x
+            </button>
+            <h1 className="text-mainBlue font-semibold text-md md:text-xl">
+              View Invoice: <span className="text-gray-400"></span>
+            </h1>
+          </div>
+        </div>
+      )}
+      <FaRegEye className='text-xl mx-2 cursor-pointer' onClick={()=> setViewInvoice(true)}/>
+    </div>
+  );
+}
 export function GuestButtons({ guest }) {
   return (
     <div className="flex gap-2">
@@ -256,9 +280,10 @@ export function GuestButtons({ guest }) {
 }
 export function RestaurantButtons({ invoice }) {
   return (
-    <div className="flex gap-2">
+    <div className="flex gap-2 px-0">
       <ApproveButton invoice={invoice} />
       <DeclineButton invoice={invoice} />
+      <ViewInvoiceButton invoice={invoice}/>
     </div>
   );
 }
