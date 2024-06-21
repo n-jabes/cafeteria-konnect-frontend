@@ -171,6 +171,7 @@ const TableComponent = ({ headers, data, title, showCheckBox }) => {
                               ? '#FF0000'
                               : '#30415F'
                             : '#30415F',
+                            fontFamily: 'Poppins, sans-serif'
                       }}
                     >
                       {cell}

@@ -138,9 +138,9 @@ export function SendToCBMButton({ guest }) {
   return (
     <button
       className={`font-medium text-xs border-[1px] rounded-[8px] py-[2px] px-[6px] text-nowrap ${
-        isSent ? 
-          'border-gray-400 text-gray-300 cursor-not-allowed hover:bg-gray-100' : 
-          'text-[#2DB94C] border-[#2DB94C] hover:bg-[#2DB94C] hover:text-white'
+        isSent
+          ? 'border-gray-400 text-gray-300 cursor-not-allowed hover:bg-gray-100'
+          : 'text-[#2DB94C] border-[#2DB94C] hover:bg-[#2DB94C] hover:text-white'
       } ${isLoading ? 'opacity-50 pointer-events-none' : ''}`}
       onClick={handleClick}
       disabled={isSent || isLoading} // Disable the button when sent or loading
@@ -245,7 +245,7 @@ export function DeclineButton({ invoice }) {
     </div>
   );
 }
-export function ViewInvoiceButton({invoice }) {
+export function ViewInvoiceButton({ invoice }) {
   const [viewInvoice, setViewInvoice] = useState(false);
 
   return (
@@ -259,13 +259,37 @@ export function ViewInvoiceButton({invoice }) {
             >
               x
             </button>
-            <h1 className="text-mainBlue font-semibold text-md md:text-xl">
-              View Invoice: <span className="text-gray-400"></span>
-            </h1>
+            <div className="w-full flex items-center justify-between">
+              <img
+                className="w-[5rem]"
+                src="/Coat_of_arms.png"
+                alt="coat of arms logo"
+              />
+              <div className="text-right">
+                <p className="mb-4 text-xs">Kigali, 06/06/24</p>
+                <h1 className="text-3xl">INVOICE</h1>
+                <p className="text-xs">Invoice: #20240601</p>
+              </div>
+            </div>
+            <div className="mt-6">
+              <p>MINISTRY OF FINANCE AND ECONOMIC PLANNING</p>
+              <p>P.O Box 158 Kigali</p>
+              <p>
+                <span>Tel: +250 252575756</span>
+                <span className="ml-4">Fax: +250 252 5777581</span>
+              </p>
+              <p>
+                Email:{' '}
+                <span className="text-mainBlue">mfin@minecofin.gov.rw</span>
+              </p>
+            </div>
           </div>
         </div>
       )}
-      <FaRegEye className='text-xl mx-2 cursor-pointer' onClick={()=> setViewInvoice(true)}/>
+      <FaRegEye
+        className="text-xl mx-2 cursor-pointer"
+        onClick={() => setViewInvoice(true)}
+      />
     </div>
   );
 }
@@ -283,7 +307,7 @@ export function RestaurantButtons({ invoice }) {
     <div className="flex gap-2 px-0">
       <ApproveButton invoice={invoice} />
       <DeclineButton invoice={invoice} />
-      <ViewInvoiceButton invoice={invoice}/>
+      <ViewInvoiceButton invoice={invoice} />
     </div>
   );
 }
