@@ -294,7 +294,7 @@ function Guests(props) {
                 </div>
                 <button
                   type="submit"
-                  className="btn border-2 border-mainBlue bg-mainBlue font-semibold text-white py-2 px-4 rounded-md w-full hover:bg-white hover:text-mainBlue mt-3"
+                  className="btn border-2 border-[#078ECE] bg-[#078ECE] font-semibold text-white py-2 px-4 rounded-md w-full hover:bg-white hover:text-mainBlue mt-3"
                 >
                   Create Guest
                 </button>
@@ -305,7 +305,7 @@ function Guests(props) {
             {uploadFormat === 'file' && (
               <div>
                 <input type="file" accept=".csv" className="py-4" />
-                <button className="btn border-2 border-mainBlue bg-mainBlue font-semibold text-white py-2 px-4 rounded-md w-full hover:bg-white hover:text-mainBlue mt-3">
+                <button className="btn border-2 border-{#078ECE} bg-[#078ECE] font-semibold text-white py-2 px-4 rounded-md w-full hover:bg-white hover:text-mainBlue mt-3">
                   Upload CSV File
                 </button>
               </div>
