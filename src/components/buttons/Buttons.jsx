@@ -240,7 +240,7 @@ export function DeclineButton({ invoice }) {
                 className="btn mt-4 text-white font-semibold btn-primary bg-darkRed border-2 rounded-md mb-2 py-2 px-4 hover:bg-white hover:text-darkRed border-darkRed"
                 onClick={() => setShowDeclineForm(false)}
               >
-                Yes, I Decline
+              Decline
               </button>
               </div>
             </form>
