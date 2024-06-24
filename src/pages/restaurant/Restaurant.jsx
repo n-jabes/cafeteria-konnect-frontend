@@ -1,6 +1,6 @@
 import React from 'react';
 import TableComponent from '../../components/table/TableComponent';
-import { GuestButtons, RestaurantButtons } from '../../components/buttons/Buttons';
+import { RestaurantButtons } from '../../components/buttons/Buttons';
 
 function Restaurants(props) {
   const allInvoices = [
@@ -22,6 +22,62 @@ function Restaurants(props) {
       attendees: '30',
       status: 'Declined',
     },
+
+    {
+      id: 20240603,
+      date: '2024-06-18',
+      attendees: '30',
+      status: 'New',
+    },
+    {
+      id: 20240603,
+      date: '2024-06-18',
+      attendees: '30',
+      status: 'New',
+    },
+    {
+      id: 20240603,
+      date: '2024-06-18',
+      attendees: '30',
+      status: 'Declined',
+    },
+    {
+      id: 20240603,
+      date: '2024-06-18',
+      attendees: '30',
+      status: 'New',
+    },
+    {
+      id: 20240603,
+      date: '2024-06-18',
+      attendees: '30',
+      status: 'New',
+    },
+    {
+      id: 20240603,
+      date: '2024-06-18',
+      attendees: '30',
+      status: 'New',
+    },
+    {
+      id: 20240603,
+      date: '2024-06-18',
+      attendees: '30',
+      status: 'Declined',
+    },
+    {
+      id: 20240603,
+      date: '2024-06-18',
+      attendees: '30',
+      status: 'Approved',
+    },
+    {
+      id: 20240603,
+      date: '2024-06-18',
+      attendees: '30',
+      status: 'Declined',
+    },
+    
   ];
   
   const headers = ['Invoice Id', 'Date', 'Clients', 'Status', 'Actions'];

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import TableComponent from '../table/TableComponent';
 import attendeesDb from '../../db/attendee';
+import { FaRegEye } from 'react-icons/fa6';
 
 export function MainButton({ text }) {
   return (
@@ -327,16 +328,18 @@ export function ApproveButton({ invoice }) {
             >
               x
             </button>
-            <h1 className="text-gray-400 font-medium text-md md:text-xl">
-              Are you sure you want to{' '}
-              <span className="text-mainBlue">approve</span> ?
+            <h1 className="pb-6 flex justify-center text-gray-500 text-md md:text-xl">
+              Are you sure you want to approve?
             </h1>
+            <div className="flex justify-center">
             <button
-              className="btn mt-4 text-white font-semibold btn-primary bg-mainGreen border-2 rounded-md mb-2 py-2 px-4 hover:bg-white hover:text-mainGreen hover:border-2 hover:border-mainGreen"
+              type="submit"
+              className="btn mt-4 text-white font-semibold btn-primary bg-mainGreen border-2 rounded-md mb-2 py-2 px-4 hover:bg-white hover:text-mainGreen border-mainGreen"
               onClick={() => setShowApproveForm(false)}
             >
-              approve
+              Yes, I Approve            
             </button>
+            </div>
           </div>
         </div>
       )}
@@ -372,18 +375,33 @@ export function DeclineButton({ invoice }) {
             >
               x
             </button>
-            <h1 className="text-gray-400 font-medium text-md md:text-xl">
-              Are you sure you want to{' '}
-              <span className="text-mainBlue">decline</span> ?
+            <h1 className="pb-6 flex justify-center text-gray-500 text-md md:text-xl">
+              Are you sure you want to decline?
             </h1>
-            <form action="">
+            <form action="#" className="w-full">
+              <div className="flex flex-col mb-2">
+                <label htmlFor="reason" className="text-md text-gray-800 pb-2">
+                Reason for declining the invoice:
+                </label>
+                <textarea 
+                  type="text"
+                  placeholder=""
+                  name="reason"
+                  className="outline-none text-sm py-6 px-6 border-[2px] border-gray rounded-xl"
+                  required
+                ></textarea>
+              </div>
+              <div className="flex justify-center pt-5">
               <button
-                className="btn mt-4 text-white font-semibold btn-primary bg-darkRed border-2 rounded-md mb-2 py-2 px-4 hover:bg-white hover:text-darkRed hover:border-2 hover:border-darkRed"
+                type="submit"
+                className="btn mt-4 text-white font-semibold btn-primary bg-darkRed border-2 rounded-md mb-2 py-2 px-4 hover:bg-white hover:text-darkRed border-darkRed"
                 onClick={() => setShowDeclineForm(false)}
               >
-                decline
+                Yes, I Decline
               </button>
+              </div>
             </form>
+              
           </div>
         </div>
       )}
@@ -401,7 +419,30 @@ export function DeclineButton({ invoice }) {
     </div>
   );
 }
+export function ViewInvoiceButton({invoice }) {
+  const [viewInvoice, setViewInvoice] = useState(false);
 
+  return (
+    <div>
+      {viewInvoice && (
+        <div className="fixed top-0 left-0 bg-bgBlue z-[40] h-screen w-screen overflow-y-auto overflow-x-auto flex items-center justify-center">
+          <div className="relative bg-white w-[90%] lg:w-[45%] h-max px-[3.5%] py-[4%] rounded-md">
+            <button
+              className="close border-2 border-mainRed rounded-md px-2 text-mainRed absolute right-4 top-4"
+              onClick={() => setViewInvoice(false)}
+            >
+              x
+            </button>
+            <h1 className="text-mainBlue font-semibold text-md md:text-xl">
+              View Invoice: <span className="text-gray-400"></span>
+            </h1>
+          </div>
+        </div>
+      )}
+      <FaRegEye className='text-[16px] text-gray-600 mx-2 cursor-pointer' onClick={()=> setViewInvoice(true)}/>
+    </div>
+  );
+}
 export function GuestButtons({ guest }) {
   return (
     <div className="flex gap-2">
@@ -413,9 +454,10 @@ export function GuestButtons({ guest }) {
 }
 export function RestaurantButtons({ invoice }) {
   return (
-    <div className="flex gap-2">
+    <div className="flex gap-2 px-0">
       <ApproveButton invoice={invoice} />
       <DeclineButton invoice={invoice} />
+      <ViewInvoiceButton invoice={invoice}/>
     </div>
   );
 }
