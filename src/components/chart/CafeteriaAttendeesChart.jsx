@@ -23,6 +23,8 @@ const CafeteriaAttendeesChart = ({ data }) => {
   };
 
   const options = {
+    responsive: true,
+    maintainAspectRatio: true, 
     scales: {
       x: {
         title: {
