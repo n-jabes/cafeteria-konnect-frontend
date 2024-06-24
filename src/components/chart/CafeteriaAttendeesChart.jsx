@@ -24,7 +24,7 @@ const CafeteriaAttendeesChart = ({ data }) => {
 
   const options = {
     responsive: true,
-    maintainAspectRatio: true, 
+    maintainAspectRatio: false, 
     scales: {
       x: {
         title: {
@@ -45,7 +45,9 @@ const CafeteriaAttendeesChart = ({ data }) => {
   };
 
   return (
-    <Line data={chartData} options={options} />
+    <div className="w-full h-full">
+      <Line data={chartData} options={options} />
+    </div>
   );
 };
 
