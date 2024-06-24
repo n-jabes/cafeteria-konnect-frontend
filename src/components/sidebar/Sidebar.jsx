@@ -2,7 +2,7 @@
 import { React, useEffect, useState } from 'react';
 import { IoIosLogOut, IoIosCloseCircleOutline } from 'react-icons/io';
 import { RiCloseLargeLine } from 'react-icons/ri';
-import { Link, Navigate, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 const Sidebar = ({ isOpen, toggleSidebar, sidebarFields }) => {
   const [activeItem, setActiveItem] = useState(null);
@@ -19,9 +19,12 @@ const Sidebar = ({ isOpen, toggleSidebar, sidebarFields }) => {
   }, [location.pathname, sidebarFields]);
 
   const handleLogout = () => {
+    const navigate = useNavigate();
+    localStorage.setItem('isAuthenticated', true);
+
     // Implement your logout logic here
-    console.log('Logged out');
-    return <Navigate to='/login'/>;
+    console.log('Logging out ...');
+    return navigate('/login');
   };
 
   // Function to handle click on sidebar item
@@ -67,7 +70,7 @@ const Sidebar = ({ isOpen, toggleSidebar, sidebarFields }) => {
       <div className="absolute bottom-4 left-4 right-4">
         <button
           className="flex items-center justify-center gap-2 w-full py-2 px-4 hover:bg-white border border-2 font-semibold hover:text-[#4069B0] rounded-md shadow-md bg-[#4069B0] text-white"
-          onClick={handleLogout}
+          onClick={() => handleLogout}
         >
           Logout
           <IoIosLogOut />
