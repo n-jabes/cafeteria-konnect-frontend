@@ -179,23 +179,20 @@ function Attendees() {
           </div>
         </div>
       )}
-
-
-
-
-            <div className="md:flex md:align-center md:justify-between text-white font-medium mb-3">
+        <div className="md:flex md:align-center md:justify-between text-white font-medium mb-3 w-full">
         
-        <div className="w-full  " onClick={() => setaddNewAttendee(true)}>
+        <div className="w-[20%] bg-red-200" onClick={() => setaddNewAttendee(true)}>       
             <div>
-          <MainButton text={'+ Add Employee(s)'} />
+          <MainButton text={'+ Add Employee(s)'}/>
           </div>
         </div>
       </div>
+     
       <div className="overflow-x-auto h-[70vh] border border-3 border-gray rounded-md pl-4 py-4">
         <TableComponent
           headers={headers}
           data={attendeeData}
-          title="List of all Attendees"
+          title=""
           showCheckBox={false}
           
         />

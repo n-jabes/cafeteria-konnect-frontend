@@ -19,10 +19,11 @@ export function SendAllNewGuestsToCBMButton() {
   );
 }
 
-export function UpdateAttendeeButton(){
+export function UpdateAttendeeButton({attendeeDetails}){
   // const [showUpdateForm]
+
   return(
-  <button className="btn btn-primary hover:bg-darkRed hover:text-white  border-darkRed border-[1px] rounded-[8px] py-[2px] px-[6px] text-darkRed font-medium text-xs">
+  <button className="btn btn-primary hover:bg-mainBlue hover:text-white  border-mainBlue border-[1px] rounded-[8px] py-[2px] px-[6px] text-mainBlue font-medium text-xs">
   update
 </button>
   ) 
@@ -129,33 +130,18 @@ export function DeleteButton() {
 }
 
 
-export function ViewButton({attendeeDetails}){
+export function ViewAttendeeButton({attendeeDetails}){
 
  
 const [attendeeLastLunch, setAttendeeLastLunch] = useState([])
 const [lastLunchCount, setLastLunchCount] = useState(0); // State for unique count
 
-
-const attendeeData = [];
-const attendeeDetailsObject = attendeeDetails.attendeeDetails; // Access the desired object
-
-if (attendeeDetailsObject) { // Check if the object exists to avoid errors
-  attendeeData.push([
-    attendeeDetailsObject.id,
-    attendeeDetailsObject.name,
-    attendeeDetails.role,
-    attendeeDetailsObject.lastLunch,
-  ]);
-}
-
 //headers for the table
 const attendeeHeaders = ["name","lastlunch"];
 
 //Attendee's data filtered for the table
-
 useEffect(()=>{
-  const filteredAttendees = attendeesDb.filter((attendee)=> attendee.id === attendeeData[0][0]);
-  
+  const filteredAttendees = attendeesDb.filter((attendee)=> attendee.id === attendeeDetails.id);
   const formattedData = filteredAttendees.map((attendee)=>[
     attendee.name,
     attendee.lastLunch,
@@ -163,12 +149,11 @@ useEffect(()=>{
   setAttendeeLastLunch(formattedData);
   setLastLunchCount(countLastLunch(attendeeLastLunch)); // Calculate and store count
 
-},[attendeeData.id])
+},[attendeeDetails.id])
 
 
 
 //the count of data in attendeelastlunch
-
 function countLastLunch(attendeeLastLunch){
   return new Set(attendeeLastLunch).size
 }
@@ -190,7 +175,7 @@ function countLastLunch(attendeeLastLunch){
             </button>
         
             <h1 className="text-gray-500 font-semibold text-md md:text-[1.1rem]">
-              Employee Details for: <span className=" text-mainBlue ">{attendeeData[0][1]}</span>
+              Employee Details for: <span className=" text-mainBlue ">{attendeeDetails.name}</span>
             </h1>
             <p className='text-gray-500 text-[1rem]'>Role : <span className='text-mainBlue font-bold capitalize'>Intern</span></p>
         
@@ -203,7 +188,7 @@ function countLastLunch(attendeeLastLunch){
                   <input
                     type="text"
                     name="startDate"
-                    defaultValue={attendeeData[0][3]}
+                    defaultValue={attendeeDetails.lastLunch}
                     className="outline-none text-sm w-[8rem] h-[2rem] border-[1px] border-gray rounded-[0.15rem] capitalize"                   
                     required
                   />
@@ -215,7 +200,7 @@ function countLastLunch(attendeeLastLunch){
                   <input
                     type="text"
                     name="endDate"
-                    defaultValue={attendeeData[0][3]}
+                    defaultValue={attendeeDetails.lastLunch}
                     className="outline-none text-sm w-[8rem] h-[2rem] border-[1px] border-gray rounded-[0.15rem] "
                     required
                   />
@@ -235,7 +220,7 @@ function countLastLunch(attendeeLastLunch){
               </div>
               <div className="w-[34%] md:w-4/12 md:pl-4 ">
                 <div className="w-full  flex md:flex-col items-center   text-center  ">
-                  <div className="h-[17.5rem] h-full border border-1 border-mainBlue w-full border-gray rounded-md text-sm">
+                  <div className="h-[17.6rem] h-full border border-1 border-mainBlue w-full border-gray rounded-md text-sm">
                     <p className="mt-4 flex flex-col items-center">
                       <span className="font-bold text-4xl md:text-8xl text-gray-400 flex flex-col md:flex-row">
                       {lastLunchCount}
@@ -259,16 +244,12 @@ function countLastLunch(attendeeLastLunch){
           </div>
         </div>
       )}
-      <button className="btn btn-primary hover:bg-red-200 hover:text-white  border-black border-[1px] rounded-[8px] py-[2px] px-[6px] text-darkRed font-medium text-xs" onClick={()=> setViewButton(true)}>
+      {/* <button className="btn btn-primary hover:bg-red-200 hover:text-white py-[2px] px-[6px] border-black border-[1px] rounded-[8px] py-[2px] px-[6px] text-darkRed font-medium text-xs" onClick={()=> setViewButton(true)}>
     View
-  </button>
+  </button> */}
+  <FaRegEye className='text-[16px] text-gray-600 mx-2 cursor-pointer' onClick={()=> setViewButton(true)}/>
   </div>
   )
-
-
-
-  
-
 }
 
 export function SendToCBMButton({guest}) {
@@ -462,12 +443,12 @@ export function RestaurantButtons({ invoice }) {
   );
 }
 
-export function AttendeeButtons(attendeeDetails){
+export function AttendeeButtons({attendeeDetails}){
   return (
     <div className='flex gap-2'>
-    <UpdateAttendeeButton />
+    <UpdateAttendeeButton  attendeeDetails = {attendeeDetails}/>
     <DeleteButton />
-    <ViewButton attendeeDetails = {attendeeDetails} />
+    <ViewAttendeeButton attendeeDetails = {attendeeDetails} />
       </div>
   )
 }
