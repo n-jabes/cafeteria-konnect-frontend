@@ -174,16 +174,18 @@ export function ApproveButton({ invoice }) {
             >
               x
             </button>
-            <h1 className="text-gray-400 font-medium text-md md:text-xl">
-              Are you sure you want to{' '}
-              <span className="text-mainBlue">approve</span> ?
+            <h1 className="pb-6 flex justify-center text-gray-500 text-md md:text-xl">
+              Are you sure you want to approve?
             </h1>
-            <button
-              className="btn mt-4 text-white font-semibold btn-primary bg-mainGreen border-2 rounded-md mb-2 py-2 px-4 hover:bg-white hover:text-mainGreen hover:border-2 hover:border-mainGreen"
-              onClick={() => setShowApproveForm(false)}
-            >
-              approve
-            </button>
+            <div className="flex justify-center">
+              <button
+                type="submit"
+                className="btn mt-4 text-white font-semibold btn-primary bg-mainGreen border-2 rounded-md mb-2 py-2 px-4 hover:bg-white hover:text-mainGreen border-mainGreen"
+                onClick={() => setShowApproveForm(false)}
+              >
+                Yes, I Approve
+              </button>
+            </div>
           </div>
         </div>
       )}
@@ -219,17 +221,31 @@ export function DeclineButton({ invoice }) {
             >
               x
             </button>
-            <h1 className="text-gray-400 font-medium text-md md:text-xl">
-              Are you sure you want to{' '}
-              <span className="text-mainBlue">decline</span> ?
+            <h1 className="pb-6 flex justify-center text-gray-500 text-md md:text-xl">
+              Are you sure you want to decline?
             </h1>
-            <form action="">
-              <button
-                className="btn mt-4 text-white font-semibold btn-primary bg-darkRed border-2 rounded-md mb-2 py-2 px-4 hover:bg-white hover:text-darkRed hover:border-2 hover:border-darkRed"
-                onClick={() => setShowDeclineForm(false)}
-              >
-                decline
-              </button>
+            <form action="#" className="w-full">
+              <div className="flex flex-col mb-2">
+                <label htmlFor="reason" className="text-md text-gray-800 pb-2">
+                  Reason for declining the invoice:
+                </label>
+                <textarea
+                  type="text"
+                  placeholder=""
+                  name="reason"
+                  className="outline-none text-sm py-6 px-6 border-[2px] border-gray rounded-md"
+                  required
+                ></textarea>
+              </div>
+              <div className="flex justify-center pt-5">
+                <button
+                  type="submit"
+                  className="btn mt-4 text-white font-semibold btn-primary bg-darkRed border-2 rounded-md mb-2 py-2 px-4 hover:bg-white hover:text-darkRed border-darkRed"
+                  onClick={() => setShowDeclineForm(false)}
+                >
+                  Yes, I Decline
+                </button>
+              </div>
             </form>
           </div>
         </div>
@@ -363,7 +379,7 @@ export function ViewInvoiceButton({ invoice }) {
         </div>
       )}
       <FaRegEye
-        className="text-xl mx-2 cursor-pointer"
+        className="text-[16px] text-gray-600 mx-2 cursor-pointer"
         onClick={() => setViewInvoice(true)}
       />
     </div>

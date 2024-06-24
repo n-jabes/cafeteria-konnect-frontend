@@ -71,6 +71,12 @@ function Restaurants(props) {
       attendees: '30',
       status: 'Approved',
     },
+    {
+      id: 20240603,
+      date: '2024-06-18',
+      attendees: '30',
+      status: 'Declined',
+    },
     
   ];
   
