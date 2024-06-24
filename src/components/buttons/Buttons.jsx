@@ -1,5 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { FaRegEye } from 'react-icons/fa6';
+import InvoiceTable from '../table/InvoiceTable';
+import { IoPrint } from 'react-icons/io5';
+import ReactToPrint from 'react-to-print';
 
 export function MainButton({ text }) {
   return (
@@ -245,44 +248,117 @@ export function DeclineButton({ invoice }) {
     </div>
   );
 }
+
 export function ViewInvoiceButton({ invoice }) {
   const [viewInvoice, setViewInvoice] = useState(false);
+  const headers = ['Date', 'Lunch Attendees', 'Price Per Person', 'Total'];
+  const data = [['06.06.2024', '400', '............', '............']];
+  const invoiceRef = useRef();
 
   return (
     <div>
       {viewInvoice && (
-        <div className="fixed top-0 left-0 bg-bgBlue z-[40] h-screen w-screen overflow-y-auto overflow-x-auto flex items-center justify-center">
-          <div className="relative bg-white w-[90%] lg:w-[45%] h-max px-[3.5%] py-[4%] rounded-md">
+        <div className="fixed top-0 left-0 bg-bgBlue z-[40] h-screen w-screen overflow-y-auto overflow-x-auto flex items-center justify-center cursor-pointer">
+          <div className="relative bg-white w-[90%] lg:w-[50%] h-[90vh] overflow-y-auto px-[3.5%] py-[4%] rounded-md">
             <button
               className="close border-2 border-mainRed rounded-md px-2 text-mainRed absolute right-4 top-4"
               onClick={() => setViewInvoice(false)}
             >
               x
             </button>
-            <div className="w-full flex items-center justify-between">
-              <img
-                className="w-[5rem]"
-                src="/Coat_of_arms.png"
-                alt="coat of arms logo"
-              />
-              <div className="text-right">
-                <p className="mb-4 text-xs">Kigali, 06/06/24</p>
-                <h1 className="text-3xl">INVOICE</h1>
-                <p className="text-xs">Invoice: #20240601</p>
+
+            <div className="bg-white" ref={invoiceRef}>
+              {/* invoice headings */}
+              <div className="w-full flex items-center gap-8 md:justify-between pt-5">
+                <img
+                  className="w-[5rem]"
+                  src="/Coat_of_arms.png"
+                  alt="coat of arms logo"
+                />
+                <div className="text-right">
+                  <p className="mb-4 text-xs">Kigali, {invoice.date}</p>
+                  <h1 className="text-3xl">INVOICE</h1>
+                  <p className="text-xs">Invoice: #{invoice.id}</p>
+                </div>
+              </div>
+
+              {/* ministry details */}
+              <div className="mt-6">
+                <p>MINISTRY OF FINANCE AND ECONOMIC PLANNING</p>
+                <p>P.O Box 158 Kigali</p>
+                <p>
+                  <span>Tel: +250 252575756</span>
+                  <span className="ml-4">Fax: +250 252 5777581</span>
+                </p>
+                <p>
+                  Email:
+                  <span className="text-mainBlue ml-4 hover:cursor-pointer hover:underline hover:underline-offset-1">
+                    mfin@minecofin.gov.rw
+                  </span>
+                </p>
+              </div>
+
+              {/* restaurant details */}
+              <div className="mt-8 w-[65%]">
+                <img
+                  src="/Bourbon_Coffee_Logo.png"
+                  alt=""
+                  className="w-[6.5rem]"
+                />
+                <p>Tel: +250 789 777 771</p>
+                <p>
+                  Email:
+                  <span className="text-mainBlue ml-4 hover:cursor-pointer hover:underline hover:underline-offset-1">
+                    Bourboncoffee@Restaurant.rw
+                  </span>
+                </p>
+              </div>
+
+              {/* table */}
+              <div className="my-6">
+                <InvoiceTable
+                  headers={headers}
+                  data={data}
+                  showCheckBox={false}
+                  title={''}
+                />
+              </div>
+              {/* signatures */}
+              <div className="h-[15vh] w-full">
+                <p className="font-semibold text-gray-800">Signatures:</p>
+              </div>
+
+              {/* parties involved */}
+              <div className="w-full flex items-center justify-between">
+                <div className="text-left">
+                  <p className="text-gray-800 font-semibold">
+                    KIMENYI Emmanuel
+                  </p>
+                  <p className="text-gray-500 text-xs">
+                    Human Resource Department
+                  </p>
+                </div>
+                <div className="text-right">
+                  <p className="text-gray-800 font-semibold">JOHN Doe</p>
+                  <p className="text-gray-500 text-xs">Bouborn Coffee CEO</p>
+                </div>
               </div>
             </div>
-            <div className="mt-6">
-              <p>MINISTRY OF FINANCE AND ECONOMIC PLANNING</p>
-              <p>P.O Box 158 Kigali</p>
-              <p>
-                <span>Tel: +250 252575756</span>
-                <span className="ml-4">Fax: +250 252 5777581</span>
-              </p>
-              <p>
-                Email:{' '}
-                <span className="text-mainBlue">mfin@minecofin.gov.rw</span>
-              </p>
-            </div>
+
+            {/* print button */}
+            <ReactToPrint
+              trigger={() => {
+                return (
+                  <div className="mt-[3rem] w-full flex items-center justify-center">
+                    <button className="btn btn-primary bg-[#28A4E2] border-2 rounded-md mb-2 py-2 px-4 hover:bg-[#2696CD] hover:border-[#2696CD] border-[#28A4E2] text-white flex items-center gap-2">
+                      <IoPrint className="text-xl" />
+                      Print / Download
+                    </button>
+                  </div>
+                );
+              }}
+              content={() => invoiceRef.current}
+            />
           </div>
         </div>
       )}
@@ -293,6 +369,7 @@ export function ViewInvoiceButton({ invoice }) {
     </div>
   );
 }
+
 export function GuestButtons({ guest }) {
   return (
     <div className="flex gap-2">
@@ -302,6 +379,7 @@ export function GuestButtons({ guest }) {
     </div>
   );
 }
+
 export function RestaurantButtons({ invoice }) {
   return (
     <div className="flex gap-2 px-0">
