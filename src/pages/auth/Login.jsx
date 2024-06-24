@@ -18,6 +18,7 @@ const Login = () => {
   const navigate = useNavigate();
 
   const handleSubmit = () => {
+    localStorage.setItem('isAuthenticated', true);
     navigate('/hr/statistics');
   };
 

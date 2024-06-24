@@ -10,9 +10,8 @@ import Layout from './components/layout/Layout';
 import HRRoutes from './pages/HRRoutes';
 import Login from './pages/auth/Login';
 
-function App() {// This would typically come from your AuthContext or similar
-  const isAuthenticated = localStorage.getItem('isAuthenticated');
-  console.log(isAuthenticated);
+function App() {
+  const isAuthenticated = true;
 
   return (
     <Router>

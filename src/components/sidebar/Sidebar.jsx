@@ -24,7 +24,6 @@ const Sidebar = ({ isOpen, toggleSidebar, sidebarFields }) => {
 
     // Implement your logout logic here
     console.log('Logging out ...');
-    return navigate('/login');
   };
 
   // Function to handle click on sidebar item
