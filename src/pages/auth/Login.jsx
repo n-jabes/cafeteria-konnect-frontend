@@ -2,8 +2,9 @@
 import React from 'react';
 import  {Formik,Form,Field, ErrorMessage} from 'formik'
 import * as Yup from 'yup'
-import { useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+
 
 
 
@@ -14,6 +15,12 @@ const validationSchema = Yup.object().shape({
 
 
 const Login = () => {
+  const navigate = useNavigate();
+
+
+  const handleSubmit = ()=>{
+    navigate("/hr/statistics");
+  }
 
   return (
 
@@ -34,14 +41,14 @@ const Login = () => {
     initialValues ={{email:'', password:''}}
     validationSchema= {validationSchema}
     onSubmit={(values)=>{
-      alert(JSON.stringify(values, null,2));
+      //logic
     }}
     >
 
       <Form className='flex flex-col  items-center w-[70%] h-[17rem]  justify-center'>
       <Field name="email" type="email" placeholder='Username' className='w-full text-sm border border-[8F8F8F] px-2 py-3 m-3' />
       <Field name="password" type="password"  placeholder='Password' className='w-full text-sm border border-[8F8F8F] px-2 py-3 m-3' />
-      <button type='submit' className='w-full px-2 text-sm py-3 m-3 bg-[#078ECE] text-white font-semibold '>Submit</button>
+      <button type='submit' className='w-full px-2 text-sm py-3 m-3 bg-[#078ECE] text-white font-semibold ' onClick={()=> handleSubmit()}>Submit</button>
       </Form>
     </Formik>
     <div className='w-[70%]'>

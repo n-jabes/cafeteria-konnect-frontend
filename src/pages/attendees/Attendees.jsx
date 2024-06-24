@@ -1,6 +1,5 @@
 import React,{useState} from 'react';
-import TableComponent
- from '../../components/table/TableComponent';
+import TableComponent from '../../components/table/TableComponent';
  import { AttendeeButtons } from '../../components/buttons/Buttons';
  import { MainButton } from '../../components/buttons/Buttons';
  import  {Formik,Form,Field, ErrorMessage} from 'formik'
@@ -16,32 +15,111 @@ const validationSchema = Yup.object().shape({
   
 function Attendees() {
 
-    const options = [
-        { role: 'Intern', label: 'Intern' },
-        { role: 'Consultant', label: 'Consultant' },
-        { role: 'Permanent Worker', label: 'Permantent worker' },
-      ];
-    
+  const options =[
+    {role:"Intern", label:"Intern"},
+    {role:"Consultant", label:"consultant"}   
+  ]  
   
+
     const [addNewAttendee, setaddNewAttendee] = useState(false);
     // const [showForm, setShowForm] = useState(false);   
     // const [uploadFormat, setUploadFormat] = useState('form');
     const headers = ['Id', 'Name', 'Purpose', 'Last lunch', 'Actions'];
-    const data = [
-      [1, 'Nshuti Ruranga Jabes', 'intern', '01/02/2024', <AttendeeButtons value={{"name":"bizimana"}} />],
-      [2, 'Jane Smith', 'Consultant', '01/02/2024', <AttendeeButtons />],
-      [3, 'Sam Johnson', 'intern', '01/02/2024', <AttendeeButtons />],
-      [4, 'Nshuti Ruranga Jabes','Permant worker', '01/02/2024',  <AttendeeButtons />],
-      [5, 'John Doe', 'intern', '01/02/2024', <AttendeeButtons />],
-      [6, 'Jane Smith', 'Consultant', '01/02/2024', <AttendeeButtons />],
-      [7, 'Sam Johnson', 'intern', '01/02/2024', <AttendeeButtons />],
-      [8, 'Nshuti Ruranga Jabes','Intern', '01/02/2024', <AttendeeButtons />],
-      [9, 'John Doe', 'intern', '01/02/2024', <AttendeeButtons />],
-      [10, 'Jane Smith', 'Consultant', '01/02/2024', <AttendeeButtons />],
-      [11, 'Sam Johnson', 'intern', '01/02/2024', <AttendeeButtons />],
-      [12, 'Nshuti Ruranga Jabes', '01/02/2024',  <AttendeeButtons />],
-    ];    
+   
+    const attendeesDetails = [
+        {
+            id: 1,
+            name: "Nshuti Ruranga Jabes",
+            role: "intern",
+            lastLunch: "01/02/2024",
 
+          },
+          {
+            id: 2,
+            name: "Jane Smith",
+            role: "Consultant",
+            lastLunch: "01/02/2024",
+
+          },
+          {
+            id: 3,
+            "name": "Sam Johnson",
+            role: "intern",
+            lastLunch: "01/02/2024",
+
+          },
+          {
+            id: 4,
+            name: "Nshuti Ruranga Jabes",
+            role: "Permant worker",
+            lastLunch: "01/02/2024",
+
+          },
+          {
+            id: 5,
+            name: "John Doe",
+            role: "intern",
+            lastLunch: "01/02/2024",
+
+          },
+          {
+            id: 6,
+            name: "Jane Smith",
+            role: "Consultant",
+            lastLunch: "01/02/2024",
+
+          },
+          {
+            id: 7,
+            name: "Sam Johnson",
+            role: "intern",
+            lastLunch: "01/02/2024",
+
+          },
+          {
+            id: 8,
+            name: "Nshuti Ruranga Jabes",
+            role: "Intern",
+            lastLunch: "01/02/2024",
+
+          },
+          {
+            id: 9,
+            name: "John Doe",
+            role: "intern",
+            lastLunch: "01/02/2024",
+
+          },
+          {
+            id: 10,
+            name: "Jane Smith",
+            role: "Consultant",
+            lastLunch: "01/02/2024",
+
+          },
+          {
+            id: 11,
+            name: "Sam Johnson",
+            role: "intern",
+            lastLunch: "01/02/2024",
+
+          },
+          {
+            id: 12,
+            name: "Nshuti Ruranga Jabes",
+            role: "consultant",  
+            lastLunch: "01/02/2024",
+          }
+    ];    
+    const attendeeData = attendeesDetails.map((attendeeDetails)=>[
+        attendeeDetails.id,
+        attendeeDetails.name,
+        attendeeDetails.role,
+        attendeeDetails.lastLunch,
+        <AttendeeButtons attendeeDetails={attendeeDetails} /> 
+    ])
+     
+   
     return (
         <div>
         {addNewAttendee && (
@@ -75,7 +153,7 @@ function Attendees() {
               Email
             </label>
       <Field name="email" type="email" placeholder='Username' className='w-full text-sm border border-[8F8F8F] px-2 py-3 ' />
-      <label htmlFor="Role" className="block text-sm font-medium text-gray-700">
+      <label htmlFor="role" className="block text-sm font-medium text-gray-700">
               Role
             </label>
 
@@ -116,7 +194,7 @@ function Attendees() {
       <div className="overflow-x-auto h-[70vh] border border-3 border-gray rounded-md pl-4 py-4">
         <TableComponent
           headers={headers}
-          data={data}
+          data={attendeeData}
           title="List of all Attendees"
           showCheckBox={false}
           
