@@ -213,7 +213,7 @@ function Guests(props) {
             >
               x
             </button>
-            <h1 className="text-mainBlue font-semibold text-xl">
+            <h1 className="text-[#078ECE] font-semibold text-xl">
               Add New Guest
             </h1>
 
@@ -221,7 +221,7 @@ function Guests(props) {
             <div className="w-full flex items-center justify-center border-b-2 border-b-gray my-5 md:my-2">
               <button
                 className={`w-1/2 py-2 ${
-                  uploadFormat === 'form' ? 'text-white bg-mainBlue' : ''
+                  uploadFormat === 'form' ? 'text-white bg-[#078ECE]' : ''
                 }`}
                 onClick={() => setUploadFormat('form')}
               >
@@ -229,7 +229,7 @@ function Guests(props) {
               </button>
               <button
                 className={`w-1/2 py-2 ${
-                  uploadFormat === 'file' ? 'text-white bg-mainBlue' : ''
+                  uploadFormat === 'file' ? 'text-white bg-[#078ECE]' : ''
                 }`}
                 onClick={() => setUploadFormat('file')}
               >
@@ -294,7 +294,7 @@ function Guests(props) {
                 </div>
                 <button
                   type="submit"
-                  className="btn border-2 border-[#078ECE] bg-[#078ECE] font-semibold text-white py-2 px-4 rounded-md w-full hover:bg-white hover:text-mainBlue mt-3"
+                  className="btn border-2 border-[#078ECE] bg-[#078ECE] font-semibold text-white py-2 px-4 rounded-md w-full hover:bg-white hover:text-[#078ECE] mt-3"
                 >
                   Create Guest
                 </button>
@@ -305,7 +305,7 @@ function Guests(props) {
             {uploadFormat === 'file' && (
               <div>
                 <input type="file" accept=".csv" className="py-4" />
-                <button className="btn border-2 border-{#078ECE} bg-[#078ECE] font-semibold text-white py-2 px-4 rounded-md w-full hover:bg-white hover:text-mainBlue mt-3">
+                <button className="btn border-2 border-{#078ECE} bg-[#078ECE] font-semibold text-white py-2 px-4 rounded-md w-full hover:bg-white hover:text-[#078ECE] mt-3">
                   Upload CSV File
                 </button>
               </div>
