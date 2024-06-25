@@ -30,7 +30,7 @@ function App() {
       id: 2,
       destination: '/hr/attendees',
       icon: <FaPeopleGroup className="mr-2" />,
-      title: 'Antendees',
+      title: 'Attendees',
     },
     {
       id: 3,
