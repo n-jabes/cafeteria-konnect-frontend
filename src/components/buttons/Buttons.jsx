@@ -387,7 +387,7 @@ export function DeclineButton({ invoice }) {
                   type="text"
                   placeholder=""
                   name="reason"
-                  className="outline-none text-sm py-6 px-6 border-[2px] border-gray rounded-md"
+                  className="outline-none text-sm py-2 px-2 border-[2px] border-gray rounded-md"
                   required
                 ></textarea>
               </div>
