@@ -91,8 +91,6 @@ const initialNotifications = [
   },
 ];
 
-/* RANDOM DATA */
-
 function Statistics(props) {
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const [startDate, setStartDate] = useState(new Date());
@@ -186,7 +184,7 @@ function Statistics(props) {
         {notifications.length > 0 && (
           <div className="w-full lg:w-2/5 md:px-4 pt-4 md:block">
             <p className="font-semibold mb-2 text-lg">Notifications</p>
-            <div className="border border-current rounded w-full p-4 h-full overflow-y-auto">
+            <div className="border border-current rounded w-full p-4 h-full max-h-[60vh] lg:max-h-[75vh] overflow-y-auto">
               {notifications.slice(0, visibleNotifications).map(notification => (
                 <NotificationCard
                   key={notification.id}
