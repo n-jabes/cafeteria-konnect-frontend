@@ -1,4 +1,4 @@
-// src/components/TableComponent.jsx
+// src/components/InvoiceTable.jsx
 import React, { useState } from 'react';
 import {
   Table,
@@ -42,7 +42,7 @@ const stableSort = (array, comparator) => {
   return stabilizedThis.map((el) => el[0]);
 };
 
-const TableComponent = ({ headers, data, title, showCheckBox }) => {
+const InvoiceTable = ({ headers, data, title, showCheckBox }) => {
   const [filter, setFilter] = useState('');
   const [selectedRows, setSelectedRows] = useState([]);
   const [page, setPage] = useState(0);
@@ -180,7 +180,7 @@ const TableComponent = ({ headers, data, title, showCheckBox }) => {
                 </TableRow>
               ))}
           </TableBody>
-          <TableFooter>
+          {/* <TableFooter>
             <TableRow>
               <TablePagination
                 rowsPerPageOptions={[5, 10, 25]}
@@ -198,11 +198,11 @@ const TableComponent = ({ headers, data, title, showCheckBox }) => {
                 onRowsPerPageChange={handleChangeRowsPerPage}
               />
             </TableRow>
-          </TableFooter>
+          </TableFooter> */}
         </Table>
       </TableContainer>
     </Box>
   );
 };
 
-export default TableComponent;
+export default InvoiceTable;

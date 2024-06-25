@@ -5,15 +5,17 @@ import 'react-datepicker/dist/react-datepicker.css';
 import CafeteriaAttendeesChart from '../../components/chart/CafeteriaAttendeesChart';
 
 const RoundedIcon = ({ text, style }) => (
-  <div className={`${style} text-white rounded-full h-10 w-10 flex items-center justify-center`}>
+  <div
+    className={`${style} text-white rounded-full h-10 w-10 flex items-center justify-center`}
+  >
     {text}
   </div>
 );
 
-const StatsCard = ({ title, text }) => (
+const StatsCard = ({ title, text, style }) => (
   <div className="p-4 w-full md:w-1/2">
     <p className='text-slate-500 text-sm mb-2'>{title}</p>
-    <div className='rounded bg-[#4069B0] bg-opacity-25 py-6 px-10 text-center text-[#4069B0] text-xl font-bold'>
+    <div className={`${style} rounded bg-opacity-25 py-6 px-10 text-center text-[#4069B0] text-xl font-bold shadow-statsCard`}>
       {text}
     </div>
   </div>
@@ -21,9 +23,7 @@ const StatsCard = ({ title, text }) => (
 
 const NotificationCard = ({ icon, text, time, onClose }) => (
   <div className="relative flex items-start p-2 mb-4 shadow-md rounded-lg bg-[#4069B0] bg-opacity-20">
-    <div className="mr-4">
-      {icon}
-    </div>
+    <div className="mr-4">{icon}</div>
     <div className="flex-1">
       <p className="text-sm w-[85%] text-gray-700">{text}</p>
       <p className="text-xs text-gray-500 mt-1 float-right">{time}</p>
@@ -37,8 +37,6 @@ const NotificationCard = ({ icon, text, time, onClose }) => (
   </div>
 );
 
-              /* RANDOM DATA */
-
 const initialChartData = [
   { date: '6/1/2024', value: 4500 },
   { date: '6/2/2024', value: 3000 },
@@ -49,16 +47,49 @@ const initialChartData = [
 ];
 
 const initialNotifications = [
-  { id: 1, icon: <RoundedIcon text="R" style="bg-[#008000]" />, text: "Restaurant manager sent a new invoice", time: "just now" },
-  { id: 2, icon: <RoundedIcon text="C" style="bg-[#E79602]" />, text: "CPM acted on your request to approve new guests", time: "1 week ago" },
-  { id: 3, icon: <RoundedIcon text="R" style="bg-[#008000]" />, text: "Restaurant manager sent a new invoice", time: "07/06/24" },
-  { id: 4, icon: <RoundedIcon text="R" style="bg-[#008000]" />, text: "Restaurant manager sent a new invoice", time: "07/06/24" },
-  { id: 5, icon: <RoundedIcon text="C" style="bg-[#E79602]" />, text: "CPM acted on your request to approve new guests", time: "1 week ago" },
-  { id: 6, icon: <RoundedIcon text="R" style="bg-[#008000]" />, text: "Restaurant manager sent a new invoice", time: "07/06/24" },
-  { id: 7, icon: <RoundedIcon text="R" style="bg-[#008000]" />, text: "Restaurant manager sent a new invoice", time: "07/06/24" },
+  {
+    id: 1,
+    icon: <RoundedIcon text="R" style="bg-[#008000]" />,
+    text: 'Restaurant manager sent a new invoice',
+    time: 'just now',
+  },
+  {
+    id: 2,
+    icon: <RoundedIcon text="C" style="bg-[#E79602]" />,
+    text: 'CPM acted on your request to approve new guests',
+    time: '1 week ago',
+  },
+  {
+    id: 3,
+    icon: <RoundedIcon text="R" style="bg-[#008000]" />,
+    text: 'Restaurant manager sent a new invoice',
+    time: '07/06/24',
+  },
+  {
+    id: 4,
+    icon: <RoundedIcon text="R" style="bg-[#008000]" />,
+    text: 'Restaurant manager sent a new invoice',
+    time: '07/06/24',
+  },
+  {
+    id: 5,
+    icon: <RoundedIcon text="C" style="bg-[#E79602]" />,
+    text: 'CPM acted on your request to approve new guests',
+    time: '1 week ago',
+  },
+  {
+    id: 6,
+    icon: <RoundedIcon text="R" style="bg-[#008000]" />,
+    text: 'Restaurant manager sent a new invoice',
+    time: '07/06/24',
+  },
+  {
+    id: 7,
+    icon: <RoundedIcon text="R" style="bg-[#008000]" />,
+    text: 'Restaurant manager sent a new invoice',
+    time: '07/06/24',
+  },
 ];
-
-               /* RANDOM DATA */
 
 function Statistics(props) {
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
@@ -95,12 +126,14 @@ function Statistics(props) {
     if (start && end) {
       const generatedData = generateRandomData(start, end);
       setFilteredData(generatedData);
-      setIsCalendarOpen(false); 
+      setIsCalendarOpen(false);
     }
   };
 
   const handleNotificationClose = (id) => {
-    setNotifications(notifications.filter(notification => notification.id !== id));
+    const newNotifications = notifications.filter(notification => notification.id !== id);
+    setNotifications(newNotifications);
+    setVisibleNotifications(newNotifications.length < 4 ? newNotifications.length : visibleNotifications);
   };
 
   const handleViewMore = () => {
@@ -117,14 +150,17 @@ function Statistics(props) {
       <div className={`flex flex-col lg:flex-row justify-between p-2 h-[75vh] ${notifications.length === 0 ? 'lg:flex-row-reverse' : ''}`}>
         <div className={`w-full ${notifications.length === 0 ? 'lg:w-full' : 'lg:w-3/5'} p-4`}>
           <div className='flex flex-col md:flex-row justify-between'>
-            <StatsCard title="Today" text="0" />
-            <StatsCard title="This week" text="1143" />
-            <StatsCard title="This month" text="5203" />
+            <StatsCard title="Today" text="0" style="bg-[#008000] bg-opacity-2" />
+            <StatsCard title="This week" text="1143" style="bg-[#4069B0] bg-opacity-2" />
+            <StatsCard title="This month" text="5203" style="bg-[#808080] bg-opacity-2" />
           </div>
           <div className='border border-current rounded w-full lg:h-[80%] px-4 pt-2 md:block relative'>
-            <div className='flex justify-between'>
+            <div className='flex justify-between items-center'>
               <p>Cafeteria attendees</p>
-              <button className="text-mainBlue flex items-center" onClick={toggleCalendar}>
+              <button
+                className="text-mainBlue flex items-center"
+                onClick={toggleCalendar}
+              >
                 <FaCalendarAlt />
               </button>
             </div>
@@ -140,13 +176,15 @@ function Statistics(props) {
                 />
               </div>
             )}
-            <CafeteriaAttendeesChart data={filteredData} />
+            <div className="relative h-[90%]">
+              <CafeteriaAttendeesChart data={filteredData} />
+            </div>
           </div>
         </div>
         {notifications.length > 0 && (
-          <div className='w-full lg:w-2/5 px-4 pt-4 md:block'>
-            <p className='font-semibold mb-2 text-lg'>Notifications</p>
-            <div className="border border-current rounded w-full p-4 h-full overflow-y-auto">
+          <div className="w-full lg:w-2/5 md:px-4 pt-4 md:block">
+            <p className="font-semibold mb-2 text-lg">Notifications</p>
+            <div className="border border-current rounded w-full p-4 h-full max-h-[60vh] lg:max-h-[75vh] overflow-y-auto">
               {notifications.slice(0, visibleNotifications).map(notification => (
                 <NotificationCard
                   key={notification.id}
@@ -156,9 +194,10 @@ function Statistics(props) {
                   onClose={() => handleNotificationClose(notification.id)}
                 />
               ))}
-              {visibleNotifications < notifications.length || visibleNotifications <= 4 ? (
+              {notifications.length > 4 && visibleNotifications < notifications.length && (
                 <p className='float-right text-[#4069B0] cursor-pointer text-sm hover:underline' onClick={handleViewMore}>view more</p>
-              ) : (
+              )}
+              {notifications.length > 4 && visibleNotifications > 4 && (
                 <p className='float-left text-[#4069B0] cursor-pointer text-sm hover:underline' onClick={handleViewLess}>view less</p>
               )}
             </div>
