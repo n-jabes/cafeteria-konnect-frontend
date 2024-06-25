@@ -131,9 +131,7 @@ export function DeleteButton() {
 }
 
 
-export function ViewAttendeeButton({attendeeDetails}){
-
- 
+export function ViewAttendeeButton({attendeeDetails}){ 
 const [attendeeLastLunch, setAttendeeLastLunch] = useState([])
 const [lastLunchCount, setLastLunchCount] = useState(0); // State for unique count
 
@@ -243,12 +241,11 @@ function countLastLunch(attendeeLastLunch){
             </div>
           </div>
         </div>
-      )}
-      {/* <button className="btn btn-primary hover:bg-red-200 hover:text-white py-[2px] px-[6px] border-black border-[1px] rounded-[8px] py-[2px] px-[6px] text-darkRed font-medium text-xs" onClick={()=> setViewButton(true)}>
-    View
-  </button> */}
-  <FaRegEye className='text-[16px] text-gray-600 mx-2 cursor-pointer' onClick={()=> setViewButton(true)}/>
   </div>
+  )
+}
+<FaRegEye className='text-[16px] text-gray-600 mx-2 cursor-pointer' onClick={()=> setViewButton(true)}/>
+</div>
   )
 }
 
@@ -548,4 +545,28 @@ export function AttendeeButtons({attendeeDetails}){
     <ViewAttendeeButton attendeeDetails = {attendeeDetails} />
       </div>
   )
+}
+
+export function Status({status}){
+  const getStatusColor = (status) => {
+    switch (status.toLowerCase()) {
+      case 'on leave':
+        return 'bg-red-200'; // Red for "on leave"
+      case 'active':
+        return 'bg-green-200'; // Green for "active"
+      default:
+        return 'bg-gray-200'; // Gray for other statuses
+    }
+  };
+
+  const statusStyle = getStatusColor(status);
+
+  return (
+    <div>
+      <div className={`h-[1.3rem] w-[5rem] rounded-md flex items-center ${statusStyle}`}>
+        <p className='mx-auto text-[0.7rem]'>{status}</p>
+      </div>
+    </div>
+  );
+
 }

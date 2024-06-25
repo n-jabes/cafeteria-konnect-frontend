@@ -3,6 +3,7 @@ import TableComponent from '../../components/table/TableComponent';
  import { AttendeeButtons } from '../../components/buttons/Buttons';
  import { MainButton } from '../../components/buttons/Buttons';
  import  {Formik,Form,Field, ErrorMessage} from 'formik'
+ import { Status } from '../../components/buttons/Buttons';
 import * as Yup from 'yup'
 
 
@@ -24,98 +25,98 @@ function Attendees() {
     const [addNewAttendee, setaddNewAttendee] = useState(false);
     // const [showForm, setShowForm] = useState(false);   
     // const [uploadFormat, setUploadFormat] = useState('form');
-    const headers = ['Id', 'Name', 'Purpose', 'Last lunch', 'Actions'];
+    const headers = ['Id', 'Name', 'Purpose', 'Status', 'Actions'];
    
     const attendeesDetails = [
         {
             id: 1,
             name: "Nshuti Ruranga Jabes",
             role: "intern",
-            lastLunch: "01/02/2024",
+            status: "On leave",
 
           },
           {
             id: 2,
             name: "Jane Smith",
             role: "Consultant",
-            lastLunch: "01/02/2024",
+            status: "active",
 
           },
           {
             id: 3,
             "name": "Sam Johnson",
             role: "intern",
-            lastLunch: "01/02/2024",
+            status: "active",
 
           },
           {
             id: 4,
             name: "Nshuti Ruranga Jabes",
             role: "Permant worker",
-            lastLunch: "01/02/2024",
+            status: "active",
 
           },
           {
             id: 5,
             name: "John Doe",
             role: "intern",
-            lastLunch: "01/02/2024",
+            status: "other",
 
           },
           {
             id: 6,
             name: "Jane Smith",
             role: "Consultant",
-            lastLunch: "01/02/2024",
+            status: "other",
 
           },
           {
             id: 7,
             name: "Sam Johnson",
             role: "intern",
-            lastLunch: "01/02/2024",
+            status: "active",
 
           },
           {
             id: 8,
             name: "Nshuti Ruranga Jabes",
             role: "Intern",
-            lastLunch: "01/02/2024",
+            status: "On leave",
 
           },
           {
             id: 9,
             name: "John Doe",
             role: "intern",
-            lastLunch: "01/02/2024",
+            status: "On leave",
 
           },
           {
             id: 10,
             name: "Jane Smith",
             role: "Consultant",
-            lastLunch: "01/02/2024",
+            status: "On leave",
 
           },
           {
             id: 11,
             name: "Sam Johnson",
             role: "intern",
-            lastLunch: "01/02/2024",
+            status: "On leave",
 
           },
           {
             id: 12,
             name: "Nshuti Ruranga Jabes",
             role: "consultant",  
-            lastLunch: "01/02/2024",
+            status: "On leave",
           }
     ];    
     const attendeeData = attendeesDetails.map((attendeeDetails)=>[
         attendeeDetails.id,
         attendeeDetails.name,
         attendeeDetails.role,
-        attendeeDetails.lastLunch,
+        <Status status  = {attendeeDetails.status} />,
         <AttendeeButtons attendeeDetails={attendeeDetails} /> 
     ])
      
@@ -181,7 +182,7 @@ function Attendees() {
       )}
         <div className="md:flex md:align-center md:justify-between text-white font-medium mb-3 w-full">
         
-        <div className="w-[20%] bg-red-200" onClick={() => setaddNewAttendee(true)}>       
+        <div className="w-[20%]" onClick={() => setaddNewAttendee(true)}>       
             <div>
           <MainButton text={'+ Add Employee(s)'}/>
           </div>
@@ -194,7 +195,6 @@ function Attendees() {
           data={attendeeData}
           title=""
           showCheckBox={false}
-          
         />
       </div>
         </div>
