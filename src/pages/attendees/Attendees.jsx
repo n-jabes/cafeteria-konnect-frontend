@@ -5,6 +5,7 @@ import { MainButton } from '../../components/buttons/Buttons';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { Status } from '../../components/buttons/Buttons';
 import * as Yup from 'yup';
+import { CgDanger } from 'react-icons/cg';
 
 const validationSchema = Yup.object().shape({
   names: Yup.string()
@@ -22,10 +23,9 @@ function Attendees() {
   ];
 
   const [addNewAttendee, setaddNewAttendee] = useState(false);
-  // const [showForm, setShowForm] = useState(false);
-  // const [uploadFormat, setUploadFormat] = useState('form');
   const headers = ['Id', 'Name', 'Purpose', 'Status', 'Actions'];
-  const [tab, setTab] = useState('all attendees');
+  const [tab, setTab] = useState('active attendees');
+  const [extraPeople, setExtraPeople] = useState(7);
 
   const allAttendees = [
     {
@@ -98,7 +98,7 @@ function Attendees() {
       id: 12,
       name: 'Nshuti Ruranga Jabes',
       role: 'consultant',
-      status: 'on leave',
+      status: 'active',
     },
   ];
 
@@ -120,21 +120,46 @@ function Attendees() {
       <AttendeeButtons attendeeDetails={attendeeDetails} />,
     ]);
 
+  const activeAttendeesCount = activeAttendeesData.length;
+  const [totalAttendees, setTotalAttendees] = useState(
+    activeAttendeesCount + extraPeople
+  );
+
+  const handleExpectedAttendees = (e) => {
+    e.preventDefault();
+    const newExtraPeople = parseInt(extraPeople, 10); // Convert extraPeople to integer
+    if (isNaN(newExtraPeople) || newExtraPeople < 0 || newExtraPeople > 15) {
+      alert('Please enter a number between 0 and 15.');
+      return;
+    }
+    setExtraPeople(newExtraPeople);
+    setTotalAttendees(activeAttendeesCount + newExtraPeople);
+  };
+
+  const handleInputChange = (e) => {
+    const value = e.target.value.trim();
+    if (value === '') {
+      setExtraPeople(0);
+    } else {
+      setExtraPeople(parseInt(value, 10));
+    }
+  };
+
   return (
     <div>
       {/* tabs component */}
       <div className="flex flex-col md:flex-row w-full md:justify-between mb-2 border-b-[1px] border-b-gray-200">
         {addNewAttendee && (
-          <div className=" fixed top-0 left-0 bg-bgBlue z-[40] h-screen w-screen overflow-y-auto overflow-x-auto flex items-center  justify-center">
-            <div className=" relative bg-white w-[90%] lg:w-[38%] lg:h-[26rem] h-max px-[3.5%] py-[1.7%] rounded-md">
-              <div className="w-[90%] mx-auto flex flex-col gap-8  h-full">
+          <div className="fixed top-0 left-0 bg-bgBlue z-[40] h-screen w-screen overflow-y-auto overflow-x-auto flex items-center justify-center">
+            <div className="relative bg-white w-[90%] lg:w-[38%] lg:h-[26rem] h-max px-[3.5%] py-[1.7%] rounded-md">
+              <div className="w-[90%] mx-auto flex flex-col gap-8 h-full">
                 <button
                   className="close border-2 border-mainRed rounded-md px-2 text-mainRed absolute right-4 top-4"
                   onClick={() => setaddNewAttendee(false)}
                 >
                   x
                 </button>
-                <h1 className=" w-[60%] capitalize text-[#078ECE] font-semibold text-xl">
+                <h1 className="w-[60%] capitalize text-[#078ECE] font-semibold text-xl">
                   Add New attendee
                 </h1>
 
@@ -150,7 +175,7 @@ function Attendees() {
                     alert(JSON.stringify(values, null, 2));
                   }}
                 >
-                  <Form className="flex flex-col   w-full h-[17rem]  justify-center gap-[0.4rem]">
+                  <Form className="flex flex-col w-full h-[17rem] justify-center gap-[0.4rem]">
                     <label
                       htmlFor="Names"
                       className="block text-sm font-medium text-gray-700"
@@ -186,11 +211,10 @@ function Attendees() {
                       as="select"
                       id="role"
                       name="role"
-                      value={options.role}
                       className="block w-full px-3 py-2 mb-3 text-gray-500 text-sm border rounded shadow-sm focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-600"
                     >
                       {options.map((option) => (
-                        <option key={option.value} value={option.value}>
+                        <option key={option.role} value={option.role}>
                           {option.label}
                         </option>
                       ))}
@@ -198,7 +222,7 @@ function Attendees() {
 
                     <button
                       type="submit"
-                      className="w-full px-2 text-sm py-3  bg-[#078ECE] text-white font-semibold "
+                      className="w-full px-2 text-sm py-3 bg-[#078ECE] text-white font-semibold"
                     >
                       Submit
                     </button>
@@ -209,18 +233,8 @@ function Attendees() {
           </div>
         )}
 
-        <div className="h-full md:flex md:align-center md:justify-between w-full md:w-max ">
-          <button
-            className={`h-[%100] py-3 px-4 border-b-[3px] mr-8 hover:border-b-[#078ECE] hover:text-[#078ECE] ${
-              tab === 'all attendees'
-                ? 'border-b-mainBlue border-b-[#078ECE] text-[#078ECE]'
-                : 'text-mainGray'
-            }`}
-            onClick={() => setTab('all attendees')}
-          >
-            All attendees
-          </button>
-
+        {/* tabs */}
+        <div className="h-full md:flex md:align-center md:justify-between w-full md:w-max">
           <button
             className={`h-[%100] py-3 px-4 border-b-4 mr-8 hover:border-b-[#078ECE] hover:text-[#078ECE] ${
               tab === 'active attendees'
@@ -230,6 +244,17 @@ function Attendees() {
             onClick={() => setTab('active attendees')}
           >
             Active attendees
+          </button>
+
+          <button
+            className={`h-[%100] py-3 px-4 border-b-[3px] mr-8 hover:border-b-[#078ECE] hover:text-[#078ECE] ${
+              tab === 'all attendees'
+                ? 'border-b-mainBlue border-b-[#078ECE] text-[#078ECE]'
+                : 'text-mainGray'
+            }`}
+            onClick={() => setTab('all attendees')}
+          >
+            All attendees
           </button>
 
           <button
@@ -249,17 +274,55 @@ function Attendees() {
           onClick={() => setaddNewAttendee(true)}
         >
           <div>
-            <MainButton text={'+ Add Attendees(s)'} />
+            <MainButton text={'+ Add Attendee(s)'} />
           </div>
         </div>
       </div>
 
-      {tab === 'all attendees' && (
+      {/* active attendees tab */}
+      {tab === 'active attendees' && (
         <div>
-          <div className="overflow-x-auto h-[70vh] border border-3 border-gray rounded-md pl-4 py-4">
+          {/* showing expected attendees */}
+          <div className="flex flex-col items-center">
+            <div className="w-full md:w-max md:flex flex-col gap-4 md:flex-row items-center justify-evenly my-4">
+              <div className="flex flex-row items-center justify-evenly gap-2 md:gap-10">
+                <div className="font-bold text-3xl text-mainGray">
+                  {activeAttendeesCount}
+                </div>
+                <p>+</p>
+                <form className="flex" onSubmit={handleExpectedAttendees}>
+                  <input
+                    type="number"
+                    placeholder="extra reserved"
+                    value={extraPeople}
+                    max={15}
+                    min={0}
+                    className="border-[1px] border-gray-200 px-4 py-2 outline-none rounded-sm text-mainGray font-semibold mr-2"
+                    onChange={handleInputChange}
+                  />
+                  <button className="py-2 px-4 rounded-sm bg-mainBlue text-white text-xs">
+                    Confirm
+                  </button>
+                </form>
+                <p>=</p>
+              </div>
+
+              <div className="flex items-center md:flex-row flex-row-reverse md:mt-0 mt-6">
+                <div className="font-bold text-3xl text-mainGray bg-green-200 h-max py-[2px] px-[8px] sm:py-2 sm:px-4 rounded-sm ml-6 mr-4">
+                  {totalAttendees}
+                </div>
+                <p className="font-light text-xs text-[#078ECE] w-full md:w-[200px] flex mt-2 mb:mt-[0px] gap-2 items-center">
+                  <CgDanger className="text-2xl md:text-6xl" />
+                  This is the expected number of attendees the restaurant
+                  manager will see!
+                </p>
+              </div>
+            </div>
+          </div>
+          <div className="overflow-x-auto relative h-[70vh] border border-3 border-gray rounded-md pl-4 py-4">
             <TableComponent
               headers={headers}
-              data={attendeesData}
+              data={activeAttendeesData}
               title=""
               showCheckBox={false}
               showFilter={true}
@@ -268,12 +331,13 @@ function Attendees() {
         </div>
       )}
 
-      {tab === 'active attendees' && (
+      {/* all attendees tab */}
+      {tab === 'all attendees' && (
         <div>
           <div className="overflow-x-auto h-[70vh] border border-3 border-gray rounded-md pl-4 py-4">
             <TableComponent
               headers={headers}
-              data={activeAttendeesData}
+              data={attendeesData}
               title=""
               showCheckBox={false}
               showFilter={true}
