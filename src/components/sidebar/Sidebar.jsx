@@ -1,8 +1,8 @@
 // src/components/Sidebar.jsx
 import { React, useEffect, useState } from 'react';
-import { IoIosLogOut, IoIosCloseCircleOutline } from 'react-icons/io';
-import { RiCloseLargeLine } from 'react-icons/ri';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { RiCloseLargeLine } from 'react-icons/ri';
+import { IoIosLogOut } from 'react-icons/io';
 
 const Sidebar = ({ isOpen, toggleSidebar, sidebarFields }) => {
   const [activeItem, setActiveItem] = useState(null);

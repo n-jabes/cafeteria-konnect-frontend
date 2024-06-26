@@ -8,7 +8,7 @@ import ReactToPrint from 'react-to-print';
 
 export function MainButton({ text }) {
   return (
-    <button className="btn btn-primary float-right bg-mainBlue border-2 rounded-md mb-2 py-2 px-4 hover:bg-white hover:text-[#4069B0] hover:border-2 hover:border-[#4069B0]">
+    <button className="btn btn-primary text-white float-right bg-mainBlue border-2 rounded-md mb-2 py-2 px-4 hover:bg-white hover:text-[#4069B0] hover:border-2 hover:border-[#4069B0]">
       {text}
     </button>
   );
