@@ -27,12 +27,12 @@ function Attendees() {
   const headers = ['Id', 'Name', 'Purpose', 'Status', 'Actions'];
   const [tab, setTab] = useState('all attendees');
 
-  const attendeesDetails = [
+  const allAttendees = [
     {
       id: 1,
       name: 'Nshuti Ruranga Jabes',
       role: 'intern',
-      status: 'On leave',
+      status: 'on leave',
     },
     {
       id: 2,
@@ -74,34 +74,35 @@ function Attendees() {
       id: 8,
       name: 'Nshuti Ruranga Jabes',
       role: 'Intern',
-      status: 'On leave',
+      status: 'on leave',
     },
     {
       id: 9,
       name: 'John Doe',
       role: 'intern',
-      status: 'On leave',
+      status: 'on leave',
     },
     {
       id: 10,
       name: 'Jane Smith',
       role: 'Consultant',
-      status: 'On leave',
+      status: 'on leave',
     },
     {
       id: 11,
       name: 'Sam Johnson',
       role: 'intern',
-      status: 'On leave',
+      status: 'on leave',
     },
     {
       id: 12,
       name: 'Nshuti Ruranga Jabes',
       role: 'consultant',
-      status: 'On leave',
+      status: 'on leave',
     },
   ];
-  const attendeeData = attendeesDetails.map((attendeeDetails) => [
+
+  const attendeesData = allAttendees.map((attendeeDetails) => [
     attendeeDetails.id,
     attendeeDetails.name,
     attendeeDetails.role,
@@ -109,10 +110,20 @@ function Attendees() {
     <AttendeeButtons attendeeDetails={attendeeDetails} />,
   ]);
 
+  const activeAttendeesData = allAttendees
+    .filter((attendee) => attendee.status === 'active')
+    .map((attendeeDetails) => [
+      attendeeDetails.id,
+      attendeeDetails.name,
+      attendeeDetails.role,
+      <Status status={attendeeDetails.status} />,
+      <AttendeeButtons attendeeDetails={attendeeDetails} />,
+    ]);
+
   return (
     <div>
       {/* tabs component */}
-      <div className="flex flex-row w-full justify-between mb-2 border-b-[1px] border-b-gray-400">
+      <div className="flex flex-col md:flex-row w-full md:justify-between mb-2 border-b-[1px] border-b-gray-200">
         {addNewAttendee && (
           <div className=" fixed top-0 left-0 bg-bgBlue z-[40] h-screen w-screen overflow-y-auto overflow-x-auto flex items-center  justify-center">
             <div className=" relative bg-white w-[90%] lg:w-[38%] lg:h-[26rem] h-max px-[3.5%] py-[1.7%] rounded-md">
@@ -198,9 +209,9 @@ function Attendees() {
           </div>
         )}
 
-        <div className="h-full md:flex md:align-center md:justify-between w-max gap-8">
+        <div className="h-full md:flex md:align-center md:justify-between w-full md:w-max ">
           <button
-            className={`h-[%100] py-3 px-4 border-b-[3px] hover:border-b-[#078ECE] hover:text-[#078ECE] ${
+            className={`h-[%100] py-3 px-4 border-b-[3px] mr-8 hover:border-b-[#078ECE] hover:text-[#078ECE] ${
               tab === 'all attendees'
                 ? 'border-b-mainBlue border-b-[#078ECE] text-[#078ECE]'
                 : 'text-mainGray'
@@ -211,7 +222,7 @@ function Attendees() {
           </button>
 
           <button
-            className={`h-[%100] py-3 px-4 border-b-4 hover:border-b-[#078ECE] hover:text-[#078ECE] ${
+            className={`h-[%100] py-3 px-4 border-b-4 mr-8 hover:border-b-[#078ECE] hover:text-[#078ECE] ${
               tab === 'active attendees'
                 ? 'border-b-mainBlue border-b-[#078ECE] text-[#078ECE]'
                 : 'text-mainGray'
@@ -233,7 +244,10 @@ function Attendees() {
           </button>
         </div>
 
-        <div className="w-max" onClick={() => setaddNewAttendee(true)}>
+        <div
+          className="w-max mt-4 md:mt-[0px]"
+          onClick={() => setaddNewAttendee(true)}
+        >
           <div>
             <MainButton text={'+ Add Attendees(s)'} />
           </div>
@@ -245,9 +259,24 @@ function Attendees() {
           <div className="overflow-x-auto h-[70vh] border border-3 border-gray rounded-md pl-4 py-4">
             <TableComponent
               headers={headers}
-              data={attendeeData}
+              data={attendeesData}
               title=""
               showCheckBox={false}
+              showFilter={true}
+            />
+          </div>
+        </div>
+      )}
+
+      {tab === 'active attendees' && (
+        <div>
+          <div className="overflow-x-auto h-[70vh] border border-3 border-gray rounded-md pl-4 py-4">
+            <TableComponent
+              headers={headers}
+              data={activeAttendeesData}
+              title=""
+              showCheckBox={false}
+              showFilter={true}
             />
           </div>
         </div>

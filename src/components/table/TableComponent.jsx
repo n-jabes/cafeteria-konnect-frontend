@@ -13,6 +13,7 @@ import {
   Checkbox,
   Box,
   TableSortLabel,
+  TextField,
 } from '@mui/material';
 import { visuallyHidden } from '@mui/utils';
 
@@ -42,7 +43,7 @@ const stableSort = (array, comparator) => {
   return stabilizedThis.map((el) => el[0]);
 };
 
-const TableComponent = ({ headers, data, title, showCheckBox }) => {
+const TableComponent = ({ headers, data, title, showCheckBox, showFilter }) => {
   const [filter, setFilter] = useState('');
   const [selectedRows, setSelectedRows] = useState([]);
   const [page, setPage] = useState(0);
@@ -89,6 +90,15 @@ const TableComponent = ({ headers, data, title, showCheckBox }) => {
     <Box sx={{ width: '100%', overflowX: 'auto', height: '100%' }}>
       <TableContainer component={Paper}>
         <h1 className="text-blue font-semibold">{title}</h1>
+        {showFilter && (
+          <TextField
+            label="Filter by Column"
+            variant="outlined"
+            value={filter}
+            onChange={handleFilterChange}
+            style={{ margin: '10px' }}
+          />
+        )}
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>
