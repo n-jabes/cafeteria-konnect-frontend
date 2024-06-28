@@ -23,7 +23,7 @@ function Attendees() {
   ];
 
   const [addNewAttendee, setaddNewAttendee] = useState(false);
-  const headers = ['Id', 'Name', 'Purpose', 'Status', 'Actions'];
+  const headers = ['Id', 'Name', 'Role', 'Status', 'Actions'];
   const [tab, setTab] = useState('active attendees');
   const [extraPeople, setExtraPeople] = useState(7);
 
@@ -106,7 +106,8 @@ function Attendees() {
     attendeeDetails.id,
     attendeeDetails.name,
     attendeeDetails.role,
-    <Status status={attendeeDetails.status} />,
+    // <Status status={attendeeDetails.status} />,
+    attendeeDetails.status,
     <AttendeeButtons attendeeDetails={attendeeDetails} />,
   ]);
 
@@ -116,7 +117,8 @@ function Attendees() {
       attendeeDetails.id,
       attendeeDetails.name,
       attendeeDetails.role,
-      <Status status={attendeeDetails.status} />,
+      attendeeDetails.status,
+      // <Status status={attendeeDetails.status} />,
       <AttendeeButtons attendeeDetails={attendeeDetails} />,
     ]);
 
@@ -127,22 +129,28 @@ function Attendees() {
 
   const handleExpectedAttendees = (e) => {
     e.preventDefault();
-    const newExtraPeople = parseInt(extraPeople, 10); // Convert extraPeople to integer
-    if (isNaN(newExtraPeople) || newExtraPeople < 0 || newExtraPeople > 15) {
-      alert('Please enter a number between 0 and 15.');
-      return;
+    if (isNaN(extraPeople)) {
+      setExtraPeople(0);
+      const newExtraPeople = 0;
+      setExtraPeople(newExtraPeople);
+      setTotalAttendees(activeAttendeesCount + newExtraPeople);
+    } else {
+      const newExtraPeople = parseInt(extraPeople, 10); // Convert extraPeople to integer
+      setExtraPeople(newExtraPeople);
+      setTotalAttendees(activeAttendeesCount + newExtraPeople);
     }
-    setExtraPeople(newExtraPeople);
-    setTotalAttendees(activeAttendeesCount + newExtraPeople);
   };
 
   const handleInputChange = (e) => {
     const value = e.target.value.trim();
-    if (value === '') {
+    // Remove any leading zero when user starts typing a new number
+    const parsedValue = value.replace(/^0+/, '');
+    if (parsedValue === '') {
       setExtraPeople(0);
-    } else {
-      setExtraPeople(parseInt(value, 10));
     }
+      setExtraPeople(parseInt(parsedValue, 10));
+    
+
   };
 
   return (
@@ -293,7 +301,7 @@ function Attendees() {
                 <form className="flex" onSubmit={handleExpectedAttendees}>
                   <input
                     type="number"
-                    placeholder="extra reserved"
+                    placeholder="extra people"
                     value={extraPeople}
                     max={15}
                     min={0}
