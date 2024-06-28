@@ -1,25 +1,38 @@
 import React from 'react';
-import Statistics from './statistics/Statistics';
+import { Routes, Route } from 'react-router-dom';
+import RestaurantHome from './restaurantHome/RestaurantHome';
+import ProtectedRoute from '../components/protectedRoutes/ProtectedRoutes';
+import RestaurantReceipts from './restaurantReceipts.jsx/RestaurantReceipts';
 
-function RestaurantRoutes(props) {
-  <Routes>
-    <Route
-      path="home"
-      element={
-        <ProtectedRoute isAuthenticated={isAuthenticated}>
-          <Statistics />
-        </ProtectedRoute>
-      }
-    />
-    <Route
-      path="invoice"
-      element={
-        <ProtectedRoute isAuthenticated={isAuthenticated}>
-          <Statistics />
-        </ProtectedRoute>
-      }
-    />
-  </Routes>;
+function RestaurantRoutes({ isAuthenticated }) {
+  return (
+    <Routes>
+      <Route
+        path={'home'}
+        element={
+          <ProtectedRoute isAuthenticated={isAuthenticated}>
+            <RestaurantHome />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="receipts"
+        element={
+          <ProtectedRoute isAuthenticated={isAuthenticated}>
+            <RestaurantReceipts />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="invoice"
+        element={
+          <ProtectedRoute isAuthenticated={isAuthenticated}>
+            <RestaurantHome />
+          </ProtectedRoute>
+        }
+      />
+    </Routes>
+  );
 }
 
 export default RestaurantRoutes;

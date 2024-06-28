@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
 import TableComponent from '../../components/table/TableComponent';
-import { AttendeeButtons } from '../../components/buttons/Buttons';
+import {
+  AttendeeButtons,
+  ReceiptsButtons,
+  RestaurantButtons,
+} from '../../components/buttons/Buttons';
 import { MainButton } from '../../components/buttons/Buttons';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { Status } from '../../components/buttons/Buttons';
@@ -127,6 +131,99 @@ function Attendees() {
     activeAttendeesCount + extraPeople
   );
 
+  const allReceipts = [
+    {
+      id: 20240602,
+      date: '2024-06-18',
+      attendees: '30',
+      status: 'New',
+    },
+    {
+      id: 20240602,
+      date: '2024-06-18',
+      attendees: '30',
+      status: 'Approved',
+    },
+    {
+      id: 20240602,
+      date: '2024-06-18',
+      attendees: '30',
+      status: 'Declined',
+    },
+
+    {
+      id: 20240603,
+      date: '2024-06-18',
+      attendees: '30',
+      status: 'New',
+    },
+    {
+      id: 20240603,
+      date: '2024-06-18',
+      attendees: '30',
+      status: 'New',
+    },
+    {
+      id: 20240603,
+      date: '2024-06-18',
+      attendees: '30',
+      status: 'Declined',
+    },
+    {
+      id: 20240603,
+      date: '2024-06-18',
+      attendees: '30',
+      status: 'New',
+    },
+    {
+      id: 20240603,
+      date: '2024-06-18',
+      attendees: '30',
+      status: 'New',
+    },
+    {
+      id: 20240603,
+      date: '2024-06-18',
+      attendees: '30',
+      status: 'New',
+    },
+    {
+      id: 20240603,
+      date: '2024-06-18',
+      attendees: '30',
+      status: 'Declined',
+    },
+    {
+      id: 20240603,
+      date: '2024-06-18',
+      attendees: '30',
+      status: 'Approved',
+    },
+    {
+      id: 20240603,
+      date: '2024-06-18',
+      attendees: '30',
+      status: 'Declined',
+    },
+  ];
+  
+
+  const receiptsHeaders = [
+    'Receipt Id',
+    'Date',
+    'Clients',
+    'Status',
+    'Actions',
+  ];
+
+  const receiptsToDisplay = allReceipts.map((receipt, activeAttendeesData) => [
+    receipt.id,
+    receipt.date,
+    receipt.attendees,
+    receipt.status,
+    <ReceiptsButtons receipt={receipt} attendees={activeAttendeesData}/>,
+  ]);
+
   const handleExpectedAttendees = (e) => {
     e.preventDefault();
     if (isNaN(extraPeople)) {
@@ -148,9 +245,7 @@ function Attendees() {
     if (parsedValue === '') {
       setExtraPeople(0);
     }
-      setExtraPeople(parseInt(parsedValue, 10));
-    
-
+    setExtraPeople(parseInt(parsedValue, 10));
   };
 
   return (
@@ -350,6 +445,28 @@ function Attendees() {
               showCheckBox={false}
               showFilter={true}
             />
+          </div>
+        </div>
+      )}
+
+      {/* Attendence */}
+      {tab === 'attendence' && (
+        <div className="w-full flex gap-6">
+          <div className="w-4/5 overflow-x-auto h-[70vh] border border-3 border-gray rounded-md pl-4 py-4">
+            <TableComponent
+              headers={receiptsHeaders}
+              data={receiptsToDisplay}
+              showCheckBox={false}
+              showFilter={true}
+            />
+          </div>
+          <div className="w-1/5 h-max border border-3 border-gray rounded-md py-4 flex flex-col items-center text-gray-600">
+            <h1 className="font-bold text-6xl">46</h1>
+            <p className="text-xs mt-4">people attended today</p>
+            <p className="mt-6 text-sm flex flex-col text-center">
+              <span className="text-xl text-mainGray font-bold mr-4">16</span>
+              were added manually
+            </p>
           </div>
         </div>
       )}

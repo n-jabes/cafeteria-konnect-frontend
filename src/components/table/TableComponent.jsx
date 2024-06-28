@@ -108,6 +108,18 @@ const TableComponent = ({ headers, data, title, showCheckBox, showFilter }) => {
           padding: '2px 8px',
           borderRadius: '4px',
         };
+      case 'New':
+        return {
+          color: 'blue',
+        };
+      case 'Approved':
+        return {
+          color: 'green',
+        };
+      case 'Declined':
+        return {
+          color: 'red',
+        };
     }
   };
 
@@ -192,10 +204,6 @@ const TableComponent = ({ headers, data, title, showCheckBox, showFilter }) => {
                       sx={{
                         fontWeight:
                           headers[cellIndex] === 'Status' ? 'font-bold' : 400,
-                        color:
-                          headers[cellIndex] === 'Status'
-                            ? '#30415F'
-                            : '#30415F',
                         fontFamily: 'Poppins, sans-serif',
                       }}
                     >

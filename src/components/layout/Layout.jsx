@@ -14,7 +14,7 @@ const Layout = ({ children, sidebarFields, headerTitle }) => {
   return (
     <div className="flex h-screen overflow-hidden">
       <Sidebar
-        isOpen={isSidebarOpen}
+        isOpen={isSidebarOpen}  
         toggleSidebar={toggleSidebar}
         sidebarFields={sidebarFields}
       />
