@@ -37,9 +37,10 @@ export function UpdateAttendeeButton({ attendeeDetails }) {
             >
               x
             </button>
+            <div className=' flex-col gap-[0.4rem]'>
             <h1 className="text-mainBlue font-semibold text-md md:text-xl">
               Update Attendee:{' '}
-              <span className="text-gray-400">{attendeeDetails.id}</span>
+              <span className="text-gray-600">{attendeeDetails.name}</span>
             </h1>
 
             <form action="#" className="w-full">
@@ -74,7 +75,7 @@ export function UpdateAttendeeButton({ attendeeDetails }) {
               <div className="flex flex-row">
                 <div className="block w-1/2">
                   <label htmlFor="purpose" className="text-xs text-gray">
-                    Purpose
+                    Role
                   </label>
                   <input
                     type="text"
@@ -121,6 +122,7 @@ export function UpdateAttendeeButton({ attendeeDetails }) {
                 Update Guest
               </button>
             </form>
+            </div>
           </div>
         </div>
       )}
@@ -423,12 +425,12 @@ export function ViewAttendeeButton({ attendeeDetails }) {
                         </span>
                       </p>
                       <div className="flex flex-col gap-3">
-                        <p className="text-black font-bold text-[1rem]">
-                          From{' '}
+                        {/* <p className="text-black font-bold text-[1rem]">
+                          From
                         </p>
                         <p>01/20/2024</p>
                         <p className="text-black font-bold text-[1rem]">to</p>
-                        <p>04/5/2024</p>
+                        <p>04/5/2024</p> */}
                       </div>
                     </div>
                   </div>
@@ -916,10 +918,10 @@ export function ViewRestaurantInvoiceButton({
   );
 }
 
-export function ViewReceiptButton({ receipt, attendees }) {
+export function ViewReceiptButton({ receiptDate,receiptData, receiptAttendeesHeaders }) {
   const [viewReceipt, setViewReceipt] = useState(false);
-  const attendeeHeaders = ['name'];
-  const receiptRef = useRef();
+
+  // const receiptRef = useRef();
 
   return (
     <div>
