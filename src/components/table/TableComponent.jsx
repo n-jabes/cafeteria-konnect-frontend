@@ -116,10 +116,15 @@ const TableComponent = ({ headers, data, title, showCheckBox, showFilter }) => {
         return {
           color: 'green',
         };
+      case 'Pending':
+        return {
+          color: 'orange',
+        };
       case 'Declined':
         return {
           color: 'red',
         };
+      
     }
   };
 

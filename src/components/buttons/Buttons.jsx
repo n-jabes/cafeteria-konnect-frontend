@@ -23,16 +23,6 @@ export function SendAllNewGuestsToCBMButton() {
   );
 }
 
-<<<<<<< HEAD
-export function UpdateAttendeeButton({ attendeeDetails }) {
-  // const [showUpdateForm]
-
-  return (
-    <button className="btn btn-primary hover:bg-mainBlue hover:text-white  border-mainBlue border-[1px] rounded-[8px] py-[2px] px-[6px] text-mainBlue font-medium text-xs">
-      update
-    </button>
-  );
-=======
 export function UpdateAttendeeButton({attendeeDetails}){
   const [showUpdateForm , setShowUpdateForm] = useState(false);
 
@@ -140,7 +130,6 @@ export function UpdateAttendeeButton({attendeeDetails}){
 </button>
   </div>
   )
->>>>>>> c932c8256518efe4b9edda07b6c915ad86dbe2ff
 }
 
 export function UpdateGuestButton({ guest }) {
@@ -248,27 +237,6 @@ export function ViewAttendeeButton({ attendeeDetails }) {
   //headers for the table
   const attendeeHeaders = ['lastlunch'];
 
-<<<<<<< HEAD
-  //Attendee's data filtered for the table
-  useEffect(() => {
-    const filteredAttendees = attendeesDb.filter(
-      (attendee) => attendee.id === attendeeDetails.id
-    );
-    const formattedData = filteredAttendees.map((attendee) => [
-      attendee.name,
-      attendee.lastLunch,
-    ]);
-    setAttendeeLastLunch(formattedData);
-    setLastLunchCount(countLastLunch(attendeeLastLunch)); // Calculate and store count
-  }, [attendeeDetails.id]);
-
-  //the count of data in attendeelastlunch
-  function countLastLunch(attendeeLastLunch) {
-    return new Set(attendeeLastLunch).size;
-  }
-
-  //form displayed after view button is clicked
-=======
 //Attendee's data filtered for the table
 useEffect(()=>{
   const filteredAttendees = attendeesDb.filter((attendee)=> attendee.id === attendeeDetails.id);
@@ -287,7 +255,6 @@ function countLastLunch(attendeeLastLunch) {
   return new Set(attendeeLastLunch.map(item => item[0])).size;
 }
  //form displayed after view button is clicked
->>>>>>> c932c8256518efe4b9edda07b6c915ad86dbe2ff
   const [showViewForm, setViewButton] = useState(false);
 
 
@@ -339,86 +306,6 @@ const handleFilterSubmit = (values, { setSubmitting }) => {
     <div>
       {showViewForm && (
         <div className="fixed top-0 left-0 bg-bgBlue z-[40] h-screen w-screen overflow-y-auto overflow-x-auto flex items-center justify-center">
-<<<<<<< HEAD
-          <div className="relative bg-white w-[40%] lg:w-[58%] h-[80vh] px-[2.5%] py-[2.5%] rounded-md">
-            <div className="mx-auto flex flex-col h-full gap-2">
-              <button
-                className="close border-2 border-mainRed rounded-md px-2 text-mainRed absolute right-4 top-4"
-                onClick={() => setViewButton(false)}
-              >
-                x
-              </button>
-
-              <h1 className="text-gray-500 font-semibold text-md md:text-[1.1rem]">
-                Employee Details for:{' '}
-                <span className=" text-mainBlue ">{attendeeDetails.name}</span>
-              </h1>
-              <p className="text-gray-500 text-[1rem]">
-                Role :{' '}
-                <span className="text-mainBlue font-bold capitalize">
-                  Intern
-                </span>
-              </p>
-
-              <div className=" w-[70%] flex flex-row">
-                <div className="w-[49%] flex flex-row ">
-                  <label
-                    htmlFor="startDate"
-                    className="text-xs text-gray h-3 my-auto pr-1 "
-                  >
-                    From :
-                  </label>
-                  <input
-                    type="text"
-                    name="startDate"
-                    defaultValue={attendeeDetails.lastLunch}
-                    className="outline-none text-sm w-[8rem] h-[2rem] border-[1px] border-gray rounded-[0.15rem] capitalize"
-                    required
-                  />
-                </div>
-                <div className="w-[49%] flex flex-row">
-                  <label
-                    htmlFor="endDate"
-                    className="text-xs text-gray capitalize h-3 my-auto pr-1"
-                  >
-                    to :
-                  </label>
-                  <input
-                    type="text"
-                    name="endDate"
-                    defaultValue={attendeeDetails.lastLunch}
-                    className="outline-none text-sm w-[8rem] h-[2rem] border-[1px] border-gray rounded-[0.15rem] "
-                    required
-                  />
-                </div>
-              </div>
-
-              <div className="mt-2 flex flex-row w-full">
-                <div className="w-[66%] h-[17.5rem] border border-3 border-mainBlue rounded-md pt-2 pl-2">
-                  <TableComponent
-                    title=""
-                    headers={attendeeHeaders}
-                    data={attendeeLastLunch}
-                    showCheckBox={false}
-                  />
-                </div>
-                <div className="w-[34%] md:w-4/12 md:pl-4 ">
-                  <div className="w-full  flex md:flex-col items-center   text-center  ">
-                    <div className="h-[17.6rem] h-full border border-1 border-mainBlue w-full border-gray rounded-md text-sm">
-                      <p className="mt-4 flex flex-col items-center">
-                        <span className="font-bold text-4xl md:text-8xl text-gray-400 flex flex-col md:flex-row">
-                          {lastLunchCount}
-                        </span>
-                      </p>
-                      <div className="flex flex-col gap-3">
-                        <p className="text-black font-bold text-[1rem]">
-                          From{' '}
-                        </p>
-                        <p>01/20/2024</p>
-                        <p className="text-black font-bold text-[1rem]">to</p>
-                        <p>04/5/2024</p>
-                      </div>
-=======
           <div className="relative bg-white w-[40%] lg:w-[50%] h-[80vh] px-[2.5%] py-[2.5%] rounded-md">
           <div className='mx-auto flex flex-col h-full gap-4'> 
             <button
@@ -508,23 +395,10 @@ const handleFilterSubmit = (values, { setSubmitting }) => {
                     <p>01/20/2024</p>
                     <p className='text-black font-bold text-[1rem]'>to</p>
                     <p >04/5/2024</p>
->>>>>>> c932c8256518efe4b9edda07b6c915ad86dbe2ff
                     </div>
                   </div>
                 </div>
               </div>
-<<<<<<< HEAD
-            </div>
-          </div>
-        </div>
-      )}
-      <FaRegEye
-        className="text-[16px] text-gray-600 mx-2 cursor-pointer"
-        onClick={() => setViewButton(true)}
-      />
-    </div>
-  );
-=======
               </div>
               </div>
               </div>
@@ -534,7 +408,6 @@ const handleFilterSubmit = (values, { setSubmitting }) => {
 <FaRegEye className='text-[16px] text-gray-600 mx-2 cursor-pointer' onClick={()=> setViewButton(true)}/>
 </div>
   )
->>>>>>> c932c8256518efe4b9edda07b6c915ad86dbe2ff
 }
 
 export function SendToCBMButton({ guest }) {
