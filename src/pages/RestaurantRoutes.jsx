@@ -2,7 +2,8 @@ import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import RestaurantHome from './restaurantHome/RestaurantHome';
 import ProtectedRoute from '../components/protectedRoutes/ProtectedRoutes';
-import RestaurantReceipts from './restaurantReceipts.jsx/RestaurantReceipts';
+import RestaurantReceipts from './restaurantReceipts/RestaurantReceipts';
+import RestaurantInvoice from './restaurantInvoice/RestaurantInvoice';
 
 function RestaurantRoutes({ isAuthenticated }) {
   return (
@@ -27,7 +28,7 @@ function RestaurantRoutes({ isAuthenticated }) {
         path="invoice"
         element={
           <ProtectedRoute isAuthenticated={isAuthenticated}>
-            <RestaurantHome />
+            <RestaurantInvoice />
           </ProtectedRoute>
         }
       />
