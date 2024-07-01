@@ -16,7 +16,8 @@ import { BsPeopleFill } from 'react-icons/bs';
 
 function App() {
   const isAuthenticated = true;
-  const role = 'hr';
+  const role = 'hr'; 
+  // const role = 'restaurant';
 
   const hrHeaderTitle = 'HR Dashboard';
   const hrSidebarFields = [
@@ -46,16 +47,22 @@ function App() {
     },
   ];
 
-  const restaurantHeaderTitle = 'HR Dashboard';
+  const restaurantHeaderTitle = 'Restaurant Dashboard';
   const restaurantSidebarFields = [
     {
       id: 1,
-      destination: '/restaurant/',
+      destination: '/restaurant/home',
       icon: <FaChartBar className="mr-2" />,
       title: 'Home',
     },
     {
       id: 2,
+      destination: '/restaurant/receipts',
+      icon: <FaPeopleGroup className="mr-2" />,
+      title: 'Receipts',
+    },
+    {
+      id: 3,
       destination: '/restaurant/invoice',
       icon: <FaPeopleGroup className="mr-2" />,
       title: 'Invoice',
@@ -122,7 +129,7 @@ function App() {
               path="/"
               element={
                 isAuthenticated ? (
-                  <Navigate to="/restaurant/" />
+                  <Navigate to="/restaurant/home" />
                 ) : (
                   <Navigate to="/login" />
                 )

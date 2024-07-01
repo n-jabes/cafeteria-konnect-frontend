@@ -5,7 +5,8 @@ import { FaRegEye } from 'react-icons/fa6';
 import InvoiceTable from '../table/InvoiceTable';
 import { IoPrint } from 'react-icons/io5';
 import ReactToPrint from 'react-to-print';
-
+import { Formik } from 'formik';
+import * as Yup from 'yup';
 export function MainButton({ text }) {
   return (
     <button className="btn btn-primary text-white float-right bg-mainBlue border-2 rounded-md mb-2 py-2 px-4 hover:bg-white hover:text-[#4069B0] hover:border-2 hover:border-[#4069B0]">
@@ -22,14 +23,115 @@ export function SendAllNewGuestsToCBMButton() {
   );
 }
 
-export function UpdateAttendeeButton({attendeeDetails}){
-  // const [showUpdateForm]
+export function UpdateAttendeeButton({ attendeeDetails }) {
+  const [showUpdateForm, setShowUpdateForm] = useState(false);
 
-  return(
-  <button className="btn btn-primary hover:bg-mainBlue hover:text-white  border-mainBlue border-[1px] rounded-[8px] py-[2px] px-[6px] text-mainBlue font-medium text-xs">
-  update
-</button>
-  ) 
+  return (
+    <div>
+      {showUpdateForm && (
+        <div className="fixed top-0 left-0 bg-bgBlue h-screen w-screen overflow-y-auto z-40 overflow-x-auto flex items-center justify-center">
+          <div className="relative bg-white w-[90%] lg:w-[40%] h-max px-[3.5%] py-[4%] rounded-md">
+            <button
+              className="close border-2 border-mainRed rounded-md px-2 text-mainRed absolute right-4 top-4"
+              onClick={() => setShowUpdateForm(false)}
+            >
+              x
+            </button>
+            <h1 className="text-mainBlue font-semibold text-md md:text-xl">
+              Update Attendee:{' '}
+              <span className="text-gray-400">{attendeeDetails.id}</span>
+            </h1>
+
+            <form action="#" className="w-full">
+              <div className="flex flex-row">
+                <div className="block w-1/2">
+                  <label htmlFor="name" className="text-xs text-gray">
+                    Name:
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Enter guest full name"
+                    name="name"
+                    defaultValue={attendeeDetails.name}
+                    className="outline-none text-sm py-2 px-4 border-[1px] border-gray rounded-md"
+                    required
+                  />
+                </div>
+                <div className="block w-1/2">
+                  <label htmlFor="name" className="text-xs text-gray">
+                    Email:
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Enter guest full name"
+                    name="name"
+                    defaultValue={attendeeDetails.name}
+                    className="outline-none text-sm py-2 px-4 border-[1px] border-gray rounded-md"
+                    required
+                  />
+                </div>
+              </div>
+              <div className="flex flex-row">
+                <div className="block w-1/2">
+                  <label htmlFor="purpose" className="text-xs text-gray">
+                    Purpose
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Enter guest purpose: eg. consultant"
+                    name="purpose"
+                    defaultValue={attendeeDetails.role}
+                    className="outline-none text-sm py-2 px-4 border-[1px] border-gray rounded-md"
+                    required
+                  />
+                </div>
+                <div className="block w-1/2">
+                  <label htmlFor="purpose" className="text-xs text-gray">
+                    Department
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Enter guest purpose: eg. consultant"
+                    name="purpose"
+                    defaultValue={attendeeDetails.role}
+                    className="outline-none text-sm py-2 px-4 border-[1px] border-gray rounded-md"
+                    required
+                  />
+                </div>
+              </div>
+              <div className="flex flex-col mb-2">
+                <label htmlFor="status" className="text-xs text-gray">
+                  Status
+                </label>
+                <select
+                  name="status"
+                  defaultValue={attendeeDetails.status}
+                  className="outline-none text-sm py-2 px-4 border-[1px] border-gray rounded-md"
+                  required
+                >
+                  <option value="active">Active</option>
+                  <option value="on_pause">On Pause</option>
+                  <option value="on_leave">On Leave</option>
+                </select>
+              </div>
+              <button
+                type="submit"
+                className="btn border-2 border-[#078ECE] bg-[#078ECE] text-md font-semibold text-white py-2 px-4 rounded-md w-full hover:bg-white hover:text-mainBlue mt-3"
+              >
+                Update Guest
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
+      <button
+        className="btn btn-primary hover:bg-mainBlue hover:text-white  border-mainBlue border-[1px] rounded-[8px] py-[2px] px-[6px] text-mainBlue font-medium text-xs"
+        onClick={() => setShowUpdateForm(true)}
+      >
+        update
+      </button>
+    </div>
+  );
 }
 
 export function UpdateGuestButton({ guest }) {
@@ -130,110 +232,204 @@ export function DeleteButton() {
   );
 }
 
-
-export function ViewAttendeeButton({attendeeDetails}){ 
-const [attendeeLastLunch, setAttendeeLastLunch] = useState([])
-const [lastLunchCount, setLastLunchCount] = useState(0); // State for unique count
+export function ViewAttendeeButton({ attendeeDetails }) {
+  const [attendeeLastLunch, setAttendeeLastLunch] = useState([]);
+  const [lastLunchCount, setLastLunchCount] = useState(0); // State for unique count
 
   //headers for the table
-  const attendeeHeaders = ['name', 'lastlunch'];
+  const attendeeHeaders = ['lastlunch'];
 
-//Attendee's data filtered for the table
-useEffect(()=>{
-  const filteredAttendees = attendeesDb.filter((attendee)=> attendee.id === attendeeDetails.id);
-  const formattedData = filteredAttendees.map((attendee)=>[
-    attendee.name,
-    attendee.lastLunch,
-  ]);
-  setAttendeeLastLunch(formattedData);
-  setLastLunchCount(countLastLunch(attendeeLastLunch)); // Calculate and store count
+  //Attendee's data filtered for the table
+  useEffect(() => {
+    const filteredAttendees = attendeesDb.filter(
+      (attendee) => attendee.id === attendeeDetails.id
+    );
+    const formattedData = filteredAttendees.map((attendee) => [
+      attendee.lastLunch,
+    ]);
+    setAttendeeLastLunch(formattedData);
+    setLastLunchCount(countLastLunch(attendeeLastLunch)); // Calculate and store count
+  }, [attendeeDetails.id]);
 
-},[attendeeDetails.id])
-
-
-
-//the count of data in attendeelastlunch
-function countLastLunch(attendeeLastLunch){
-  return new Set(attendeeLastLunch).size
-}
-
-
+  //the count of data in attendeelastlunch
+  function countLastLunch(attendeeLastLunch) {
+    return new Set(attendeeLastLunch.map((item) => item[0])).size;
+  }
   //form displayed after view button is clicked
   const [showViewForm, setViewButton] = useState(false);
+
+  // formik for finding the information of lunchs an attendee took
+
+  //validation
+  const validationSchema = Yup.object({
+    startDate: Yup.date().required('Start date is required'),
+    finalDate: Yup.date()
+      .required('End date is required')
+      .when(
+        'startDate',
+        (startDate, schema) =>
+          startDate &&
+          schema.min(startDate, 'End date must be after start date')
+      ),
+  });
+
+  // To handle the submission
+  const handleFilterSubmit = (values, { setSubmitting }) => {
+    const { startDate: startDateString, finalDate: finalDateString } = values;
+    const attendeeId = attendeeDetails.id; // Access attendee ID from props
+
+    // Convert startDate and finalDate strings to Date objects
+    const startDate = new Date(startDateString);
+    const endDate = new Date(finalDateString);
+
+    // Logic to find dates between start and end date (inclusive)
+    const allDates = [];
+    const currentDate = new Date(startDate);
+
+    while (currentDate <= endDate) {
+      const formattedDate = currentDate.toISOString().slice(0, 10); // Format date as YYYY-MM-DD
+      allDates.push(formattedDate);
+      currentDate.setDate(currentDate.getDate() + 1); // Increment date by 1 day
+    }
+
+    // Logic to filter attendee lunches based on the date range
+    const filteredLunches = attendeesDb.filter((lunch) => {
+      const lunchDate = new Date(lunch.lastLunch);
+      return (
+        lunch.id === attendeeId &&
+        lunchDate >= startDate &&
+        lunchDate <= endDate
+      );
+    });
+
+    // Update the state with filtered lunches
+    const formattedData = filteredLunches.map((attendee) => [
+      attendee.lastLunch,
+    ]);
+    setAttendeeLastLunch(formattedData);
+    setLastLunchCount(countLastLunch(formattedData));
+
+    setSubmitting(false);
+  };
   return (
     <div>
       {showViewForm && (
         <div className="fixed top-0 left-0 bg-bgBlue z-[40] h-screen w-screen overflow-y-auto overflow-x-auto flex items-center justify-center">
-          <div className="relative bg-white w-[40%] lg:w-[58%] h-[80vh] px-[2.5%] py-[2.5%] rounded-md">
-          <div className='mx-auto flex flex-col h-full gap-2'> 
-            <button
-              className="close border-2 border-mainRed rounded-md px-2 text-mainRed absolute right-4 top-4"
-              onClick={() => setViewButton(false)}
-            >
-              x
-            </button>
-        
-            <h1 className="text-gray-500 font-semibold text-md md:text-[1.1rem]">
-              Employee Details for: <span className=" text-mainBlue ">{attendeeDetails.name}</span>
-            </h1>
-            <p className='text-gray-500 text-[1rem]'>Role : <span className='text-mainBlue font-bold capitalize'>Intern</span></p>
-        
+          <div className="relative bg-white w-[40%] lg:w-[50%] h-[80vh] px-[2.5%] py-[2.5%] rounded-md">
+            <div className="mx-auto flex flex-col h-full gap-4">
+              <button
+                className="close border-2 border-mainRed rounded-md px-2 text-mainRed absolute right-4 top-4"
+                onClick={() => setViewButton(false)}
+              >
+                x
+              </button>
 
-              <div className=" w-[70%] flex flex-row">
-                <div className="w-[49%] flex flex-row ">
-                  <label
-                    htmlFor="startDate"
-                    className="text-xs text-gray h-3 my-auto pr-1 "
-                  >
-                    From :
-                  </label>
-                  <input
-                    type="text"
-                    name="startDate"
-                    defaultValue={attendeeDetails.lastLunch}
-                    className="outline-none text-sm w-[8rem] h-[2rem] border-[1px] border-gray rounded-[0.15rem] capitalize"                   
-                    required
+              <h1 className="text-gray-500 font-semibold text-md md:text-[1.1rem]">
+                Employee Details for:{' '}
+                <span className=" text-mainBlue ">{attendeeDetails.name}</span>
+              </h1>
+              <p className="text-gray-500 text-[1rem]">
+                Role :{' '}
+                <span className="text-mainBlue font-bold capitalize">
+                  {attendeeDetails.role}
+                </span>
+              </p>
+
+              <Formik
+                initialValues={{ startDate: null, finalDate: null }}
+                validationSchema={validationSchema}
+                onSubmit={handleFilterSubmit}
+              >
+                {({ values, handleChange, errors, touched, handleSubmit }) => (
+                  <form onSubmit={handleSubmit}>
+                    <div className="w-[85%] flex flex-row">
+                      <div className="w-[37%] ">
+                        <label
+                          htmlFor="startDate"
+                          className="text-xs text-gray h-3 my-auto pr-1"
+                        >
+                          From :
+                        </label>
+                        <input
+                          type="date"
+                          name="startDate"
+                          className={`text-xs w-[8rem] h-[2rem] border-[1px] border-gray rounded-[0.15rem] capitalize ${
+                            errors.startDate && touched.startDate
+                              ? 'border-red-500'
+                              : ''
+                          }`}
+                          value={values.startDate || ''}
+                          onChange={handleChange}
+                          required
+                        />
+                        {errors.startDate && touched.startDate && (
+                          <div className="text-red-500 text-xs">
+                            {errors.startDate}
+                          </div>
+                        )}
+                      </div>
+                      <div className="w-[37%]  ">
+                        <label
+                          htmlFor="endDate"
+                          className="text-xs text-gray h-3 my-auto pr-1"
+                        >
+                          To :
+                        </label>
+                        <input
+                          type="date"
+                          name="finalDate"
+                          value={values.finalDate || ''}
+                          className={`outline-none text-xs  w-[8rem] h-[2rem] border-[1px] border-gray rounded-[0.15rem] capitalize ${
+                            errors.startDate && touched.startDate
+                              ? 'border-red-500'
+                              : ''
+                          }`}
+                          onChange={handleChange}
+                          required
+                        />
+                        {errors.finalDateDate && touched.finalDate && (
+                          <div className="text-red-500 text-xs">
+                            {errors.finalDate}
+                          </div>
+                        )}
+                      </div>
+                      <div className="w-[20%] text-white">
+                        <input
+                          type="Submit"
+                          value="Filter"
+                          className="text-sm text-white w-[8rem] h-[2rem] border-[1px] bg-mainBlue rounded-[0.15rem] capitalize hover:cursor-pointer"
+                        />
+                      </div>
+                    </div>
+                  </form>
+                )}
+              </Formik>
+
+              <div className="mt-2 flex flex-row w-full">
+                <div className="w-[65%] h-[17.5rem] border border-3 border-mainBlue rounded-md pt-2 pl-2">
+                  <TableComponent
+                    title=""
+                    headers={attendeeHeaders}
+                    data={attendeeLastLunch}
+                    showCheckBox={false}
                   />
                 </div>
-                <div className="w-[49%] flex flex-row">
-                  <label
-                    htmlFor="endDate"
-                    className="text-xs text-gray capitalize h-3 my-auto pr-1"
-                  >
-                    to :
-                  </label>
-                  <input
-                    type="text"
-                    name="endDate"
-                    defaultValue={attendeeDetails.lastLunch}
-                    className="outline-none text-sm w-[8rem] h-[2rem] border-[1px] border-gray rounded-[0.15rem] "
-                    required
-                  />
-                </div>
-              </div>
-
-     <div className="mt-2 flex flex-row w-full">
-              <div className="w-[66%] h-[17.5rem] border border-3 border-mainBlue rounded-md pt-2 pl-2">
-                 <TableComponent
-                  title=""
-                  headers={attendeeHeaders}
-                  data={attendeeLastLunch}
-                  showCheckBox={false}
-                /> 
-              </div>
-              <div className="w-[34%] md:w-4/12 md:pl-4 ">
-                <div className="w-full  flex md:flex-col items-center   text-center  ">
-                  <div className="h-[17.6rem] h-full border border-1 border-mainBlue w-full border-gray rounded-md text-sm">
-                    <p className="mt-4 flex flex-col items-center">
-                      <span className="font-bold text-4xl md:text-8xl text-gray-400 flex flex-col md:flex-row">
-                      {lastLunchCount}
-                      </span>
-                    </p>
-                    <div className='flex flex-col gap-3'>
-                    <p className='text-black font-bold text-[1rem]'>From </p>
-                    <p>01/20/2024</p>
-                    <p className='text-black font-bold text-[1rem]'>to</p>
-                    <p >04/5/2024</p>
+                <div className="w-[34%] md:w-4/12 md:pl-4 ">
+                  <div className="w-full  flex md:flex-col items-center   text-center  ">
+                    <div className="h-[17.5rem] h-full border border-1 border-mainBlue w-full border-gray rounded-md text-sm">
+                      <p className="mt-4 flex flex-col items-center">
+                        <span className="font-bold text-4xl md:text-8xl text-gray-400 flex flex-col md:flex-row">
+                          {lastLunchCount}
+                        </span>
+                      </p>
+                      <div className="flex flex-col gap-3">
+                        <p className="text-black font-bold text-[1rem]">
+                          From{' '}
+                        </p>
+                        <p>01/20/2024</p>
+                        <p className="text-black font-bold text-[1rem]">to</p>
+                        <p>04/5/2024</p>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -241,12 +437,13 @@ function countLastLunch(attendeeLastLunch){
             </div>
           </div>
         </div>
-  </div>
-  )
-}
-<FaRegEye className='text-[16px] text-gray-600 mx-2 cursor-pointer' onClick={()=> setViewButton(true)}/>
-</div>
-  )
+      )}
+      <FaRegEye
+        className="text-[16px] text-gray-600 mx-2 cursor-pointer"
+        onClick={() => setViewButton(true)}
+      />
+    </div>
+  );
 }
 
 export function SendToCBMButton({ guest }) {
@@ -293,6 +490,57 @@ export function ApproveButton({ invoice }) {
   useEffect(() => {
     setActionPerformed(invoice.status !== 'New');
   }, [invoice.status]);
+
+  return (
+    <div>
+      {showApproveForm && (
+        <div className="fixed top-0 left-0 bg-bgBlue z-[40] h-screen w-screen overflow-y-auto overflow-x-auto flex items-center justify-center">
+          <div className="relative bg-white w-[90%] lg:w-[45%] h-max px-[3.5%] py-[4%] rounded-md">
+            <button
+              className="close border-2 border-mainRed rounded-md px-2 text-mainRed absolute right-4 top-4"
+              onClick={() => setShowApproveForm(false)}
+            >
+              x
+            </button>
+            <h1 className="pb-6 flex justify-center text-gray-500 text-md md:text-xl">
+              Are you sure you want to approve?
+            </h1>
+            <div className="flex justify-center">
+              <button
+                type="submit"
+                className="btn mt-4 text-white font-semibold btn-primary bg-mainGreen border-2 rounded-md mb-2 py-2 px-4 hover:bg-white hover:text-mainGreen border-mainGreen"
+                onClick={() => setShowApproveForm(false)}
+              >
+                Yes, I Approve
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      <button
+        className={`btn btn-primary  border-[1px] rounded-[8px] py-[2px] px-[6px] font-medium text-xs ${
+          actionPerfomed
+            ? 'border-gray-400 text-gray-300 cursor-not-allowed hover:bg-gray-100 hover:text-gray-300'
+            : 'hover:bg-mainGreen hover:text-white border-mainGreen text-mainGreen'
+        }`}
+        onClick={() => setShowApproveForm(true)}
+        disabled={actionPerfomed}
+      >
+        approve
+      </button>
+    </div>
+  );
+}
+
+export function ApproveReceiptButton({ receipt }) {
+  const [showApproveForm, setShowApproveForm] = useState(false);
+  const [actionPerfomed, setActionPerformed] = useState(
+    receipt.status !== 'New'
+  );
+
+  useEffect(() => {
+    setActionPerformed(receipt.status !== 'New');
+  }, [receipt.status]);
 
   return (
     <div>
@@ -396,11 +644,72 @@ export function DeclineButton({ invoice }) {
   );
 }
 
+export function DeclineReceiptButton({ receipt }) {
+  const [showDeclineForm, setShowDeclineForm] = useState(false);
+  const [actionPerfomed, setActionPerformed] = useState(
+    receipt.status != 'New' ? true : false
+  );
+
+  return (
+    <div>
+      {showDeclineForm && (
+        <div className="fixed top-0 left-0 bg-bgBlue z-[40] h-screen w-screen overflow-y-auto overflow-x-auto flex items-center justify-center">
+          <div className="relative bg-white w-[90%] lg:w-[45%] h-max px-[3.5%] py-[4%] rounded-md">
+            <button
+              className="close border-2 border-mainRed rounded-md px-2 text-mainRed absolute right-4 top-4"
+              onClick={() => setShowDeclineForm(false)}
+            >
+              x
+            </button>
+            <h1 className="pb-6 flex justify-center text-gray-500 text-md md:text-xl">
+              Are you sure you want to decline?
+            </h1>
+            <form action="#" className="w-full">
+              <div className="flex flex-col mb-2">
+                <label htmlFor="reason" className="text-md text-gray-800 pb-2">
+                  Reason for declining the invoice:
+                </label>
+                <textarea
+                  type="text"
+                  placeholder=""
+                  name="reason"
+                  className="outline-none text-sm py-2 px-2 border-[2px] border-gray rounded-md"
+                  required
+                ></textarea>
+              </div>
+              <div className="flex justify-center pt-5">
+                <button
+                  type="submit"
+                  className="btn mt-4 text-white font-semibold btn-primary bg-darkRed border-2 rounded-md mb-2 py-2 px-4 hover:bg-white hover:text-darkRed border-darkRed"
+                  onClick={() => setShowDeclineForm(false)}
+                >
+                  Decline
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+      <button
+        className={`btn btn-primary border-[1px] rounded-[8px] py-[2px] px-[6px]  font-medium text-xs ${
+          actionPerfomed
+            ? 'border-[1px] border-gray-400  text-gray-300 cursor-not-allowed hover:bg-gray-100 hover:text-gray-300'
+            : 'hover:bg-darkRed hover:text-white border-darkRed text-darkRed'
+        }`}
+        onClick={() => setShowDeclineForm(true)}
+        disabled={actionPerfomed}
+      >
+        decline
+      </button>
+    </div>
+  );
+}
+
 export function ViewInvoiceButton({ invoice }) {
   const [viewInvoice, setViewInvoice] = useState(false);
   const headers = ['Date', 'Lunch Attendees', 'Price Per Person', 'Total'];
   const data = [['06.06.2024', '400', '............', '............']];
-  const invoiceRef = useRef();
+  const receiptRef = useRef();
 
   return (
     <div>
@@ -414,7 +723,7 @@ export function ViewInvoiceButton({ invoice }) {
               x
             </button>
 
-            <div className="bg-white" ref={invoiceRef}>
+            <div className="bg-white" ref={receiptRef}>
               {/* invoice headings */}
               <div className="w-full flex items-center gap-8 md:justify-between pt-5">
                 <img
@@ -504,7 +813,7 @@ export function ViewInvoiceButton({ invoice }) {
                   </div>
                 );
               }}
-              content={() => invoiceRef.current}
+              content={() => receiptRef.current}
             />
           </div>
         </div>
@@ -512,6 +821,136 @@ export function ViewInvoiceButton({ invoice }) {
       <FaRegEye
         className="text-[16px] text-gray-600 mx-2 cursor-pointer"
         onClick={() => setViewInvoice(true)}
+      />
+    </div>
+  );
+}
+
+export function ViewRestaurantReceiptButton({
+  receiptData,
+  receiptDate,
+  receiptHeaders,
+}) {
+  const [viewReceipt, setViewReceipt] = useState(false);
+  const receiptRef = useRef();
+
+  return (
+    <div>
+      {viewReceipt && (
+        <div>
+          <div className="fixed top-0 left-0 bg-bgBlue z-[40] h-screen w-screen overflow-y-auto overflow-x-auto flex items-center justify-center cursor-pointer">
+            <div className="relative bg-white w-[90%] lg:w-[50%] h-[90vh] overflow-y-auto px-[3.5%] py-[4%] rounded-md">
+              <button
+                className="close border-2 border-mainRed rounded-md px-2 text-mainRed absolute right-4 top-4"
+                onClick={() => setViewReceipt(false)}
+              >
+                x
+              </button>
+              <div className="flex items-center mb-3">
+                <h2 className="w-1/3 text-lg text-gray-500 font-semibold">
+                  <span className="text-sm mr-4">Date: </span>
+                  {receiptDate}
+                </h2>
+                <h2 className="flex items-center text-mainGray text-3xl px-8 py-4 font-semibold border-[1px] border-gray-200 w-max">
+                  <span className="text-lg mr-4">Total attendees: </span>
+                  {receiptData.length}
+                </h2>
+              </div>
+              <div className="w-full border-2 border-gray-200 rounded-md h-[60vh]">
+                <TableComponent headers={receiptHeaders} data={receiptData} />
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      <FaRegEye
+        className="text-[16px] text-gray-600 mx-2 cursor-pointer"
+        onClick={() => setViewReceipt(true)}
+      />
+    </div>
+  );
+}
+
+export function ViewRestaurantInvoiceButton({
+  invoiceData,
+  invoice,
+  invoiceHeaders,
+}) {
+  const [viewInvoice, setViewInvoice] = useState(false);
+  const invoiceRef = useRef();
+
+  return (
+    <div>
+      {viewInvoice && (
+        <div>
+          <div className="fixed top-0 left-0 bg-bgBlue z-[40] h-screen w-screen overflow-y-auto overflow-x-auto flex items-center justify-center cursor-pointer">
+            <div className="relative bg-white w-[90%] lg:w-[50%] h-[90vh] overflow-y-auto px-[3.5%] py-[4%] rounded-md">
+              <button
+                className="close border-2 border-mainRed rounded-md px-2 text-mainRed absolute right-4 top-4"
+                onClick={() => setViewInvoice(false)}
+              >
+                x
+              </button>
+              <div className="flex items-center mb-3">
+                <h2 className="w-1/3 text-lg text-gray-500 font-semibold">
+                  <span className="text-sm mr-4">Month: </span>
+                  {invoice.month}
+                </h2>
+                <h2 className="flex items-center text-mainGray text-3xl px-8 py-4 font-semibold border-[1px] border-gray-200 w-max">
+                  <span className="text-lg mr-4">Total receipts: </span>
+                  {invoiceData.length}
+                </h2>
+              </div>
+              <div className="w-full border-2 border-gray-200 rounded-md h-[60vh]">
+                <TableComponent headers={invoiceHeaders} data={invoiceData} showFilter={false} />
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      <FaRegEye
+        className="text-[16px] text-gray-600 mx-2 cursor-pointer"
+        onClick={() => setViewInvoice(true)}
+      />
+    </div>
+  );
+}
+
+export function ViewReceiptButton({ receipt, attendees }) {
+  const [viewReceipt, setViewReceipt] = useState(false);
+  const attendeeHeaders = ['name'];
+  const receiptRef = useRef();
+
+  return (
+    <div>
+      {viewReceipt && (
+        <div className="fixed top-0 left-0 bg-bgBlue z-[40] h-screen w-screen overflow-y-auto overflow-x-auto flex items-center justify-center cursor-pointer">
+          <div className="relative bg-white w-[90%] lg:w-[50%] h-[90vh] overflow-y-auto px-[3.5%] py-[4%] rounded-md">
+            <button
+              className="close border-2 border-mainRed rounded-md px-2 text-mainRed absolute right-4 top-4"
+              onClick={() => setViewReceipt(false)}
+            >
+              x
+            </button>
+            <div className="flex items-center mb-3">
+                <h2 className="w-1/3 text-lg text-gray-500 font-semibold">
+                  <span className="text-sm mr-4">Date: </span>
+                  {receiptDate}
+                </h2>
+                <h2 className="flex items-center text-mainGray text-3xl px-8 py-4 font-semibold border-[1px] border-gray-200 w-max">
+                  <span className="text-lg mr-4">Total attendees: </span>
+                  {receiptData.length}
+                </h2>
+              </div>
+              <div className="w-full border-2 border-gray-200 rounded-md h-[60vh]">
+            <TableComponent headers={receiptAttendeesHeaders} data={receiptData} />
+            </div>
+          </div>
+        </div>
+      )}
+      <FaRegEye
+        className="text-[16px] text-gray-600 mx-2 cursor-pointer"
+        onClick={() => setViewReceipt(true)}
       />
     </div>
   );
@@ -537,17 +976,35 @@ export function RestaurantButtons({ invoice }) {
   );
 }
 
-export function AttendeeButtons({attendeeDetails}){
+export function RestaurantReceiptButtons({ receipt }) {
   return (
-    <div className='flex gap-2'>
-    <UpdateAttendeeButton  attendeeDetails = {attendeeDetails}/>
-    <DeleteButton />
-    <ViewAttendeeButton attendeeDetails = {attendeeDetails} />
-      </div>
-  )
+    <div className="flex gap-2 px-0">
+      <ViewRestaurantReceiptButton receipt={receipt} />
+    </div>
+  );
 }
 
-export function Status({status}){
+export function ReceiptsButtons({ receiptDate, receiptData, receiptAttendeesHeaders, receipt}) {
+  return (
+    <div className="flex gap-2 px-0">
+      <ApproveReceiptButton receipt={receipt} />
+      <DeclineReceiptButton receipt={receipt} />
+      <ViewReceiptButton receiptData={receiptData} receiptDate={receiptDate} receiptAttendeesHeaders={receiptAttendeesHeaders} />
+    </div>
+  );
+}
+
+export function AttendeeButtons({ attendeeDetails }) {
+  return (
+    <div className="flex gap-2">
+      <UpdateAttendeeButton attendeeDetails={attendeeDetails} />
+      <DeleteButton />
+      <ViewAttendeeButton attendeeDetails={attendeeDetails} />
+    </div>
+  );
+}
+
+export function Status({ status }) {
   const getStatusColor = (status) => {
     switch (status.toLowerCase()) {
       case 'on leave':
@@ -563,10 +1020,11 @@ export function Status({status}){
 
   return (
     <div>
-      <div className={`h-[1.3rem] w-[5rem] rounded-md flex items-center ${statusStyle}`}>
-        <p className='mx-auto text-[0.7rem]'>{status}</p>
+      <div
+        className={`h-[1.3rem] w-[5rem] rounded-md flex items-center ${statusStyle}`}
+      >
+        <p className="mx-auto text-[0.7rem]">{status}</p>
       </div>
     </div>
   );
-
 }

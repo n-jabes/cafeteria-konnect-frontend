@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
 import TableComponent from '../../components/table/TableComponent';
-import { AttendeeButtons } from '../../components/buttons/Buttons';
+import {
+  AttendeeButtons,
+  ReceiptsButtons,
+  RestaurantButtons,
+} from '../../components/buttons/Buttons';
 import { MainButton } from '../../components/buttons/Buttons';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { Status } from '../../components/buttons/Buttons';
@@ -23,7 +27,7 @@ function Attendees() {
   ];
 
   const [addNewAttendee, setaddNewAttendee] = useState(false);
-  const headers = ['Id', 'Name', 'Purpose', 'Status', 'Actions'];
+  const headers = ['Id', 'Name', 'Role', 'Status', 'Actions'];
   const [tab, setTab] = useState('active attendees');
   const [extraPeople, setExtraPeople] = useState(7);
 
@@ -106,7 +110,8 @@ function Attendees() {
     attendeeDetails.id,
     attendeeDetails.name,
     attendeeDetails.role,
-    <Status status={attendeeDetails.status} />,
+    // <Status status={attendeeDetails.status} />,
+    attendeeDetails.status,
     <AttendeeButtons attendeeDetails={attendeeDetails} />,
   ]);
 
@@ -116,7 +121,8 @@ function Attendees() {
       attendeeDetails.id,
       attendeeDetails.name,
       attendeeDetails.role,
-      <Status status={attendeeDetails.status} />,
+      attendeeDetails.status,
+      // <Status status={attendeeDetails.status} />,
       <AttendeeButtons attendeeDetails={attendeeDetails} />,
     ]);
 
@@ -125,24 +131,207 @@ function Attendees() {
     activeAttendeesCount + extraPeople
   );
 
+  const allReceipts = [
+    {
+      id: 20240602,
+      date: '2024-06-18',
+      attendees: '30',
+      status: 'New',
+    },
+    {
+      id: 20240602,
+      date: '2024-06-18',
+      attendees: '30',
+      status: 'Approved',
+    },
+    {
+      id: 20240602,
+      date: '2024-06-18',
+      attendees: '30',
+      status: 'Declined',
+    },
+
+    {
+      id: 20240603,
+      date: '2024-06-18',
+      attendees: '30',
+      status: 'New',
+    },
+    {
+      id: 20240603,
+      date: '2024-06-18',
+      attendees: '30',
+      status: 'New',
+    },
+    {
+      id: 20240603,
+      date: '2024-06-18',
+      attendees: '30',
+      status: 'Declined',
+    },
+    {
+      id: 20240603,
+      date: '2024-06-18',
+      attendees: '30',
+      status: 'New',
+    },
+    {
+      id: 20240603,
+      date: '2024-06-18',
+      attendees: '30',
+      status: 'New',
+    },
+    {
+      id: 20240603,
+      date: '2024-06-18',
+      attendees: '30',
+      status: 'New',
+    },
+    {
+      id: 20240603,
+      date: '2024-06-18',
+      attendees: '30',
+      status: 'Declined',
+    },
+    {
+      id: 20240603,
+      date: '2024-06-18',
+      attendees: '30',
+      status: 'Approved',
+    },
+    {
+      id: 20240603,
+      date: '2024-06-18',
+      attendees: '30',
+      status: 'Declined',
+    },
+  ];
+  
+
+  const receiptsHeaders = [
+    'Receipt Id',
+    'Date',
+    'Clients',
+    'Status',
+    'Actions',
+  ];
+
+//receiptAttendees data
+const attendanceData = [
+  {
+    id: 1,
+    name: 'Nshuti Ruranga Jabes',
+    role: 'intern',
+    department: 'FMIS',
+    Scanned: 'Yes',
+  },
+  {
+    id: 2,
+    name: 'Jane Smith',
+    role: 'Consultant',
+    department: 'Budget',
+    Scanned: 'No',
+  },
+  {
+    id: 3,
+    name: 'Sam Johnson',
+    role: 'intern',
+    department: 'Human Resource',
+    Scanned: 'Yes',
+  },
+  {
+    id: 4,
+    name: 'Nshuti Ruranga Jabes',
+    role: 'intern',
+    department: 'FMIS',
+    Scanned: 'Yes',
+  },
+  {
+    id: 5,
+    name: 'Jane Smith',
+    role: 'Consultant',
+    department: 'Budget',
+    Scanned: 'Yes',
+  },
+  {
+    id: 6,
+    name: 'Sam Johnson',
+    role: 'intern',
+    department: 'Human Resource',
+    Scanned: 'Yes',
+  },
+  {
+    id: 7,
+    name: 'Nshuti Ruranga Jabes',
+    role: 'intern',
+    department: 'FMIS',
+    Scanned: 'No',
+  },
+  {
+    id: 8,
+    name: 'Jane Smith',
+    role: 'Consultant',
+    department: 'Budget',
+    Scanned: 'yes',
+  },
+  {
+    id: 9,
+    name: 'Sam Johnson',
+    role: 'intern',
+    department: 'Human Resource',
+    Scanned: 'active',
+  },
+];
+
+const receiptAttendees = attendanceData.map((attendee)=>[
+  attendee.id,
+  attendee.name,
+  attendee.department,
+  attendee.Scanned
+])
+
+const receiptAttendeesHeaders = ['id','Names','Department','Scanned']
+
+
+
+
+  const receiptsToDisplay = allReceipts.map((receipt) => [
+    receipt.id,
+    receipt.date,
+    receipt.attendees,
+    receipt.status,
+    <ReceiptsButtons receipt={receipt} receiptDate={receipt.date} receiptAttendeesHeaders={receiptAttendeesHeaders} receiptData={receiptAttendees} />
+  ]);
+
+//attendance report data to be displayed
+
+
+
+
+
+
   const handleExpectedAttendees = (e) => {
     e.preventDefault();
-    const newExtraPeople = parseInt(extraPeople, 10); // Convert extraPeople to integer
-    if (isNaN(newExtraPeople) || newExtraPeople < 0 || newExtraPeople > 15) {
-      alert('Please enter a number between 0 and 15.');
-      return;
+    if (isNaN(extraPeople)) {
+      setExtraPeople(0);
+      const newExtraPeople = 0;
+      setExtraPeople(newExtraPeople);
+      setTotalAttendees(activeAttendeesCount + newExtraPeople);
+    } else {
+      const newExtraPeople = parseInt(extraPeople, 10); // Convert extraPeople to integer
+      setExtraPeople(newExtraPeople);
+      setTotalAttendees(activeAttendeesCount + newExtraPeople);
     }
-    setExtraPeople(newExtraPeople);
-    setTotalAttendees(activeAttendeesCount + newExtraPeople);
   };
 
   const handleInputChange = (e) => {
     const value = e.target.value.trim();
-    if (value === '') {
+    // Remove any leading zero when user starts typing a new number
+    const parsedValue = value.replace(/^0+/, '');
+    if (parsedValue === '') {
       setExtraPeople(0);
-    } else {
-      setExtraPeople(parseInt(value, 10));
     }
+    setExtraPeople(parseInt(parsedValue, 10));
   };
 
   return (
@@ -293,7 +482,7 @@ function Attendees() {
                 <form className="flex" onSubmit={handleExpectedAttendees}>
                   <input
                     type="number"
-                    placeholder="extra reserved"
+                    placeholder="extra people"
                     value={extraPeople}
                     max={15}
                     min={0}
@@ -342,6 +531,28 @@ function Attendees() {
               showCheckBox={false}
               showFilter={true}
             />
+          </div>
+        </div>
+      )}
+
+      {/* Attendence */}
+      {tab === 'attendence' && (
+        <div className="w-full flex gap-6">
+          <div className="w-4/5 overflow-x-auto h-[70vh] border border-3 border-gray rounded-md pl-4 py-4">
+            <TableComponent
+              headers={receiptsHeaders}
+              data={receiptsToDisplay}
+              showCheckBox={false}
+              showFilter={true}
+            />
+          </div>
+          <div className="w-1/5 h-max border border-3 border-gray rounded-md py-4 flex flex-col items-center text-gray-600">
+            <h1 className="font-bold text-6xl">46</h1>
+            <p className="text-xs mt-4">people attended today</p>
+            <p className="mt-6 text-sm flex flex-col text-center">
+              <span className="text-xl text-mainGray font-bold mr-4">16</span>
+              were added manually
+            </p>
           </div>
         </div>
       )}

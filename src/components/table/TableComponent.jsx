@@ -1,4 +1,3 @@
-// src/components/TableComponent.jsx
 import React, { useState } from 'react';
 import {
   Table,
@@ -86,6 +85,49 @@ const TableComponent = ({ headers, data, title, showCheckBox, showFilter }) => {
 
   const sortedData = stableSort(filteredData, getComparator(order, orderBy));
 
+  const getStatusStyle = (status) => {
+    switch (status) {
+      case 'active':
+        return {
+          backgroundColor: '#bbf7d0',
+          color: '#30415F',
+          padding: '2px 8px',
+          borderRadius: '4px',
+        };
+      case 'on leave':
+        return {
+          backgroundColor: '#fecaca',
+          color: '#30415F',
+          padding: '2px 8px',
+          borderRadius: '4px',
+        };
+      case 'other':
+        return {
+          backgroundColor: '#e5e7eb',
+          color: '#30415F',
+          padding: '2px 8px',
+          borderRadius: '4px',
+        };
+      case 'New':
+        return {
+          color: 'blue',
+        };
+      case 'Approved':
+        return {
+          color: 'green',
+        };
+      case 'Pending':
+        return {
+          color: 'orange',
+        };
+      case 'Declined':
+        return {
+          color: 'red',
+        };
+      
+    }
+  };
+
   return (
     <Box sx={{ width: '100%', overflowX: 'auto', height: '100%' }}>
       <TableContainer component={Paper}>
@@ -102,7 +144,6 @@ const TableComponent = ({ headers, data, title, showCheckBox, showFilter }) => {
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>
-              {/* Comment out this tableCell if you don't want the checkboxes */}
               {showCheckBox && (
                 <TableCell
                   padding="checkbox"
@@ -157,7 +198,6 @@ const TableComponent = ({ headers, data, title, showCheckBox, showFilter }) => {
                   selected={selectedRows.includes(rowIndex)}
                   onClick={() => handleSelectRow(rowIndex)}
                 >
-                  {/* Comment out this tableCell if you don't want the checkboxes */}
                   {showCheckBox && (
                     <TableCell padding="checkbox">
                       <Checkbox checked={selectedRows.includes(rowIndex)} />
@@ -168,23 +208,15 @@ const TableComponent = ({ headers, data, title, showCheckBox, showFilter }) => {
                       key={cellIndex}
                       sx={{
                         fontWeight:
-                          headers[cellIndex] === 'Status' ? `font-bold` : 400,
-                        color:
-                          headers[cellIndex] === 'Status'
-                            ? cell === 'New'
-                              ? '#4069B0'
-                              : cell === 'Pending'
-                              ? '#E79602'
-                              : cell === 'Approved'
-                              ? '#479E47'
-                              : cell === 'Declined'
-                              ? '#FF0000'
-                              : '#30415F'
-                            : '#30415F',
+                          headers[cellIndex] === 'Status' ? 'font-bold' : 400,
                         fontFamily: 'Poppins, sans-serif',
                       }}
                     >
-                      {cell}
+                      {headers[cellIndex] === 'Status' ? (
+                        <span style={getStatusStyle(cell)}>{cell}</span>
+                      ) : (
+                        cell
+                      )}
                     </TableCell>
                   ))}
                 </TableRow>
