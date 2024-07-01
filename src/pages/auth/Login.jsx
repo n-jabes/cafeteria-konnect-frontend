@@ -19,7 +19,7 @@ const Login = () => {
 
   const handleSubmit = () => {
     localStorage.setItem('isAuthenticated', true);
-    navigate('/hr/statistics'); //uncomment this when trying to reach the hr dashboard
+    navigate('/restaurant/invoice'); //uncomment this when trying to reach the hr dashboard
   };
 
   return (

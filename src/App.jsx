@@ -16,7 +16,7 @@ import { BsPeopleFill } from 'react-icons/bs';
 
 function App() {
   const isAuthenticated = true;
-  const role = 'hr';
+  const role = 'restaurant';
 
   const hrHeaderTitle = 'HR Dashboard';
   const hrSidebarFields = [

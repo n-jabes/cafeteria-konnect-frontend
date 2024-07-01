@@ -1,7 +1,10 @@
 import React from 'react';
 import Statistics from './statistics/Statistics';
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import ProtectedRoute from './../components/protectedRoutes/ProtectedRoutes';
 
-function RestaurantRoutes(props) {
+
+function RestaurantRoutes({ isAuthenticated }) {
   <Routes>
     <Route
       path="home"
