@@ -17,8 +17,8 @@ import { IoReceipt } from 'react-icons/io5';
 
 function App() {
   const isAuthenticated = true;
-  // const role = 'hr'; 
-  const role = 'restaurant';
+  const role = 'hr'; 
+  // const role = 'restaurant';
 
   const hrHeaderTitle = 'HR Dashboard';
   const hrSidebarFields = [
