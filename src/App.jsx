@@ -17,8 +17,8 @@ import { IoReceipt } from 'react-icons/io5';
 
 function App() {
   const isAuthenticated = true;
-  const role = 'hr'; 
-  // const role = 'restaurant';
+  // const role = 'hr';
+  const role = 'restaurant';
 
   const hrHeaderTitle = 'HR Dashboard';
   const hrSidebarFields = [
@@ -68,13 +68,11 @@ function App() {
       icon: <FaFileInvoice className="mr-2" />,
       title: 'Invoice',
     },
-
   ];
 
   return (
     <Router>
       <AuthProvider>
-
         {/* hr routes */}
         {role === 'hr' && (
           <Routes>
@@ -86,7 +84,10 @@ function App() {
               path="/hr/*"
               element={
                 isAuthenticated ? (
-                  <Layout sidebarFields={hrSidebarFields} headerTitle={hrHeaderTitle}>
+                  <Layout
+                    sidebarFields={hrSidebarFields}
+                    headerTitle={hrHeaderTitle}
+                  >
                     <HRRoutes isAuthenticated={isAuthenticated} />
                   </Layout>
                 ) : (
@@ -118,7 +119,10 @@ function App() {
               path="/restaurant/*"
               element={
                 isAuthenticated ? (
-                  <Layout sidebarFields={restaurantSidebarFields} headerTitle={restaurantHeaderTitle}>
+                  <Layout
+                    sidebarFields={restaurantSidebarFields}
+                    headerTitle={restaurantHeaderTitle}
+                  >
                     <RestaurantRoutes isAuthenticated={isAuthenticated} />
                   </Layout>
                 ) : (
