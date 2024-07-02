@@ -78,6 +78,7 @@ function RestaurantHome(props) {
         </div>
       </div>
       <h1 className="font-semibold text-mainGray">People who attended today</h1>
+      <button>Add Attendee</button>
       <div className="w-full flex flex-col md:flex-row gap-4">
         <div className="w-full md:w-3/4 border-[1px] border-gray-200 rounded-md py-3 px-4 mt-4">
           <TableComponent
