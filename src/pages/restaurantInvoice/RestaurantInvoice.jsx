@@ -13,63 +13,54 @@ function RestaurantInvoice(props) {
       name: 'Nshuti Ruranga Jabes',
       role: 'intern',
       department: 'FMIS',
-      status: 'on leave',
     },
     {
       id: 2,
       name: 'Jane Smith',
       role: 'Consultant',
       department: 'Budget',
-      status: 'active',
     },
     {
       id: 3,
       name: 'Sam Johnson',
       role: 'intern',
       department: 'Human Resource',
-      status: 'active',
     },
     {
       id: 4,
       name: 'Nshuti Ruranga Jabes',
       role: 'intern',
       department: 'FMIS',
-      status: 'on leave',
     },
     {
       id: 5,
       name: 'Jane Smith',
       role: 'Consultant',
       department: 'Budget',
-      status: 'active',
     },
     {
       id: 6,
       name: 'Sam Johnson',
       role: 'intern',
       department: 'Human Resource',
-      status: 'active',
     },
     {
       id: 7,
       name: 'Nshuti Ruranga Jabes',
       role: 'intern',
       department: 'FMIS',
-      status: 'on leave',
     },
     {
       id: 8,
       name: 'Jane Smith',
       role: 'Consultant',
       department: 'Budget',
-      status: 'active',
     },
     {
       id: 9,
       name: 'Sam Johnson',
       role: 'intern',
       department: 'Human Resource',
-      status: 'active',
     },
   ];
 
@@ -78,74 +69,62 @@ function RestaurantInvoice(props) {
       id: 20240602,
       date: '2024-06-18',
       attendees: '30',
-      status: 'New',
     },
     {
       id: 20240602,
       date: '2024-06-18',
       attendees: '30',
-      status: 'Approved',
     },
     {
       id: 20240602,
       date: '2024-06-18',
       attendees: '30',
-      status: 'Declined',
     },
 
     {
       id: 20240603,
       date: '2024-06-18',
       attendees: '30',
-      status: 'New',
     },
     {
       id: 20240603,
       date: '2024-06-18',
       attendees: '30',
-      status: 'New',
     },
     {
       id: 20240603,
       date: '2024-06-18',
       attendees: '30',
-      status: 'Declined',
     },
     {
       id: 20240603,
       date: '2024-06-18',
       attendees: '30',
-      status: 'New',
     },
     {
       id: 20240603,
       date: '2024-06-18',
       attendees: '30',
-      status: 'New',
     },
     {
       id: 20240603,
       date: '2024-06-18',
       attendees: '30',
-      status: 'New',
     },
     {
       id: 20240603,
       date: '2024-06-18',
       attendees: '30',
-      status: 'Declined',
     },
     {
       id: 20240603,
       date: '2024-06-18',
       attendees: '30',
-      status: 'Approved',
     },
     {
       id: 20240603,
       date: '2024-06-18',
       attendees: '30',
-      status: 'Declined',
     },
   ];
 
@@ -154,25 +133,21 @@ function RestaurantInvoice(props) {
       id: 20240602,
       month: 'January',
       receipts: '22',
-      status: 'New',
     },
     {
       id: 20240602,
       month: 'February',
       receipts: '24',
-      status: 'Approved',
     },
     {
       id: 20240602,
       month: 'March',
       receipts: '25',
-      status: 'Pending',
     },
     {
       id: 20240602,
       month: 'April',
       receipts: '25',
-      status: 'Declined',
     },
   ];
 
@@ -182,7 +157,6 @@ function RestaurantInvoice(props) {
     'Invoice Id',
     'Month',
     'Number of Receipts',
-    'Status',
     'Actions',
   ];
 
@@ -196,7 +170,6 @@ function RestaurantInvoice(props) {
     invoice.id,
     invoice.month,
     invoice.receipts,
-    invoice.status,
     <ViewRestaurantInvoiceButton
       invoice={invoice}
       invoiceHeaders={invoiceHeaders}
