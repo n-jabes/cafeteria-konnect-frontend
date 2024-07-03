@@ -894,14 +894,18 @@ export function ViewRestaurantInvoiceButton({
               >
                 x
               </button>
-              <div className="flex flex-col md:flex-row gap-3 md:items-center mb-3">
+              <div className="flex flex-col md:flex-row gap-3 md:items-center mb-2">
                 <h2 className="md:w-1/3 text-lg text-gray-500 font-semibold">
                   <span className="text-sm mr-4">Month: </span>
                   {invoice.month}
                 </h2>
-                <h2 className="flex items-center text-mainGray text-3xl px-8 py-4 font-semibold border-[1px] border-gray-200 w-max">
-                  <span className="text-lg mr-4">Total receipts: </span>
+                <h2 className="flex items-center text-mainGray text-3xl px-4 py-4 font-semibold border-[1px] border-gray-200 w-max">
+                  <span className="text-sm mr-4">Total receipts: </span>
                   {invoiceData.length}
+                </h2>
+                <h2 className="flex items-center text-mainGray text-3xl px-4 py-4 font-semibold border-[1px] border-gray-200 w-max">
+                  <span className="text-sm mr-4">Total attendence: </span>
+                  7890
                 </h2>
               </div>
               <div className="w-full border-2 border-gray-200 rounded-md h-[60vh]">
@@ -975,7 +979,7 @@ export function GuestButtons({ guest }) {
     <div className="flex gap-2">
       <UpdateGuestButton guest={guest} />
       <DeleteButton />
-      <SendToCBMButton guest={guest} />
+      {/* <SendToCBMButton guest={guest} /> */}
     </div>
   );
 }
@@ -983,8 +987,8 @@ export function GuestButtons({ guest }) {
 export function RestaurantButtons({ invoice }) {
   return (
     <div className="flex gap-2 px-0">
-      <ApproveButton invoice={invoice} />
-      <DeclineButton invoice={invoice} />
+      {/* <ApproveButton invoice={invoice} />
+      <DeclineButton invoice={invoice} /> */}
       <ViewInvoiceButton invoice={invoice} />
     </div>
   );
@@ -1006,8 +1010,8 @@ export function ReceiptsButtons({
 }) {
   return (
     <div className="flex gap-2 px-0">
-      <ApproveReceiptButton receipt={receipt} />
-      <DeclineReceiptButton receipt={receipt} />
+      {/* <ApproveReceiptButton receipt={receipt} />
+      <DeclineReceiptButton receipt={receipt} /> */}
       <ViewReceiptButton
         receiptData={receiptData}
         receiptDate={receiptDate}
@@ -1052,8 +1056,7 @@ export function Status({ status }) {
   );
 }
 
-export function AddAttendeeManually({email}) {
-
+export function AddAttendeeManually({ email }) {
   const handleAddManually = () => {
     console.log(email);
   };
@@ -1061,7 +1064,7 @@ export function AddAttendeeManually({email}) {
   return (
     <button
       className="btn btn-primary text-white text-sm float-right bg-[#078ECE] border-2 rounded-md border-[1px] py-2 px-3 hover:bg-white hover:text-[#078ECE] hover:border-[1px] hover:border-[#078ECE]"
-      onClick={()=>handleAddManually()}
+      onClick={() => handleAddManually()}
     >
       + Add
     </button>

@@ -5,6 +5,7 @@ import {
   MainButton,
   SendAllNewGuestsToCBMButton,
 } from '../../components/buttons/Buttons';
+import EmailTemplate from '../../components/email/EmailTemplate';
 
 function Guests(props) {
   const [showForm, setShowForm] = useState(false);
@@ -168,7 +169,7 @@ function Guests(props) {
             >
               x
             </button>
-            <h1 className="text-mainBlue font-semibold text-xl">
+            {/* <h1 className="text-mainBlue font-semibold text-xl">
               Send All Guests To CBM
             </h1>
             <p className="text-sm text-mainGray">
@@ -199,7 +200,9 @@ function Guests(props) {
                   </button>
                 </div>
               </div>
-            </div>
+            </div> */}
+
+            <EmailTemplate />
           </div>
         </div>
       )}
@@ -313,6 +316,7 @@ function Guests(props) {
           </div>
         </div>
       )}
+
       <div className="md:flex md:align-center md:justify-between text-white font-medium mb-3">
         <div className="w-max" onClick={() => setSendGuestsToCBM(true)}>
           <SendAllNewGuestsToCBMButton />
