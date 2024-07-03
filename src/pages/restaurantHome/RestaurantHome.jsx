@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import { FaArrowRightLong } from 'react-icons/fa6';
 import TableComponent from '../../components/table/TableComponent';
-import { MainButton } from '../../components/buttons/Buttons';
+import {
+  AddAttendeeManually,
+  MainButton,
+} from '../../components/buttons/Buttons';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 
@@ -35,18 +38,21 @@ const allAttendence = [
     name: 'Nshuti Ruranga Jabes',
     department: 'Consultant',
     date: '2024-06-04',
+    email: 'nshuti@gmail.com',
   },
   {
     id: 20240602,
     name: 'Ineza Kajuga',
     department: 'intern',
     date: '2024-06-04',
+    email: 'jabes@gmail.com',
   },
   {
     id: 20240602,
     name: 'Marie Honnette',
     department: 'intern',
     date: '2024-06-04',
+    email: 'honnette@gmail.com',
   },
 ];
 
@@ -55,6 +61,12 @@ const attendenceData = allAttendence.map((attendence) => [
   attendence.id,
   attendence.name,
   attendence.department,
+]);
+
+//This is the array through which we will filter when the restaurant manager wants to add an attendee manually
+const attendenceToFilter = allAttendence.map((attendence) => [
+  attendence.email,
+  <AddAttendeeManually />,
 ]);
 
 const validationSchema = Yup.object().shape({
@@ -68,9 +80,11 @@ const validationSchema = Yup.object().shape({
 
 function RestaurantHome(props) {
   const [addNewAttendee, setaddNewAttendee] = useState(false);
+  const [searchInput, setSearchInput] = useState('');
+  const [filteredEmails, setFilteredEmails] = useState([]);
 
-   // Function to get today's date in YYYY-MM-DD format
-   const getFormattedDate = (date) => {
+  // Function to get today's date in YYYY-MM-DD format
+  const getFormattedDate = (date) => {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed
     const day = String(date.getDate()).padStart(2, '0');
@@ -78,7 +92,9 @@ function RestaurantHome(props) {
   };
 
   // Initialize state with the current date formatted as YYYY-MM-DD
-  const [selectedDate, setSelectedDate] = useState(getFormattedDate(new Date()));
+  const [selectedDate, setSelectedDate] = useState(
+    getFormattedDate(new Date())
+  );
 
   const options = [
     { department: 'Intern', label: 'Intern' },
@@ -88,6 +104,19 @@ function RestaurantHome(props) {
   const handleSelectedDate = (event) => {
     setSelectedDate(event.target.value);
     console.log('selected date: ', selectedDate);
+  };
+
+  const filterEmails = (input) => {
+    const filtered = allAttendence.filter((attendence) =>
+      attendence.email.toLowerCase().includes(input.toLowerCase())
+    );
+    setFilteredEmails(filtered);
+  };
+
+  const handleSearchChange = (event) => {
+    const value = event.target.value;
+    setSearchInput(value);
+    filterEmails(value);
   };
 
   return (
@@ -133,7 +162,34 @@ function RestaurantHome(props) {
                   Add New attendee
                 </h1>
 
-                <Formik
+                <div>
+                  <form>
+                    <input
+                      aria-label="Search Email"
+                      type="text"
+                      placeholder="Enter attendee email"
+                      value={searchInput}
+                      onChange={handleSearchChange}
+                      className="border-[1px] px-4 py-2 text-sm outline-none w-full mb-4 rounded-full"
+                    />
+                  </form>
+                  <h2 className="text-gray-500">Matching results</h2>
+                  <ul className="w-full mt-2 h-[30vh] border-2 border-gray-200 overflow-y-auto px-2 py-4 rounded-md">
+                    {filteredEmails.length > 0
+                      ? filteredEmails.map((attendence) => (
+                          <div
+                            className="w-full flex items-center justify-between border-[1px] border-gray-200 my-2 p-2"
+                            key={attendence.id}
+                          >
+                            <li className="text-sm">{attendence.email}</li>
+                            <AddAttendeeManually email={attendence.email} />
+                          </div>
+                        ))
+                      :  <span>No match found</span>}
+                  </ul>
+                </div>
+
+                {/* <Formik
                   initialValues={{
                     names: '',
                     email: '',
@@ -199,7 +255,7 @@ function RestaurantHome(props) {
                       Submit
                     </button>
                   </Form>
-                </Formik>
+                </Formik> */}
               </div>
             </div>
           </div>
