@@ -7,6 +7,8 @@ import { IoPrint } from 'react-icons/io5';
 import ReactToPrint from 'react-to-print';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
+
+
 export function MainButton({ text }) {
   return (
     <button className="btn btn-primary text-white float-right bg-mainBlue border-2 rounded-md mb-2 py-2 px-4 hover:bg-white hover:text-[#4069B0] hover:border-2 hover:border-[#4069B0]">
@@ -848,8 +850,8 @@ export function ViewRestaurantReceiptButton({
               >
                 x
               </button>
-              <div className="flex items-center mb-3">
-                <h2 className="w-1/3 text-lg text-gray-500 font-semibold">
+              <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-0 mb-3">
+                <h2 className="md:w-1/3 text-lg text-gray-500 font-semibold">
                   <span className="text-sm mr-4">Date: </span>
                   {receiptDate}
                 </h2>
@@ -893,8 +895,8 @@ export function ViewRestaurantInvoiceButton({
               >
                 x
               </button>
-              <div className="flex items-center mb-3">
-                <h2 className="w-1/3 text-lg text-gray-500 font-semibold">
+              <div className="flex flex-col md:flex-row gap-3 md:items-center mb-3">
+                <h2 className="md:w-1/3 text-lg text-gray-500 font-semibold">
                   <span className="text-sm mr-4">Month: </span>
                   {invoice.month}
                 </h2>
@@ -904,7 +906,11 @@ export function ViewRestaurantInvoiceButton({
                 </h2>
               </div>
               <div className="w-full border-2 border-gray-200 rounded-md h-[60vh]">
-                <TableComponent headers={invoiceHeaders} data={invoiceData} showFilter={false} />
+                <TableComponent
+                  headers={invoiceHeaders}
+                  data={invoiceData}
+                  showFilter={false}
+                />
               </div>
             </div>
           </div>

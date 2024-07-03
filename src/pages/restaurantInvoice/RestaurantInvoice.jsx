@@ -176,11 +176,7 @@ function RestaurantInvoice(props) {
     },
   ];
 
-  const invoiceHeaders = [
-    'Receipt Id',
-    'Date',
-    'Number of attendees',
-  ];
+  const invoiceHeaders = ['Receipt Id', 'Date', 'Number of attendees'];
 
   const headers = [
     'Invoice Id',
@@ -190,13 +186,11 @@ function RestaurantInvoice(props) {
     'Actions',
   ];
 
-
-  const invoiceReceipts = allReceipts.map((receipt)=> [
+  const invoiceReceipts = allReceipts.map((receipt) => [
     receipt.id,
     receipt.date,
-    receipt.attendees
-  ])
-
+    receipt.attendees,
+  ]);
 
   const invoicesToDisplay = allInvoices.map((invoice) => [
     invoice.id,
@@ -213,12 +207,21 @@ function RestaurantInvoice(props) {
   return (
     <div>
       <div>
-        <div className="flex items-center mb-3">
-          <h2 className="w-1/3 text-lg text-gray-500 font-semibold">
-            <span className="text-sm mr-4">This year</span>
-          </h2>
-          <h2 className="flex items-center text-mainGray text-3xl px-8 py-4 font-semibold border-[1px] border-gray-200 w-max">
-            <span className="text-lg mr-4">Total invoices: </span>
+        <div className="flex flex-col md:flex-row gap-3 md:items-center mb-3">
+          <div className="w-1/3 text-lg text-gray-500 font-semibold">
+            <span className="text-sm mr-4">Select year: </span>
+            <div className="border-[1px] px-4 py-2 w-max">
+              <select className="cursor-pointer outline-none ">
+                <option value="2024">2024</option>
+                <option value="2024">2025</option>
+                <option value="2024">2026</option>
+                <option value="2024">2027</option>
+                <option value="2024">2028</option>
+              </select>
+            </div>
+          </div>
+          <h2 className="flex items-center select-none text-mainGray text-3xl px-8 py-4 font-semibold border-[1px] border-gray-200 w-max">
+            <span className="text-lg mr-4 ">Total invoices: </span>
             {allInvoices.length}
           </h2>
         </div>
