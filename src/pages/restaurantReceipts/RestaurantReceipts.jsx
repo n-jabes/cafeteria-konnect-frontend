@@ -12,63 +12,54 @@ function RestaurantReceipts(props) {
       name: 'Nshuti Ruranga Jabes',
       role: 'intern',
       department: 'FMIS',
-      status: 'on leave',
     },
     {
       id: 2,
       name: 'Jane Smith',
       role: 'Consultant',
-      department: 'Budget',
-      status: 'active',
+      department: 'Budget'
     },
     {
       id: 3,
       name: 'Sam Johnson',
       role: 'intern',
       department: 'Human Resource',
-      status: 'active',
     },
     {
       id: 4,
       name: 'Nshuti Ruranga Jabes',
       role: 'intern',
       department: 'FMIS',
-      status: 'on leave',
     },
     {
       id: 5,
       name: 'Jane Smith',
       role: 'Consultant',
       department: 'Budget',
-      status: 'active',
     },
     {
       id: 6,
       name: 'Sam Johnson',
       role: 'intern',
       department: 'Human Resource',
-      status: 'active',
     },
     {
       id: 7,
       name: 'Nshuti Ruranga Jabes',
       role: 'intern',
       department: 'FMIS',
-      status: 'on leave',
     },
     {
       id: 8,
       name: 'Jane Smith',
       role: 'Consultant',
       department: 'Budget',
-      status: 'active',
     },
     {
       id: 9,
       name: 'Sam Johnson',
       role: 'intern',
       department: 'Human Resource',
-      status: 'active',
     },
   ];
 
@@ -77,74 +68,62 @@ function RestaurantReceipts(props) {
       id: 20240602,
       date: '2024-06-01',
       attendees: '30',
-      status: 'New',
     },
     {
       id: 20240602,
       date: '2024-06-02',
       attendees: '30',
-      status: 'Approved',
     },
     {
       id: 20240602,
       date: '2024-06-03',
       attendees: '30',
-      status: 'Declined',
     },
 
     {
       id: 20240603,
       date: '2024-06-04',
       attendees: '30',
-      status: 'New',
     },
     {
       id: 20240603,
       date: '2024-06-05',
       attendees: '30',
-      status: 'New',
     },
     {
       id: 20240603,
       date: '2024-06-06',
       attendees: '30',
-      status: 'Declined',
     },
     {
       id: 20240603,
       date: '2024-06-07',
       attendees: '30',
-      status: 'New',
     },
     {
       id: 20240603,
       date: '2024-06-08',
       attendees: '30',
-      status: 'New',
     },
     {
       id: 20240603,
       date: '2024-06-09',
       attendees: '30',
-      status: 'Declined',
     },
     {
       id: 20240603,
       date: '2024-06-10',
       attendees: '30',
-      status: 'Approved',
     },
     {
       id: 20240603,
       date: '2024-06-11',
       attendees: '30',
-      status: 'Declined',
     },
     {
       id: 20240603,
       date: '2024-06-12',
       attendees: '30',
-      status: 'New',
     },
   ];
 
@@ -155,13 +134,12 @@ function RestaurantReceipts(props) {
   ]);
 
   const receiptHeaders = ['Attendee Id', 'Name', 'Department'];
-  const headers = ['Receipt Id', 'Date', 'Clients', 'Status', 'Actions'];
+  const headers = ['Receipt Id', 'Date', 'Clients', 'Actions'];
 
   const receiptsToDisplay = allReceipts.map((receipt) => [
     receipt.id,
     receipt.date,
     receipt.attendees,
-    receipt.status,
     <ViewRestaurantReceiptButton
       receipt={receipt}
       receiptHeaders={receiptHeaders}

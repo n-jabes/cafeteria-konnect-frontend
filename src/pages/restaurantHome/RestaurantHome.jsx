@@ -68,14 +68,32 @@ const validationSchema = Yup.object().shape({
 
 function RestaurantHome(props) {
   const [addNewAttendee, setaddNewAttendee] = useState(false);
+
+   // Function to get today's date in YYYY-MM-DD format
+   const getFormattedDate = (date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
+  // Initialize state with the current date formatted as YYYY-MM-DD
+  const [selectedDate, setSelectedDate] = useState(getFormattedDate(new Date()));
+
   const options = [
     { department: 'Intern', label: 'Intern' },
     { department: 'Consultant', label: 'consultant' },
   ];
 
+  const handleSelectedDate = (event) => {
+    setSelectedDate(event.target.value);
+    console.log('selected date: ', selectedDate);
+  };
+
   return (
     <div>
       <h1 className="font-semibold text-mainGray">This Week</h1>
+
       <div className={`w-full px-4 py-2`}>
         <div className="w-full flex flex-col md:flex-row justify-between items-end ">
           <StatsCard title="Today" text="0" style="bg-[#008000] bg-opacity-2" />
@@ -95,6 +113,7 @@ function RestaurantHome(props) {
           </p> */}
         </div>
       </div>
+
       <div className="flex flex-col gap-3">
         <h1 className="font-semibold text-mainGray">
           People who attended today
@@ -185,16 +204,34 @@ function RestaurantHome(props) {
             </div>
           </div>
         )}
-        <div
-          className="w-max mt-4 md:mt-[0px]"
-          onClick={() => setaddNewAttendee(true)}
-        >
-          <div>
-            <MainButton text={'+ Add Attendee Manually'} />
+
+        <div className="flex flex-col md:flex-row gap-3 md:items-center mb-3">
+          <div className="w-1/3 text-lg text-gray-500 font-semibold">
+            <form action="">
+              <div>
+                <label className="text-sm mr-4">Choose date: </label>
+                <input
+                  aria-label="Date"
+                  type="date"
+                  defaultValue={selectedDate}
+                  className="border-[1px] px-4 py-2 cursor-pointer text-sm outline-none"
+                  onChange={handleSelectedDate}
+                />
+              </div>
+            </form>
+          </div>
+          <div
+            className="w-max mt-4 md:mt-[0px]"
+            onClick={() => setaddNewAttendee(true)}
+          >
+            <div>
+              <MainButton text={'+ Add Attendee Manually'} />
+            </div>
           </div>
         </div>
       </div>
-      <div className="w-full flex flex-col md:flex-row gap-4">
+
+      <div className="w-full flex flex-col-reverse md:flex-row gap-4">
         <div className="w-full md:w-3/4 border-[1px] border-gray-200 rounded-md py-3 px-4 mt-4">
           <TableComponent
             title={'Date: 2024-06-04'}
