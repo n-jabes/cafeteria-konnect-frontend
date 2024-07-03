@@ -136,74 +136,62 @@ function Attendees() {
       id: 20240602,
       date: '2024-06-18',
       attendees: '30',
-      status: 'New',
     },
     {
       id: 20240602,
       date: '2024-06-18',
       attendees: '30',
-      status: 'Approved',
     },
     {
       id: 20240602,
       date: '2024-06-18',
       attendees: '30',
-      status: 'Declined',
     },
 
     {
       id: 20240603,
       date: '2024-06-18',
       attendees: '30',
-      status: 'New',
     },
     {
       id: 20240603,
       date: '2024-06-18',
       attendees: '30',
-      status: 'New',
     },
     {
       id: 20240603,
       date: '2024-06-18',
       attendees: '30',
-      status: 'Declined',
     },
     {
       id: 20240603,
       date: '2024-06-18',
       attendees: '30',
-      status: 'New',
     },
     {
       id: 20240603,
       date: '2024-06-18',
       attendees: '30',
-      status: 'New',
     },
     {
       id: 20240603,
       date: '2024-06-18',
       attendees: '30',
-      status: 'New',
     },
     {
       id: 20240603,
       date: '2024-06-18',
       attendees: '30',
-      status: 'Declined',
     },
     {
       id: 20240603,
       date: '2024-06-18',
       attendees: '30',
-      status: 'Approved',
     },
     {
       id: 20240603,
       date: '2024-06-18',
       attendees: '30',
-      status: 'Declined',
     },
   ];
   
@@ -212,7 +200,6 @@ function Attendees() {
     'Receipt Id',
     'Date',
     'Clients',
-    'Status',
     'Actions',
   ];
 
@@ -299,17 +286,10 @@ const receiptAttendeesHeaders = ['id','Names','Department','Scanned']
     receipt.id,
     receipt.date,
     receipt.attendees,
-    receipt.status,
     <ReceiptsButtons receipt={receipt} receiptDate={receipt.date} receiptAttendeesHeaders={receiptAttendeesHeaders} receiptData={receiptAttendees} />
   ]);
 
 //attendance report data to be displayed
-
-
-
-
-
-
   const handleExpectedAttendees = (e) => {
     e.preventDefault();
     if (isNaN(extraPeople)) {

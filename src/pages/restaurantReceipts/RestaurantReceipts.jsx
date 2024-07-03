@@ -12,139 +12,118 @@ function RestaurantReceipts(props) {
       name: 'Nshuti Ruranga Jabes',
       role: 'intern',
       department: 'FMIS',
-      status: 'on leave',
     },
     {
       id: 2,
       name: 'Jane Smith',
       role: 'Consultant',
-      department: 'Budget',
-      status: 'active',
+      department: 'Budget'
     },
     {
       id: 3,
       name: 'Sam Johnson',
       role: 'intern',
       department: 'Human Resource',
-      status: 'active',
     },
     {
       id: 4,
       name: 'Nshuti Ruranga Jabes',
       role: 'intern',
       department: 'FMIS',
-      status: 'on leave',
     },
     {
       id: 5,
       name: 'Jane Smith',
       role: 'Consultant',
       department: 'Budget',
-      status: 'active',
     },
     {
       id: 6,
       name: 'Sam Johnson',
       role: 'intern',
       department: 'Human Resource',
-      status: 'active',
     },
     {
       id: 7,
       name: 'Nshuti Ruranga Jabes',
       role: 'intern',
       department: 'FMIS',
-      status: 'on leave',
     },
     {
       id: 8,
       name: 'Jane Smith',
       role: 'Consultant',
       department: 'Budget',
-      status: 'active',
     },
     {
       id: 9,
       name: 'Sam Johnson',
       role: 'intern',
       department: 'Human Resource',
-      status: 'active',
     },
   ];
 
   const allReceipts = [
     {
       id: 20240602,
-      date: '2024-06-18',
+      date: '2024-06-01',
       attendees: '30',
-      status: 'New',
     },
     {
       id: 20240602,
-      date: '2024-06-18',
+      date: '2024-06-02',
       attendees: '30',
-      status: 'Approved',
     },
     {
       id: 20240602,
-      date: '2024-06-18',
+      date: '2024-06-03',
       attendees: '30',
-      status: 'Declined',
     },
 
     {
       id: 20240603,
-      date: '2024-06-18',
+      date: '2024-06-04',
       attendees: '30',
-      status: 'New',
     },
     {
       id: 20240603,
-      date: '2024-06-18',
+      date: '2024-06-05',
       attendees: '30',
-      status: 'New',
     },
     {
       id: 20240603,
-      date: '2024-06-18',
+      date: '2024-06-06',
       attendees: '30',
-      status: 'Declined',
     },
     {
       id: 20240603,
-      date: '2024-06-18',
+      date: '2024-06-07',
       attendees: '30',
-      status: 'New',
     },
     {
       id: 20240603,
-      date: '2024-06-18',
+      date: '2024-06-08',
       attendees: '30',
-      status: 'New',
     },
     {
       id: 20240603,
-      date: '2024-06-18',
+      date: '2024-06-09',
       attendees: '30',
-      status: 'New',
     },
     {
       id: 20240603,
-      date: '2024-06-18',
+      date: '2024-06-10',
       attendees: '30',
-      status: 'Declined',
     },
     {
       id: 20240603,
-      date: '2024-06-18',
+      date: '2024-06-11',
       attendees: '30',
-      status: 'Approved',
     },
     {
       id: 20240603,
-      date: '2024-06-18',
+      date: '2024-06-12',
       attendees: '30',
-      status: 'Declined',
     },
   ];
 
@@ -155,12 +134,12 @@ function RestaurantReceipts(props) {
   ]);
 
   const receiptHeaders = ['Attendee Id', 'Name', 'Department'];
-  const headers = ['Receipt Id', 'Date', 'Clients', 'Status', 'Actions'];
+  const headers = ['Receipt Id', 'Date', 'Clients', 'Actions'];
+
   const receiptsToDisplay = allReceipts.map((receipt) => [
     receipt.id,
     receipt.date,
     receipt.attendees,
-    receipt.status,
     <ViewRestaurantReceiptButton
       receipt={receipt}
       receiptHeaders={receiptHeaders}
@@ -168,13 +147,30 @@ function RestaurantReceipts(props) {
       receiptDate={receipt.date}
     />,
   ]);
+
   return (
     <div>
       <div>
-        <div className="flex items-center mb-3">
-          <h2 className="w-1/3 text-lg text-gray-500 font-semibold">
-            <span className="text-sm mr-4">This month</span>
-          </h2>
+        <div className="flex flex-col md:flex-row gap-3 md:gap-0 md:items-center mb-3">
+          <div className="md:w-1/3 text-lg text-gray-500 font-semibold">
+            <span className="text-sm mr-4">Select month: </span>
+            <div className="border-[1px] px-4 py-2 w-max">
+              <select className="cursor-pointer outline-none ">
+                <option value="January">Jan</option>
+                <option value="February">Feb</option>
+                <option value="March">Mar</option>
+                <option value="April">Apr</option>
+                <option value="May">May</option>
+                <option value="June">Jun</option>
+                <option value="July">Jul</option>
+                <option value="August">Aug</option>
+                <option value="September">Sept</option>
+                <option value="October">Oct</option>
+                <option value="November">Nov</option>
+                <option value="December">Dec</option>
+              </select>
+            </div>
+          </div>
           <h2 className="flex items-center text-mainGray text-3xl px-8 py-4 font-semibold border-[1px] border-gray-200 w-max">
             <span className="text-lg mr-4">Total receipts: </span>
             {receiptsToDisplay.length}

@@ -8,6 +8,7 @@ import { IoPrint } from 'react-icons/io5';
 import ReactToPrint from 'react-to-print';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
+
 export function MainButton({ text }) {
   return (
     <button className="btn btn-primary text-white float-right bg-mainBlue border-2 rounded-md mb-2 py-2 px-4 hover:bg-white hover:text-[#4069B0] hover:border-2 hover:border-[#4069B0]">
@@ -38,91 +39,91 @@ export function UpdateAttendeeButton({ attendeeDetails }) {
             >
               x
             </button>
-            <div className=' flex-col gap-[0.4rem]'>
-            <h1 className="text-mainBlue font-semibold text-md md:text-xl">
-              Update Attendee:{' '}
-              <span className="text-gray-600">{attendeeDetails.name}</span>
-            </h1>
+            <div className=" flex-col gap-[0.4rem]">
+              <h1 className="text-mainBlue font-semibold text-md md:text-xl">
+                Update Attendee:{' '}
+                <span className="text-gray-600">{attendeeDetails.name}</span>
+              </h1>
 
-            <form action="#" className="w-full">
-              <div className="flex flex-row">
-                <div className="block w-1/2">
-                  <label htmlFor="name" className="text-xs text-gray">
-                    Name:
+              <form action="#" className="w-full">
+                <div className="flex flex-row">
+                  <div className="block w-1/2">
+                    <label htmlFor="name" className="text-xs text-gray">
+                      Name:
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="Enter guest full name"
+                      name="name"
+                      defaultValue={attendeeDetails.name}
+                      className="outline-none text-sm py-2 px-4 border-[1px] border-gray rounded-md"
+                      required
+                    />
+                  </div>
+                  <div className="block w-1/2">
+                    <label htmlFor="name" className="text-xs text-gray">
+                      Email:
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="Enter guest full name"
+                      name="name"
+                      defaultValue={attendeeDetails.name}
+                      className="outline-none text-sm py-2 px-4 border-[1px] border-gray rounded-md"
+                      required
+                    />
+                  </div>
+                </div>
+                <div className="flex flex-row">
+                  <div className="block w-1/2">
+                    <label htmlFor="purpose" className="text-xs text-gray">
+                      Role
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="Enter guest purpose: eg. consultant"
+                      name="purpose"
+                      defaultValue={attendeeDetails.role}
+                      className="outline-none text-sm py-2 px-4 border-[1px] border-gray rounded-md"
+                      required
+                    />
+                  </div>
+                  <div className="block w-1/2">
+                    <label htmlFor="purpose" className="text-xs text-gray">
+                      Department
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="Enter guest purpose: eg. consultant"
+                      name="purpose"
+                      defaultValue={attendeeDetails.role}
+                      className="outline-none text-sm py-2 px-4 border-[1px] border-gray rounded-md"
+                      required
+                    />
+                  </div>
+                </div>
+                <div className="flex flex-col mb-2">
+                  <label htmlFor="status" className="text-xs text-gray">
+                    Status
                   </label>
-                  <input
-                    type="text"
-                    placeholder="Enter guest full name"
-                    name="name"
-                    defaultValue={attendeeDetails.name}
+                  <select
+                    name="status"
+                    defaultValue={attendeeDetails.status}
                     className="outline-none text-sm py-2 px-4 border-[1px] border-gray rounded-md"
                     required
-                  />
+                  >
+                    <option value="active">Active</option>
+                    <option value="on_pause">On Pause</option>
+                    <option value="on_leave">On Leave</option>
+                  </select>
                 </div>
-                <div className="block w-1/2">
-                  <label htmlFor="name" className="text-xs text-gray">
-                    Email:
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="Enter guest full name"
-                    name="name"
-                    defaultValue={attendeeDetails.name}
-                    className="outline-none text-sm py-2 px-4 border-[1px] border-gray rounded-md"
-                    required
-                  />
-                </div>
-              </div>
-              <div className="flex flex-row">
-                <div className="block w-1/2">
-                  <label htmlFor="purpose" className="text-xs text-gray">
-                    Role
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="Enter guest purpose: eg. consultant"
-                    name="purpose"
-                    defaultValue={attendeeDetails.role}
-                    className="outline-none text-sm py-2 px-4 border-[1px] border-gray rounded-md"
-                    required
-                  />
-                </div>
-                <div className="block w-1/2">
-                  <label htmlFor="purpose" className="text-xs text-gray">
-                    Department
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="Enter guest purpose: eg. consultant"
-                    name="purpose"
-                    defaultValue={attendeeDetails.role}
-                    className="outline-none text-sm py-2 px-4 border-[1px] border-gray rounded-md"
-                    required
-                  />
-                </div>
-              </div>
-              <div className="flex flex-col mb-2">
-                <label htmlFor="status" className="text-xs text-gray">
-                  Status
-                </label>
-                <select
-                  name="status"
-                  defaultValue={attendeeDetails.status}
-                  className="outline-none text-sm py-2 px-4 border-[1px] border-gray rounded-md"
-                  required
+                <button
+                  type="submit"
+                  className="btn border-2 border-[#078ECE] bg-[#078ECE] text-md font-semibold text-white py-2 px-4 rounded-md w-full hover:bg-white hover:text-mainBlue mt-3"
                 >
-                  <option value="active">Active</option>
-                  <option value="on_pause">On Pause</option>
-                  <option value="on_leave">On Leave</option>
-                </select>
-              </div>
-              <button
-                type="submit"
-                className="btn border-2 border-[#078ECE] bg-[#078ECE] text-md font-semibold text-white py-2 px-4 rounded-md w-full hover:bg-white hover:text-mainBlue mt-3"
-              >
-                Update Guest
-              </button>
-            </form>
+                  Update Guest
+                </button>
+              </form>
             </div>
           </div>
         </div>
@@ -849,8 +850,8 @@ export function ViewRestaurantReceiptButton({
               >
                 x
               </button>
-              <div className="flex items-center mb-3">
-                <h2 className="w-1/3 text-lg text-gray-500 font-semibold">
+              <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-0 mb-3">
+                <h2 className="md:w-1/3 text-lg text-gray-500 font-semibold">
                   <span className="text-sm mr-4">Date: </span>
                   {receiptDate}
                 </h2>
@@ -894,18 +895,26 @@ export function ViewRestaurantInvoiceButton({
               >
                 x
               </button>
-              <div className="flex items-center mb-3">
-                <h2 className="w-1/3 text-lg text-gray-500 font-semibold">
+              <div className="flex flex-col md:flex-row gap-3 md:items-center mb-2">
+                <h2 className="md:w-1/3 text-lg text-gray-500 font-semibold">
                   <span className="text-sm mr-4">Month: </span>
                   {invoice.month}
                 </h2>
-                <h2 className="flex items-center text-mainGray text-3xl px-8 py-4 font-semibold border-[1px] border-gray-200 w-max">
-                  <span className="text-lg mr-4">Total receipts: </span>
+                <h2 className="flex items-center text-mainGray text-3xl px-4 py-4 font-semibold border-[1px] border-gray-200 w-max">
+                  <span className="text-sm mr-4">Total receipts: </span>
                   {invoiceData.length}
+                </h2>
+                <h2 className="flex items-center text-mainGray text-3xl px-4 py-4 font-semibold border-[1px] border-gray-200 w-max">
+                  <span className="text-sm mr-4">Total attendence: </span>
+                  7890
                 </h2>
               </div>
               <div className="w-full border-2 border-gray-200 rounded-md h-[60vh]">
-                <TableComponent headers={invoiceHeaders} data={invoiceData} showFilter={false} />
+                <TableComponent
+                  headers={invoiceHeaders}
+                  data={invoiceData}
+                  showFilter={false}
+                />
               </div>
             </div>
           </div>
@@ -919,7 +928,11 @@ export function ViewRestaurantInvoiceButton({
   );
 }
 
-export function ViewReceiptButton({ receiptDate,receiptData, receiptAttendeesHeaders }) {
+export function ViewReceiptButton({
+  receiptDate,
+  receiptData,
+  receiptAttendeesHeaders,
+}) {
   const [viewReceipt, setViewReceipt] = useState(false);
 
   // const receiptRef = useRef();
@@ -936,17 +949,20 @@ export function ViewReceiptButton({ receiptDate,receiptData, receiptAttendeesHea
               x
             </button>
             <div className="flex items-center mb-3">
-                <h2 className="w-1/3 text-lg text-gray-500 font-semibold">
-                  <span className="text-sm mr-4">Date: </span>
-                  {receiptDate}
-                </h2>
-                <h2 className="flex items-center text-mainGray text-3xl px-8 py-4 font-semibold border-[1px] border-gray-200 w-max">
-                  <span className="text-lg mr-4">Total attendees: </span>
-                  {receiptData.length}
-                </h2>
-              </div>
-              <div className="w-full border-2 border-gray-200 rounded-md h-[60vh]">
-            <TableComponent headers={receiptAttendeesHeaders} data={receiptData} />
+              <h2 className="w-1/3 text-lg text-gray-500 font-semibold">
+                <span className="text-sm mr-4">Date: </span>
+                {receiptDate}
+              </h2>
+              <h2 className="flex items-center text-mainGray text-3xl px-8 py-4 font-semibold border-[1px] border-gray-200 w-max">
+                <span className="text-lg mr-4">Total attendees: </span>
+                {receiptData.length}
+              </h2>
+            </div>
+            <div className="w-full border-2 border-gray-200 rounded-md h-[60vh]">
+              <TableComponent
+                headers={receiptAttendeesHeaders}
+                data={receiptData}
+              />
             </div>
           </div>
         </div>
@@ -964,7 +980,7 @@ export function GuestButtons({ guest }) {
     <div className="flex gap-2">
       <UpdateGuestButton guest={guest} />
       <DeleteButton />
-      <SendToCBMButton guest={guest} />
+      {/* <SendToCBMButton guest={guest} /> */}
     </div>
   );
 }
@@ -972,8 +988,8 @@ export function GuestButtons({ guest }) {
 export function RestaurantButtons({ invoice }) {
   return (
     <div className="flex gap-2 px-0">
-      <ApproveButton invoice={invoice} />
-      <DeclineButton invoice={invoice} />
+      {/* <ApproveButton invoice={invoice} />
+      <DeclineButton invoice={invoice} /> */}
       <ViewInvoiceButton invoice={invoice} />
     </div>
   );
@@ -987,12 +1003,21 @@ export function RestaurantReceiptButtons({ receipt }) {
   );
 }
 
-export function ReceiptsButtons({ receiptDate, receiptData, receiptAttendeesHeaders, receipt}) {
+export function ReceiptsButtons({
+  receiptDate,
+  receiptData,
+  receiptAttendeesHeaders,
+  receipt,
+}) {
   return (
     <div className="flex gap-2 px-0">
-      <ApproveReceiptButton receipt={receipt} />
-      <DeclineReceiptButton receipt={receipt} />
-      <ViewReceiptButton receiptData={receiptData} receiptDate={receiptDate} receiptAttendeesHeaders={receiptAttendeesHeaders} />
+      {/* <ApproveReceiptButton receipt={receipt} />
+      <DeclineReceiptButton receipt={receipt} /> */}
+      <ViewReceiptButton
+        receiptData={receiptData}
+        receiptDate={receiptDate}
+        receiptAttendeesHeaders={receiptAttendeesHeaders}
+      />
     </div>
   );
 }
@@ -1029,6 +1054,21 @@ export function Status({ status }) {
         <p className="mx-auto text-[0.7rem]">{status}</p>
       </div>
     </div>
+  );
+}
+
+export function AddAttendeeManually({ email }) {
+  const handleAddManually = () => {
+    console.log(email);
+  };
+
+  return (
+    <button
+      className="btn btn-primary text-white text-sm float-right bg-[#078ECE] border-2 rounded-md border-[1px] py-2 px-3 hover:bg-white hover:text-[#078ECE] hover:border-[1px] hover:border-[#078ECE]"
+      onClick={() => handleAddManually()}
+    >
+      + Add
+    </button>
   );
 }
 

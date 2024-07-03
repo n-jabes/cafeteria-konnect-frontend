@@ -10,13 +10,14 @@ import Layout from './components/layout/Layout';
 import HRRoutes from './pages/HRRoutes';
 import Login from './pages/auth/Login';
 import RestaurantRoutes from './pages/RestaurantRoutes';
-import { FaChartBar } from 'react-icons/fa';
+import { FaChartBar, FaFileInvoice } from 'react-icons/fa';
 import { FaFileInvoiceDollar, FaPeopleGroup } from 'react-icons/fa6';
 import { BsPeopleFill } from 'react-icons/bs';
+import { IoReceipt } from 'react-icons/io5';
 
 function App() {
   const isAuthenticated = true;
-  const role = 'hr'; 
+  const role = 'hr';
   // const role = 'restaurant';
 
   const hrHeaderTitle = 'HR Dashboard';
@@ -58,22 +59,20 @@ function App() {
     {
       id: 2,
       destination: '/restaurant/receipts',
-      icon: <FaPeopleGroup className="mr-2" />,
+      icon: <IoReceipt className="mr-2" />,
       title: 'Receipts',
     },
     {
       id: 3,
       destination: '/restaurant/invoice',
-      icon: <FaPeopleGroup className="mr-2" />,
+      icon: <FaFileInvoice className="mr-2" />,
       title: 'Invoice',
     },
-
   ];
 
   return (
     <Router>
       <AuthProvider>
-
         {/* hr routes */}
         {role === 'hr' && (
           <Routes>
@@ -85,7 +84,10 @@ function App() {
               path="/hr/*"
               element={
                 isAuthenticated ? (
-                  <Layout sidebarFields={hrSidebarFields} headerTitle={hrHeaderTitle}>
+                  <Layout
+                    sidebarFields={hrSidebarFields}
+                    headerTitle={hrHeaderTitle}
+                  >
                     <HRRoutes isAuthenticated={isAuthenticated} />
                   </Layout>
                 ) : (
@@ -117,7 +119,10 @@ function App() {
               path="/restaurant/*"
               element={
                 isAuthenticated ? (
-                  <Layout sidebarFields={restaurantSidebarFields} headerTitle={restaurantHeaderTitle}>
+                  <Layout
+                    sidebarFields={restaurantSidebarFields}
+                    headerTitle={restaurantHeaderTitle}
+                  >
                     <RestaurantRoutes isAuthenticated={isAuthenticated} />
                   </Layout>
                 ) : (
