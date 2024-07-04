@@ -1,5 +1,7 @@
 import { React, useRef, useState } from 'react';
 import emailjs from '@emailjs/browser';
+import Toast from './../toast/Toast';
+import { Bounce, toast } from 'react-toastify';
 
 function EmailTemplate(props) {
   const [senderName, setSenderName] = useState('');
@@ -20,6 +22,17 @@ function EmailTemplate(props) {
     emailjs.sendForm(serviceId, templateId, form.current, publicKey).then(
       () => {
         console.log('Email sent successfully!');
+        toast.success('Email sent successfully!', {
+          position: 'top-center',
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: 'light',
+          transition: Bounce,
+        });
         setSenderName('');
         setSenderEmail('');
         setReceiverName('');
@@ -28,12 +41,26 @@ function EmailTemplate(props) {
       },
       (error) => {
         console.log('FAILED...', error.text);
+        toast.error('Failed to send email!', {
+          position: 'top-center',
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: 'light',
+          transition: Bounce,
+        });
       }
     );
   };
 
   return (
     <form ref={form} onSubmit={sendEmail} className="mt-6 md:mt-2">
+      {/* toast to display the notification when toastify is called */}
+      <Toast />
+
       {/* sender info */}
       <div className="flex flex-col md:flex-row justify-between items-center">
         <div className="flex flex-col mb-3 w-full md:w-[48%]">
