@@ -1,8 +1,15 @@
 // src/components/Header.jsx
-import React from 'react';
-import { FaBars } from 'react-icons/fa';
+import React, { useState } from 'react';
+import { FaBars, FaBell } from 'react-icons/fa';
+import { ViewNotification } from '../buttons/Buttons';
 
 const Header = ({ toggleSidebar, headerTitle }) => {
+
+  const [viewNotification, setViewNotificattion] = useState(false);
+
+
+
+
   return (
     <header className="bg-white shadow-md p-4 flex w-[100vw] md:w-full justify-between items-center">
       <div className="flex items-center">
@@ -13,7 +20,15 @@ const Header = ({ toggleSidebar, headerTitle }) => {
           {headerTitle}
         </h1>
       </div>
+
+
+      {/* <div>
+        react-icons/fa
+      </div> */}
       <div className="flex items-center space-x-3 border-l-2 px-2">
+        <div>
+        <ViewNotification />
+        </div>
         <img
           src="/profile.jpg"
           alt="Profile"

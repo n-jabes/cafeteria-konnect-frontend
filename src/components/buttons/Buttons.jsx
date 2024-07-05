@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import TableComponent from '../table/TableComponent';
 import attendeesDb from '../../db/attendee';
 import { FaRegEye } from 'react-icons/fa6';
+import {FaBell, FaTimes} from 'react-icons/fa';
 import InvoiceTable from '../table/InvoiceTable';
 import { IoPrint } from 'react-icons/io5';
 import ReactToPrint from 'react-to-print';
@@ -894,14 +895,18 @@ export function ViewRestaurantInvoiceButton({
               >
                 x
               </button>
-              <div className="flex flex-col md:flex-row gap-3 md:items-center mb-3">
+              <div className="flex flex-col md:flex-row gap-3 md:items-center mb-2">
                 <h2 className="md:w-1/3 text-lg text-gray-500 font-semibold">
                   <span className="text-sm mr-4">Month: </span>
                   {invoice.month}
                 </h2>
-                <h2 className="flex items-center text-mainGray text-3xl px-8 py-4 font-semibold border-[1px] border-gray-200 w-max">
-                  <span className="text-lg mr-4">Total receipts: </span>
+                <h2 className="flex items-center text-mainGray text-3xl px-4 py-4 font-semibold border-[1px] border-gray-200 w-max">
+                  <span className="text-sm mr-4">Total receipts: </span>
                   {invoiceData.length}
+                </h2>
+                <h2 className="flex items-center text-mainGray text-3xl px-4 py-4 font-semibold border-[1px] border-gray-200 w-max">
+                  <span className="text-sm mr-4">Total attendence: </span>
+                  7890
                 </h2>
               </div>
               <div className="w-full border-2 border-gray-200 rounded-md h-[60vh]">
@@ -975,7 +980,7 @@ export function GuestButtons({ guest }) {
     <div className="flex gap-2">
       <UpdateGuestButton guest={guest} />
       <DeleteButton />
-      <SendToCBMButton guest={guest} />
+      {/* <SendToCBMButton guest={guest} /> */}
     </div>
   );
 }
@@ -983,8 +988,8 @@ export function GuestButtons({ guest }) {
 export function RestaurantButtons({ invoice }) {
   return (
     <div className="flex gap-2 px-0">
-      <ApproveButton invoice={invoice} />
-      <DeclineButton invoice={invoice} />
+      {/* <ApproveButton invoice={invoice} />
+      <DeclineButton invoice={invoice} /> */}
       <ViewInvoiceButton invoice={invoice} />
     </div>
   );
@@ -1006,8 +1011,8 @@ export function ReceiptsButtons({
 }) {
   return (
     <div className="flex gap-2 px-0">
-      <ApproveReceiptButton receipt={receipt} />
-      <DeclineReceiptButton receipt={receipt} />
+      {/* <ApproveReceiptButton receipt={receipt} />
+      <DeclineReceiptButton receipt={receipt} /> */}
       <ViewReceiptButton
         receiptData={receiptData}
         receiptDate={receiptDate}
@@ -1052,8 +1057,7 @@ export function Status({ status }) {
   );
 }
 
-export function AddAttendeeManually({email}) {
-
+export function AddAttendeeManually({ email }) {
   const handleAddManually = () => {
     console.log(email);
   };
@@ -1061,9 +1065,153 @@ export function AddAttendeeManually({email}) {
   return (
     <button
       className="btn btn-primary text-white text-sm float-right bg-[#078ECE] border-2 rounded-md border-[1px] py-2 px-3 hover:bg-white hover:text-[#078ECE] hover:border-[1px] hover:border-[#078ECE]"
-      onClick={()=>handleAddManually()}
+      onClick={() => handleAddManually()}
     >
       + Add
     </button>
   );
+}
+
+export function ViewNotification(){
+  const [ViewNotification, SetViewNotification] = useState(false);
+
+
+  const RoundedIcon = ({ text, style }) => (
+    <div
+      className={`${style} text-white rounded-full h-10 w-10 flex items-center justify-center`}
+    >
+      {text}
+    </div>
+  );
+  
+  const initialNotifications = [
+    {
+      id: 1,
+      icon: <RoundedIcon text="R" style="bg-[#008000]" />,
+      text: 'Restaurant manager sent a new invoice',
+      time: 'just now',
+    },
+    {
+      id: 2,
+      icon: <RoundedIcon text="C" style="bg-[#E79602]" />,
+      text: 'CPM acted on your request to approve new guests',
+      time: '1 week ago',
+    },
+    {
+      id: 3,
+      icon: <RoundedIcon text="R" style="bg-[#008000]" />,
+      text: 'Restaurant manager sent a new invoice',
+      time: '07/06/24',
+    },
+    {
+      id: 4,
+      icon: <RoundedIcon text="R" style="bg-[#008000]" />,
+      text: 'Restaurant manager sent a new invoice',
+      time: '07/06/24',
+    },
+    {
+      id: 5,
+      icon: <RoundedIcon text="C" style="bg-[#E79602]" />,
+      text: 'CPM acted on your request to approve new guests',
+      time: '1 week ago',
+    },
+    {
+      id: 6,
+      icon: <RoundedIcon text="R" style="bg-[#008000]" />,
+      text: 'Restaurant manager sent a new invoice',
+      time: '07/06/24',
+    },
+    {
+      id: 7,
+      icon: <RoundedIcon text="R" style="bg-[#008000]" />,
+      text: 'Restaurant manager sent a new invoice',
+      time: '07/06/24',
+    },
+  ];
+
+
+  const [notifications, setNotifications] = useState(initialNotifications);
+  const [visibleNotifications, setVisibleNotifications] = useState(4);  const handleNotificationClose = (id) => {
+    const newNotifications = notifications.filter(notification => notification.id !== id);
+    setNotifications(newNotifications);
+    setVisibleNotifications(newNotifications.length < 4 ? newNotifications.length : visibleNotifications);
+  };
+
+  const handleViewMore = () => {
+    setVisibleNotifications(notifications.length);
+  };
+
+  const handleViewLess = () => {
+    setVisibleNotifications(4);
+  };
+
+
+
+  //notification card
+  const NotificationCard = ({ icon, text, time, onClose }) => (
+    <div className="relative flex items-start p-2 mb-4 shadow-lg rounded-lg bg-white  bg-opacity-20">
+      <div className="mr-4">{icon}</div>
+      <div className="flex-1">
+        <p className="text-sm w-[85%] text-gray-700">{text}</p>
+        <p className="text-xs text-gray-500 mt-1 float-right">{time}</p>
+      </div>
+      <button
+        className="absolute top-2 right-2 text-[#D9E1EF] bg-[#626262] hover:bg-darkRed hover:text-white"
+        onClick={onClose}
+      >
+        <FaTimes size={12} />
+      </button>
+    </div>
+  );
+
+  return(
+    <div>
+      {ViewNotification && (
+        <div className='absolute w-[27%] h-[26rem] bg-white z-40 border-2 shadow-md top-[4.5rem] right-10'>
+         
+         <div className='p-3'>
+          <h1 className='font-bold text-mainBlue'>Notifications</h1>
+         </div>
+         <button
+                className="close border-2 border-mainRed rounded-md px-2 text-mainRed absolute right-2 top-2"
+                onClick={() => SetViewNotification(false)}
+              >
+                x
+              </button>
+
+              <div className=' mx-auto'>
+              {notifications.length > 0 && (
+              <div className="w-full lg:w-full mx-auto md:px-4 md:block z-40">
+            <div className=" rounded w-full h-full max-h-[60vh] lg:max-h-[55vh] overflow-y-auto">
+              {notifications.slice(0, visibleNotifications).map(notification => (
+                <NotificationCard
+                  key={notification.id}
+                  icon={notification.icon}  
+                  text={notification.text}
+                  time={notification.time}
+                  onClose={() => handleNotificationClose(notification.id)}
+                />
+              ))}
+              {notifications.length > 4 && visibleNotifications < notifications.length && (
+                <p className='float-right text-[#4069B0] cursor-pointer text-sm hover:underline' onClick={handleViewMore}>view more</p>
+              )}
+              {notifications.length > 4 && visibleNotifications > 4 && (
+                <p className='float-left text-[#4069B0] cursor-pointer text-sm hover:underline' onClick={handleViewLess}>view less</p>
+              )}
+            </div>
+          </div>
+              )}
+              </div>
+       
+
+        </div>
+      )}
+      <button onClick={()=>{
+         SetViewNotification(true)
+        }}>
+          <FaBell className="text-black mr-3 text-2xl" />
+        </button>
+    </div>
+  )
+
 }

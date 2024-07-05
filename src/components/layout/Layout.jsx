@@ -23,6 +23,7 @@ const Layout = ({ children, sidebarFields, headerTitle }) => {
         <main className="flex-1 p-4 overflow-y-auto w-[100vw] md:w-full ">
           {children}
         </main>
+        
       </div>
     </div>
   );
