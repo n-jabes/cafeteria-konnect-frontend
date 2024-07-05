@@ -33,13 +33,13 @@ function Guests(props) {
       id: 3,
       name: 'Sam Johnson',
       purpose: 'intern',
-      status: 'Declined',
+      status: 'New',
       startDate: '2024-01-01',
       endDate: '2024-01-10',
     },
     {
       id: 4,
-      name: 'Nshuti Ruranga Jabes',
+      name: 'Imanzi Kenny',
       purpose: 'Consultant',
       status: 'New',
       startDate: '2024-01-01',
@@ -71,7 +71,7 @@ function Guests(props) {
     },
     {
       id: 4,
-      name: 'Nshuti Ruranga Jabes',
+      name: 'Bizy Henriette',
       purpose: 'Consultant',
       status: 'New',
       startDate: '2024-01-01',
@@ -202,7 +202,7 @@ function Guests(props) {
               </div>
             </div> */}
 
-            <EmailTemplate />
+            <EmailTemplate headers={sendToCBMHeaders} guests={sendToCBMData} />
           </div>
         </div>
       )}
