@@ -2,12 +2,14 @@ import React, { useEffect, useRef, useState } from 'react';
 import TableComponent from '../table/TableComponent';
 import attendeesDb from '../../db/attendee';
 import { FaRegEye } from 'react-icons/fa6';
-import {FaBell, FaTimes} from 'react-icons/fa';
+import { FaBell, FaEdit, FaTimes } from 'react-icons/fa';
 import InvoiceTable from '../table/InvoiceTable';
 import { IoPrint } from 'react-icons/io5';
+import { GoTrash } from 'react-icons/go';
 import ReactToPrint from 'react-to-print';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
+import { BsQrCode } from 'react-icons/bs';
 
 export function MainButton({ text }) {
   return (
@@ -129,10 +131,10 @@ export function UpdateAttendeeButton({ attendeeDetails }) {
         </div>
       )}
       <button
-        className="btn btn-primary hover:bg-mainBlue hover:text-white  border-mainBlue border-[1px] rounded-[8px] py-[2px] px-[6px] text-mainBlue font-medium text-xs"
+        className="btn btn-primary hover:bg-mainBlue hover:text-white  rounded-[8px] py-1 px-[4px] text-mainBlue font-medium text-lg"
         onClick={() => setShowUpdateForm(true)}
       >
-        update
+        <FaEdit />
       </button>
     </div>
   );
@@ -230,8 +232,8 @@ export function UpdateGuestButton({ guest }) {
 
 export function DeleteButton() {
   return (
-    <button className="btn btn-primary hover:bg-darkRed hover:text-white  border-darkRed border-[1px] rounded-[8px] py-[2px] px-[6px] text-darkRed font-medium text-xs">
-      delete
+    <button className="btn btn-primary hover:bg-darkRed hover:text-white rounded-[8px] py-1 px-[4px]  text-darkRed font-medium text-lg">
+      <GoTrash />
     </button>
   );
 }
@@ -443,9 +445,52 @@ export function ViewAttendeeButton({ attendeeDetails }) {
         </div>
       )}
       <FaRegEye
-        className="text-[16px] text-gray-600 mx-2 cursor-pointer"
+        className="text-2xl text-gray-600 mx-2 cursor-pointer py-1 px-[4px] hover:bg-gray-400 hover:text-white rounded-md"
         onClick={() => setViewButton(true)}
       />
+    </div>
+  );
+}
+
+export function AttendeeQrCodeButton({ attendeeDetails }) {
+  const [showViewForm, setShowViewForm] = useState(false);
+
+  return (
+    <div>
+      {showViewForm && (
+        <div className="fixed top-0 left-0 bg-bgBlue z-[40] h-screen w-screen overflow-y-auto overflow-x-auto flex items-center justify-center">
+          <div className="relative bg-white w-[40%] lg:w-[50%] h-[80vh] px-[2.5%] py-[2.5%] rounded-md">
+            <div className="mx-auto flex flex-col h-full gap-4">
+              <button
+                className="close border-2 border-mainRed rounded-md px-2 text-mainRed absolute right-4 top-4"
+                onClick={() => setShowViewForm(false)}
+              >
+                x
+              </button>
+
+              <h1 className="text-gray-500 font-semibold text-md md:text-[1.1rem]">
+                Qr Code For:
+                <span className=" text-mainBlue pl-2">
+                  {attendeeDetails.name}
+                </span>
+              </h1>
+            </div>
+          </div>
+        </div>
+      )}
+      {/* <button
+        className="text-xs text-[#078ECE] mx-2 cursor-pointer py-1 px-[4px] hover:bg-gray-400  rounded-md border-[1px] border-green-200 hover:bg-[#078ECE] hover:text-white"
+        onClick={() => setShowViewForm(true)}
+      >
+        Qr Code
+      </button> */}
+
+      <button
+        className="text-lg text-gray-500 mx-2 cursor-pointer  rounded-md hover:text-[#078ECE] "
+        onClick={() => setShowViewForm(true)}
+      >
+        <BsQrCode />
+      </button>
     </div>
   );
 }
@@ -1024,10 +1069,11 @@ export function ReceiptsButtons({
 
 export function AttendeeButtons({ attendeeDetails }) {
   return (
-    <div className="flex gap-2">
+    <div className="flex gap-2 items-center">
       <UpdateAttendeeButton attendeeDetails={attendeeDetails} />
       <DeleteButton />
       <ViewAttendeeButton attendeeDetails={attendeeDetails} />
+      <AttendeeQrCodeButton attendeeDetails={attendeeDetails} />
     </div>
   );
 }
@@ -1072,9 +1118,8 @@ export function AddAttendeeManually({ email }) {
   );
 }
 
-export function ViewNotification(){
+export function ViewNotification() {
   const [ViewNotification, SetViewNotification] = useState(false);
-
 
   const RoundedIcon = ({ text, style }) => (
     <div
@@ -1083,7 +1128,7 @@ export function ViewNotification(){
       {text}
     </div>
   );
-  
+
   const initialNotifications = [
     {
       id: 1,
@@ -1129,12 +1174,18 @@ export function ViewNotification(){
     },
   ];
 
-
   const [notifications, setNotifications] = useState(initialNotifications);
-  const [visibleNotifications, setVisibleNotifications] = useState(4);  const handleNotificationClose = (id) => {
-    const newNotifications = notifications.filter(notification => notification.id !== id);
+  const [visibleNotifications, setVisibleNotifications] = useState(4);
+  const handleNotificationClose = (id) => {
+    const newNotifications = notifications.filter(
+      (notification) => notification.id !== id
+    );
     setNotifications(newNotifications);
-    setVisibleNotifications(newNotifications.length < 4 ? newNotifications.length : visibleNotifications);
+    setVisibleNotifications(
+      newNotifications.length < 4
+        ? newNotifications.length
+        : visibleNotifications
+    );
   };
 
   const handleViewMore = () => {
@@ -1144,8 +1195,6 @@ export function ViewNotification(){
   const handleViewLess = () => {
     setVisibleNotifications(4);
   };
-
-
 
   //notification card
   const NotificationCard = ({ icon, text, time, onClose }) => (
@@ -1164,54 +1213,65 @@ export function ViewNotification(){
     </div>
   );
 
-  return(
+  return (
     <div>
       {ViewNotification && (
-        <div className='absolute w-[27%] h-[26rem] bg-white z-40 border-2 shadow-md top-[4.5rem] right-10'>
-         
-         <div className='p-3'>
-          <h1 className='font-bold text-mainBlue'>Notifications</h1>
-         </div>
-         <button
-                className="close border-2 border-mainRed rounded-md px-2 text-mainRed absolute right-2 top-2"
-                onClick={() => SetViewNotification(false)}
-              >
-                x
-              </button>
-
-              <div className=' mx-auto'>
-              {notifications.length > 0 && (
-              <div className="w-full lg:w-full mx-auto md:px-4 md:block z-40">
-            <div className=" rounded w-full h-full max-h-[60vh] lg:max-h-[55vh] overflow-y-auto">
-              {notifications.slice(0, visibleNotifications).map(notification => (
-                <NotificationCard
-                  key={notification.id}
-                  icon={notification.icon}  
-                  text={notification.text}
-                  time={notification.time}
-                  onClose={() => handleNotificationClose(notification.id)}
-                />
-              ))}
-              {notifications.length > 4 && visibleNotifications < notifications.length && (
-                <p className='float-right text-[#4069B0] cursor-pointer text-sm hover:underline' onClick={handleViewMore}>view more</p>
-              )}
-              {notifications.length > 4 && visibleNotifications > 4 && (
-                <p className='float-left text-[#4069B0] cursor-pointer text-sm hover:underline' onClick={handleViewLess}>view less</p>
-              )}
-            </div>
+        <div className="absolute w-[27%] h-[26rem] bg-white z-40 border-2 shadow-md top-[4.5rem] right-10">
+          <div className="p-3">
+            <h1 className="font-bold text-mainBlue">Notifications</h1>
           </div>
-              )}
-              </div>
-       
+          <button
+            className="close border-2 border-mainRed rounded-md px-2 text-mainRed absolute right-2 top-2"
+            onClick={() => SetViewNotification(false)}
+          >
+            x
+          </button>
 
+          <div className=" mx-auto">
+            {notifications.length > 0 && (
+              <div className="w-full lg:w-full mx-auto md:px-4 md:block z-40">
+                <div className=" rounded w-full h-full max-h-[60vh] lg:max-h-[55vh] overflow-y-auto">
+                  {notifications
+                    .slice(0, visibleNotifications)
+                    .map((notification) => (
+                      <NotificationCard
+                        key={notification.id}
+                        icon={notification.icon}
+                        text={notification.text}
+                        time={notification.time}
+                        onClose={() => handleNotificationClose(notification.id)}
+                      />
+                    ))}
+                  {notifications.length > 4 &&
+                    visibleNotifications < notifications.length && (
+                      <p
+                        className="float-right text-[#4069B0] cursor-pointer text-sm hover:underline"
+                        onClick={handleViewMore}
+                      >
+                        view more
+                      </p>
+                    )}
+                  {notifications.length > 4 && visibleNotifications > 4 && (
+                    <p
+                      className="float-left text-[#4069B0] cursor-pointer text-sm hover:underline"
+                      onClick={handleViewLess}
+                    >
+                      view less
+                    </p>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       )}
-      <button onClick={()=>{
-         SetViewNotification(true)
-        }}>
-          <FaBell className="text-black mr-3 text-2xl" />
-        </button>
+      <button
+        onClick={() => {
+          SetViewNotification(true);
+        }}
+      >
+        <FaBell className="text-black mr-3 text-2xl" />
+      </button>
     </div>
-  )
-
+  );
 }
