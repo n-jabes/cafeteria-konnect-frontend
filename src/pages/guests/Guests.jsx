@@ -249,6 +249,7 @@ function Guests(props) {
                   </label>
                   <input
                     type="text"
+                    id="name"
                     placeholder="Enter guest full name"
                     name="name"
                     className="outline-none text-sm py-2 px-4 border-[1px] border-gray rounded-md"
@@ -257,13 +258,14 @@ function Guests(props) {
                 </div>
 
                 <div className="flex flex-col mb-2">
-                  <label htmlFor="name" className="text-xs text-gray">
+                  <label htmlFor="purpose" className="text-xs text-gray">
                     Purpose
                   </label>
                   <input
                     type="text"
-                    placeholder="Enter guest purpose: eg. consultant"
-                    name="name"
+                    id="purpose"
+                    placeholder="Enter guest purpose: e.g. consultant"
+                    name="purpose"
                     className="outline-none text-sm py-2 px-4 border-[1px] border-gray rounded-md"
                     required
                   />
@@ -271,30 +273,72 @@ function Guests(props) {
 
                 <div className="flex items-center justify-between">
                   <div className="w-[48%] flex flex-col mb-2">
-                    <label htmlFor="name" className="text-xs text-gray">
+                    <label htmlFor="startDate" className="text-xs text-gray">
                       Starting date
                     </label>
                     <input
                       type="date"
+                      id="startDate"
                       placeholder="Arrival"
-                      name="name"
+                      name="startDate"
                       className="outline-none text-sm py-2 px-4 border-[1px] border-gray rounded-md"
                       required
                     />
                   </div>
                   <div className="w-[48%] flex flex-col mb-2">
-                    <label htmlFor="name" className="text-xs text-gray">
+                    <label htmlFor="endDate" className="text-xs text-gray">
                       End date
                     </label>
                     <input
                       type="date"
-                      placeholder="Depature"
-                      name="name"
+                      id="endDate"
+                      placeholder="Departure"
+                      name="endDate"
                       className="outline-none text-sm py-2 px-4 border-[1px] border-gray rounded-md"
                       required
                     />
                   </div>
                 </div>
+
+                <fieldset className="my-2">
+                  <legend className="text-xs text-gray">
+                    Will send to CBM?
+                  </legend>
+                  <div className="flex gap-8 border-[1px] border-gray-300 w-max py-2 px-4 rounded-md">
+                    <div className="flex gap-3 items-center">
+                      <input
+                        type="radio"
+                        id="sendToCBMYes"
+                        name="sendToCBM"
+                        className="cursor-pointer"
+                        value="yes"
+                      />
+                      <label
+                        htmlFor="sendToCBMYes"
+                        className="text-xs text-gray"
+                      >
+                        Yes
+                      </label>
+                    </div>
+                    <div className="flex gap-3 items-center">
+                      <input
+                        type="radio"
+                        id="sendToCBMNo"
+                        name="sendToCBM"
+                        className="cursor-pointer"
+                        value="no"
+                        defaultChecked
+                      />
+                      <label
+                        htmlFor="sendToCBMNo"
+                        className="text-xs text-gray"
+                      >
+                        No
+                      </label>
+                    </div>
+                  </div>
+                </fieldset>
+
                 <button
                   type="submit"
                   className="btn border-2 border-[#078ECE] bg-[#078ECE] font-semibold text-white py-2 px-4 rounded-md w-full hover:bg-white hover:text-[#078ECE] mt-3"
