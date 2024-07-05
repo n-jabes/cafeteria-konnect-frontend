@@ -2,7 +2,13 @@ import React, { useEffect, useRef, useState } from 'react';
 import TableComponent from '../table/TableComponent';
 import attendeesDb from '../../db/attendee';
 import { FaRegEye } from 'react-icons/fa6';
-import { FaBell, FaEdit, FaTimes } from 'react-icons/fa';
+import {
+  FaBell,
+  FaDownload,
+  FaEdit,
+  FaTimes,
+  FaWhatsapp,
+} from 'react-icons/fa';
 import InvoiceTable from '../table/InvoiceTable';
 import { IoPrint } from 'react-icons/io5';
 import { GoTrash } from 'react-icons/go';
@@ -10,6 +16,7 @@ import ReactToPrint from 'react-to-print';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { BsQrCode } from 'react-icons/bs';
+import QRCode from 'qrcode';
 
 export function MainButton({ text }) {
   return (
@@ -322,7 +329,7 @@ export function ViewAttendeeButton({ attendeeDetails }) {
       {showViewForm && (
         <div className="fixed top-0 left-0 bg-bgBlue z-[40] h-screen w-screen overflow-y-auto overflow-x-auto flex items-center justify-center">
           <div className="relative bg-white w-[40%] lg:w-[50%] h-[80vh] px-[2.5%] py-[2.5%] rounded-md">
-            <div className="mx-auto flex flex-col h-full gap-4">
+            <div className="mx-auto flex flex-col h-full gap-4 overflow-y-auto ">
               <button
                 className="close border-2 border-mainRed rounded-md px-2 text-mainRed absolute right-4 top-4"
                 onClick={() => setViewButton(false)}
@@ -348,7 +355,7 @@ export function ViewAttendeeButton({ attendeeDetails }) {
               >
                 {({ values, handleChange, errors, touched, handleSubmit }) => (
                   <form onSubmit={handleSubmit}>
-                    <div className="w-[85%] flex flex-row">
+                    <div className="w-[85%] flex flex-col md:flex-row">
                       <div className="w-[37%] ">
                         <label
                           htmlFor="startDate"
@@ -393,7 +400,7 @@ export function ViewAttendeeButton({ attendeeDetails }) {
                           onChange={handleChange}
                           required
                         />
-                        {errors.finalDateDate && touched.finalDate && (
+                        {errors.finalDate && touched.finalDate && (
                           <div className="text-red-500 text-xs">
                             {errors.finalDate}
                           </div>
@@ -403,7 +410,7 @@ export function ViewAttendeeButton({ attendeeDetails }) {
                         <input
                           type="Submit"
                           value="Filter"
-                          className="text-sm text-white w-[8rem] h-[2rem] border-[1px] bg-mainBlue rounded-[0.15rem] capitalize hover:cursor-pointer"
+                          className="text-sm text-white w-[8rem] h-[2rem] border-[1px] mt-2 md:mt-0 bg-mainBlue rounded-[0.15rem] capitalize hover:cursor-pointer"
                         />
                       </div>
                     </div>
@@ -411,8 +418,8 @@ export function ViewAttendeeButton({ attendeeDetails }) {
                 )}
               </Formik>
 
-              <div className="mt-2 flex flex-row w-full">
-                <div className="w-[65%] h-[17.5rem] border border-3 border-mainBlue rounded-md pt-2 pl-2">
+              <div className="mt-2 flex flex-col-reverse md:flex-row w-full">
+                <div className="w-full md:w-[65%] h-[17.5rem] border border-3 border-mainBlue rounded-md pt-2 pl-2">
                   <TableComponent
                     title=""
                     headers={attendeeHeaders}
@@ -420,7 +427,7 @@ export function ViewAttendeeButton({ attendeeDetails }) {
                     showCheckBox={false}
                   />
                 </div>
-                <div className="w-[34%] md:w-4/12 md:pl-4 ">
+                <div className="w-full md:w-[34%] md:w-4/12 md:pl-4 mb-3 md:mb-0">
                   <div className="w-full  flex md:flex-col items-center   text-center  ">
                     <div className="h-[17.5rem] h-full border border-1 border-mainBlue w-full border-gray rounded-md text-sm">
                       <p className="mt-4 flex flex-col items-center">
@@ -453,17 +460,37 @@ export function ViewAttendeeButton({ attendeeDetails }) {
 }
 
 export function AttendeeQrCodeButton({ attendeeDetails }) {
-  const [showViewForm, setShowViewForm] = useState(false);
+  const [showViewCode, setShowViewCode] = useState(false);
+  const [src, setSrc] = useState('');
+
+  const handleGenerateCode = () => {
+    QRCode.toDataURL(`${attendeeDetails.id}`).then((value) =>
+      setSrc(value)
+    );
+  };
+
+  const handleDownload = () => {
+    const link = document.createElement('a');
+    link.href = src;
+    link.download = `${attendeeDetails.name}_QRCode.png`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const handleShareViaWhatsApp = () => {
+    console.log('via whatsapp')
+  };
 
   return (
     <div>
-      {showViewForm && (
+      {showViewCode && (
         <div className="fixed top-0 left-0 bg-bgBlue z-[40] h-screen w-screen overflow-y-auto overflow-x-auto flex items-center justify-center">
-          <div className="relative bg-white w-[40%] lg:w-[50%] h-[80vh] px-[2.5%] py-[2.5%] rounded-md">
+          <div className="relative bg-white w-[80%] lg:w-[50%] h-[80vh] px-[2.5%] py-[2.5%] rounded-md">
             <div className="mx-auto flex flex-col h-full gap-4">
               <button
                 className="close border-2 border-mainRed rounded-md px-2 text-mainRed absolute right-4 top-4"
-                onClick={() => setShowViewForm(false)}
+                onClick={() => setShowViewCode(false)}
               >
                 x
               </button>
@@ -474,20 +501,41 @@ export function AttendeeQrCodeButton({ attendeeDetails }) {
                   {attendeeDetails.name}
                 </span>
               </h1>
+              <button
+                className="text-white flex items-center py-2 px-4 gap-2 border-[1px] border-gray-400 bg-gray-400 hover:text-gray-400 hover:bg-white mx-auto"
+                onClick={handleGenerateCode}
+              >
+                Generate Code
+              </button>
+              <div className="w-[80%] md:w-[60%] h-[40vh] border-[1px] border-gray-300 mx-auto flex items-center justify-center">
+                {src === '' ? (
+                  "Don't have Qr code yet"
+                ) : (
+                  <img className="h-[70%] w-[50%] text-mainBlue" src={src} />
+                )}
+              </div>
+              <div className="my-2 flex w-[80%] md:w-[60%] flex-col md:flex-row items-start md:items-center md:justify-between gap-4 md:gap-8 mx-auto">
+                <button className="text-white flex items-center py-2 px-4 gap-2 border-[1px] border-[#078ECE] bg-[#078ECE] hover:bg-white hover:text-[#078ECE]" onClick={handleDownload}>
+                  <FaDownload /> Download
+                </button>
+                <button className="text-white flex items-center py-2 px-4 gap-2 border-[1px] border-green-500 bg-green-500 hover:text-green-500 hover:bg-white" onClick={handleShareViaWhatsApp}>
+                  <FaWhatsapp /> Share via Whatsapp
+                </button>
+              </div>
             </div>
           </div>
         </div>
       )}
       {/* <button
         className="text-xs text-[#078ECE] mx-2 cursor-pointer py-1 px-[4px] hover:bg-gray-400  rounded-md border-[1px] border-green-200 hover:bg-[#078ECE] hover:text-white"
-        onClick={() => setShowViewForm(true)}
+        onClick={() => setShowViewCode(true)}
       >
         Qr Code
       </button> */}
 
       <button
         className="text-lg text-gray-500 mx-2 cursor-pointer  rounded-md hover:text-[#078ECE] "
-        onClick={() => setShowViewForm(true)}
+        onClick={() => setShowViewCode(true)}
       >
         <BsQrCode />
       </button>
