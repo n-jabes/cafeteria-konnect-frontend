@@ -21,22 +21,7 @@ const StatsCard = ({ title, text, style }) => (
   </div>
 );
 
-const NotificationCard = ({ icon, text, time, onClose }) => (
-  <div className="relative flex items-start p-2 mb-4 shadow-md rounded-lg bg-[#4069B0] bg-opacity-20">
-    <div className="mr-4">{icon}</div>
-    <div className="flex-1">
-      <p className="text-sm w-[85%] text-gray-700">{text}</p>
-      <p className="text-xs text-gray-500 mt-1 float-right">{time}</p>
-    </div>
-    <button
-      className="absolute top-2 right-2 text-[#D9E1EF] bg-[#626262] hover:bg-darkRed hover:text-white"
-      onClick={onClose}
-    >
-      <FaTimes size={12} />
-    </button>
-  </div>
-);
-
+zzz
 const initialChartData = [
   { date: '6/1/2024', value: 4500 },
   { date: '6/2/2024', value: 3000 },
