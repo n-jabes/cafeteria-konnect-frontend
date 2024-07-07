@@ -40,23 +40,23 @@ export function UpdateAttendeeButton({ attendeeDetails }) {
   return (
     <div>
       {showUpdateForm && (
-        <div className="fixed top-0 left-0 bg-bgBlue h-screen w-screen overflow-y-auto z-40 overflow-x-auto flex items-center justify-center">
-          <div className="relative bg-white w-[90%] lg:w-[40%] h-max px-[3.5%] py-[4%] rounded-md">
+        <div className="fixed top-0 left-0  bg-bgBlue h-screen w-screen overflow-y-auto z-40 overflow-x-auto flex items-center justify-center">
+          <div className="relative bg-white w-[90%] md:left-[7%] lg:w-[40%] md:w-[58%] sm:w-[75%] h-max px-[3.5%] py-[3%] rounded-md">
             <button
               className="close border-2 border-mainRed rounded-md px-2 text-mainRed absolute right-4 top-4"
               onClick={() => setShowUpdateForm(false)}
             >
               x
             </button>
-            <div className=" flex-col gap-[0.4rem]">
-              <h1 className="text-mainBlue font-semibold text-md md:text-xl">
+            <div className=" flex flex-col gap-3">
+              <h1 className="text-mainBlue font-semibold text-md md:text-xl ">
                 Update Attendee:{' '}
                 <span className="text-gray-600">{attendeeDetails.name}</span>
               </h1>
 
-              <form action="#" className="w-full">
-                <div className="flex flex-row">
-                  <div className="block w-1/2">
+              <form action="#" className="lg:w-full ">
+                <div className="flex md:flex-row flex-col gap-2">
+                  <div className="flex flex-col w-full md:w-1/2">
                     <label htmlFor="name" className="text-xs text-gray">
                       Name:
                     </label>
@@ -69,7 +69,7 @@ export function UpdateAttendeeButton({ attendeeDetails }) {
                       required
                     />
                   </div>
-                  <div className="block w-1/2">
+                  <div className="flex flex-col w-full md:w-1/2">
                     <label htmlFor="name" className="text-xs text-gray">
                       Email:
                     </label>
@@ -83,8 +83,8 @@ export function UpdateAttendeeButton({ attendeeDetails }) {
                     />
                   </div>
                 </div>
-                <div className="flex flex-row">
-                  <div className="block w-1/2">
+                <div className="flex flex-col sm:flex-row gap-2">
+                  <div className="flex flex-col w-full md:w-1/2">
                     <label htmlFor="purpose" className="text-xs text-gray">
                       Role
                     </label>
@@ -97,7 +97,7 @@ export function UpdateAttendeeButton({ attendeeDetails }) {
                       required
                     />
                   </div>
-                  <div className="block w-1/2">
+                  <div className="flex flex-col w-full md:w-1/2">
                     <label htmlFor="purpose" className="text-xs text-gray">
                       Department
                     </label>
@@ -111,7 +111,7 @@ export function UpdateAttendeeButton({ attendeeDetails }) {
                     />
                   </div>
                 </div>
-                <div className="flex flex-col mb-2">
+                <div className="flex flex-col w-full ">
                   <label htmlFor="status" className="text-xs text-gray">
                     Status
                   </label>
@@ -328,8 +328,8 @@ export function ViewAttendeeButton({ attendeeDetails }) {
     <div>
       {showViewForm && (
         <div className="fixed top-0 left-0 bg-bgBlue z-[40] h-screen w-screen overflow-y-auto overflow-x-auto flex items-center justify-center">
-          <div className="relative bg-white w-[40%] lg:w-[50%] h-[80vh] px-[2.5%] py-[2.5%] rounded-md">
-            <div className="mx-auto flex flex-col h-full gap-4 overflow-y-auto ">
+          <div className="relative bg-white md:w-[50%] lg:w-[50%] md:h-[80vh] h-[85vh] px-[2.5%] py-[2.5%] rounded-md">
+            <div className="mx-auto flex flex-col h-full gap-4">
               <button
                 className="close border-2 border-mainRed rounded-md px-2 text-mainRed absolute right-4 top-4"
                 onClick={() => setViewButton(false)}
@@ -355,8 +355,8 @@ export function ViewAttendeeButton({ attendeeDetails }) {
               >
                 {({ values, handleChange, errors, touched, handleSubmit }) => (
                   <form onSubmit={handleSubmit}>
-                    <div className="w-[85%] flex flex-col md:flex-row">
-                      <div className="w-[37%] ">
+                    <div className="w-full flex lg:flex-row flex-col gap-2">
+                      <div className="lg:w-[37%] w-full ">
                         <label
                           htmlFor="startDate"
                           className="text-xs text-gray h-3 my-auto pr-1"
@@ -366,7 +366,7 @@ export function ViewAttendeeButton({ attendeeDetails }) {
                         <input
                           type="date"
                           name="startDate"
-                          className={`text-xs w-[8rem] h-[2rem] border-[1px] border-gray rounded-[0.15rem] capitalize ${
+                          className={`text-xs lg:w-[8rem] w-full h-[2rem] border-[1px] border-gray rounded-[0.15rem] capitalize ${
                             errors.startDate && touched.startDate
                               ? 'border-red-500'
                               : ''
@@ -381,7 +381,7 @@ export function ViewAttendeeButton({ attendeeDetails }) {
                           </div>
                         )}
                       </div>
-                      <div className="w-[37%]  ">
+                      <div className="lg:w-[37%] w-full">
                         <label
                           htmlFor="endDate"
                           className="text-xs text-gray h-3 my-auto pr-1"
@@ -392,7 +392,7 @@ export function ViewAttendeeButton({ attendeeDetails }) {
                           type="date"
                           name="finalDate"
                           value={values.finalDate || ''}
-                          className={`outline-none text-xs  w-[8rem] h-[2rem] border-[1px] border-gray rounded-[0.15rem] capitalize ${
+                          className={`outline-none text-xs  lg:w-[8rem] w-full h-[2rem] border-[1px] border-gray rounded-[0.15rem] capitalize ${
                             errors.startDate && touched.startDate
                               ? 'border-red-500'
                               : ''
@@ -406,11 +406,11 @@ export function ViewAttendeeButton({ attendeeDetails }) {
                           </div>
                         )}
                       </div>
-                      <div className="w-[20%] text-white">
+                      <div className="lg:w-[20%] w-full text-white">
                         <input
                           type="Submit"
                           value="Filter"
-                          className="text-sm text-white w-[8rem] h-[2rem] border-[1px] mt-2 md:mt-0 bg-mainBlue rounded-[0.15rem] capitalize hover:cursor-pointer"
+                          className="text-sm text-white lg:w-[8rem] w-full h-[2rem] border-[1px] bg-mainBlue rounded-[0.15rem] capitalize hover:cursor-pointer"
                         />
                       </div>
                     </div>
@@ -418,8 +418,8 @@ export function ViewAttendeeButton({ attendeeDetails }) {
                 )}
               </Formik>
 
-              <div className="mt-2 flex flex-col-reverse md:flex-row w-full">
-                <div className="w-full md:w-[65%] h-[17.5rem] border border-3 border-mainBlue rounded-md pt-2 pl-2">
+              <div className="mt-2 flex flex-row w-full gap-3">
+                <div className="w-[65%] h-[17.5rem] border border-3 border-mainBlue rounded-md pt-2 pl-2">
                   <TableComponent
                     title=""
                     headers={attendeeHeaders}
@@ -427,7 +427,7 @@ export function ViewAttendeeButton({ attendeeDetails }) {
                     showCheckBox={false}
                   />
                 </div>
-                <div className="w-full md:w-[34%] md:w-4/12 md:pl-4 mb-3 md:mb-0">
+                <div className="md:w-[34%] w-[25%] md:pl-4 ">
                   <div className="w-full  flex md:flex-col items-center   text-center  ">
                     <div className="h-[17.5rem] h-full border border-1 border-mainBlue w-full border-gray rounded-md text-sm">
                       <p className="mt-4 flex flex-col items-center">
