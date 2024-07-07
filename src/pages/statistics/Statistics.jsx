@@ -15,13 +15,12 @@ const RoundedIcon = ({ text, style }) => (
 const StatsCard = ({ title, text, style }) => (
   <div className="p-4 w-full md:w-1/2">
     <p className='text-slate-500 text-sm mb-2'>{title}</p>
-    <div className={`${style} rounded bg-opacity-25 py-6 px-10 text-center text-[#4069B0] text-xl font-bold shadow-statsCard`}>
+    <div className={`${style} rounded bg-opacity-25 py-6 px-10 h-[7.3rem] text-center text-[#4069B0] text-xl font-bold shadow-statsCard`}>
       {text}
     </div>
   </div>
 );
 
-zzz
 const initialChartData = [
   { date: '6/1/2024', value: 4500 },
   { date: '6/2/2024', value: 3000 },
@@ -132,8 +131,8 @@ function Statistics(props) {
   return (
     <div className='w-full sm:h-[80vh] h-auto'>
       <p className='font-medium font-extrabold'>Cafeteria attendances</p>
-      <div className={`flex flex-col lg:flex-row justify-between p-2 h-[75vh] ${notifications.length === 0 ? 'lg:flex-row-reverse' : ''}`}>
-        <div className={`w-full ${notifications.length === 0 ? 'lg:w-full' : 'lg:w-3/5'} p-4`}>
+      <div className={`flex flex-col lg:flex-row justify-between p-2 h-[75vh] `}>
+        <div className={`w-full p-4 `}>
           <div className='flex flex-col md:flex-row justify-between'>
             <StatsCard title="Today" text="0" style="bg-[#008000] bg-opacity-2" />
             <StatsCard title="This week" text="1143" style="bg-[#4069B0] bg-opacity-2" />
@@ -166,28 +165,7 @@ function Statistics(props) {
             </div>
           </div>
         </div>
-        {notifications.length > 0 && (
-          <div className="w-full lg:w-2/5 md:px-4 pt-4 md:block">
-            <p className="font-semibold mb-2 text-lg">Notifications</p>
-            <div className="border border-current rounded w-full p-4 h-full max-h-[60vh] lg:max-h-[75vh] overflow-y-auto">
-              {notifications.slice(0, visibleNotifications).map(notification => (
-                <NotificationCard
-                  key={notification.id}
-                  icon={notification.icon}
-                  text={notification.text}
-                  time={notification.time}
-                  onClose={() => handleNotificationClose(notification.id)}
-                />
-              ))}
-              {notifications.length > 4 && visibleNotifications < notifications.length && (
-                <p className='float-right text-[#4069B0] cursor-pointer text-sm hover:underline' onClick={handleViewMore}>view more</p>
-              )}
-              {notifications.length > 4 && visibleNotifications > 4 && (
-                <p className='float-left text-[#4069B0] cursor-pointer text-sm hover:underline' onClick={handleViewLess}>view less</p>
-              )}
-            </div>
-          </div>
-        )}
+        
       </div>
     </div>
   );
