@@ -17,6 +17,7 @@ import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { BsQrCode } from 'react-icons/bs';
 import QRCode from 'qrcode';
+import { WhatsappShareButton } from 'react-share';
 
 export function MainButton({ text }) {
   return (
@@ -228,10 +229,10 @@ export function UpdateGuestButton({ guest }) {
         </div>
       )}
       <button
-        className="btn btn-primary hover:bg-mainBlue hover:text-white border-mainBlue border-[1px] rounded-[8px] py-[2px] px-[6px] text-mainBlue font-medium text-xs"
+        className="btn btn-primary hover:bg-mainBlue hover:text-white  rounded-[8px] py-1 px-[4px] text-mainBlue font-medium text-lg"
         onClick={() => setShowUpdateForm(true)}
       >
-        update
+        <FaEdit />
       </button>
     </div>
   );
@@ -462,11 +463,10 @@ export function ViewAttendeeButton({ attendeeDetails }) {
 export function AttendeeQrCodeButton({ attendeeDetails }) {
   const [showViewCode, setShowViewCode] = useState(false);
   const [src, setSrc] = useState('');
+  const qrCodeRef = useRef(null);
 
   const handleGenerateCode = () => {
-    QRCode.toDataURL(`${attendeeDetails.id}`).then((value) =>
-      setSrc(value)
-    );
+    QRCode.toDataURL(`${attendeeDetails.id}`).then((value) => setSrc(value));
   };
 
   const handleDownload = () => {
@@ -478,8 +478,12 @@ export function AttendeeQrCodeButton({ attendeeDetails }) {
     document.body.removeChild(link);
   };
 
+  // const handleShareViaWhatsApp = () => {
+  //   console.log('via whatsapp');
+  // };
+
   const handleShareViaWhatsApp = () => {
-    console.log('via whatsapp')
+    console.log('sharing via whatsapp');
   };
 
   return (
@@ -507,7 +511,10 @@ export function AttendeeQrCodeButton({ attendeeDetails }) {
               >
                 Generate Code
               </button>
-              <div className="w-[80%] md:w-[60%] h-[40vh] border-[1px] border-gray-300 mx-auto flex items-center justify-center">
+              <div
+                ref={qrCodeRef}
+                className="w-[80%] md:w-[60%] h-[40vh] border-[1px] border-gray-300 mx-auto flex items-center justify-center"
+              >
                 {src === '' ? (
                   "Don't have Qr code yet"
                 ) : (
@@ -515,11 +522,21 @@ export function AttendeeQrCodeButton({ attendeeDetails }) {
                 )}
               </div>
               <div className="my-2 flex w-[80%] md:w-[60%] flex-col md:flex-row items-start md:items-center md:justify-between gap-4 md:gap-8 mx-auto">
-                <button className="text-white flex items-center py-2 px-4 gap-2 border-[1px] border-[#078ECE] bg-[#078ECE] hover:bg-white hover:text-[#078ECE]" onClick={handleDownload}>
+                <button
+                  className="text-white flex items-center py-2 px-4 gap-2 border-[1px] border-[#078ECE] bg-[#078ECE] hover:bg-white hover:text-[#078ECE]"
+                  onClick={handleDownload}
+                >
                   <FaDownload /> Download
                 </button>
-                <button className="text-white flex items-center py-2 px-4 gap-2 border-[1px] border-green-500 bg-green-500 hover:text-green-500 hover:bg-white" onClick={handleShareViaWhatsApp}>
-                  <FaWhatsapp /> Share via Whatsapp
+                <button
+                  className="text-white flex items-center py-2 px-4 gap-2 border-[1px] border-green-500 bg-green-500 hover:text-green-500 hover:bg-white"
+                  onClick={handleShareViaWhatsApp}
+                >
+                  {/* <FaWhatsapp /> Share via Whatsapp */}
+                  <WhatsappShareButton className="flex items-center gap-2">
+                    <FaWhatsapp />
+                    Share via Whatsapp
+                  </WhatsappShareButton>
                 </button>
               </div>
             </div>
