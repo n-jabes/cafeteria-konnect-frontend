@@ -320,8 +320,8 @@ const receiptAttendeesHeaders = ['id','Names','Department','Scanned']
       <div className="flex flex-col md:flex-row w-full md:justify-between mb-2 border-b-[1px] border-b-gray-200">
         {addNewAttendee && (
           <div className="fixed top-0 left-0 bg-bgBlue z-[40] h-screen w-screen overflow-y-auto overflow-x-auto flex items-center justify-center">
-            <div className="relative bg-white w-[90%] lg:w-[38%] lg:h-[26rem] h-max px-[3.5%] py-[1.7%] rounded-md">
-              <div className="w-[90%] mx-auto flex flex-col gap-8 h-full">
+            <div className="relative bg-white w-[90%] lg:w-[38%] lg:h-[28.5rem] h-max px-[3.5%] py-[1.7%] rounded-md">
+              <div className="w-[90%] mx-auto flex flex-col gap-[4rem] h-full">
                 <button
                   className="close border-2 border-mainRed rounded-md px-2 text-mainRed absolute right-4 top-4"
                   onClick={() => setaddNewAttendee(false)}
@@ -337,7 +337,8 @@ const receiptAttendeesHeaders = ['id','Names','Department','Scanned']
                     names: '',
                     email: '',
                     role: '',
-                    password: '',
+                    NID:'',
+                    department: '',
                   }}
                   validationSchema={validationSchema}
                   onSubmit={(values) => {
@@ -345,18 +346,30 @@ const receiptAttendeesHeaders = ['id','Names','Department','Scanned']
                   }}
                 >
                   <Form className="flex flex-col w-full h-[17rem] justify-center gap-[0.4rem]">
-                    <label
-                      htmlFor="Names"
+                   <div className=' flex lg:flex-col gap-2'>
+                   <label
+                      htmlFor="Email"
                       className="block text-sm font-medium text-gray-700"
                     >
                       Names
                     </label>
+                    <div className='flex flex-row gap-3'>
                     <Field
                       name="names"
                       type="text"
-                      placeholder="Full names"
-                      className="w-full text-sm border border-[8F8F8F] px-2 py-3 "
+                      placeholder="First name"
+                      className="w-full text-xs border border-[8F8F8F] px-2 py-3 "
                     />
+                    <Field
+                      name="names"
+                      type="text"
+                      placeholder="Last name"
+                      className="w-full text-xs border border-[8F8F8F] px-2 py-3 "
+                    />
+                    </div>
+                    </div> 
+                 
+                   <div className='flex lg:flex-col gap-2'>
                     <label
                       htmlFor="Email"
                       className="block text-sm font-medium text-gray-700"
@@ -366,21 +379,24 @@ const receiptAttendeesHeaders = ['id','Names','Department','Scanned']
                     <Field
                       name="email"
                       type="email"
-                      placeholder="Username"
-                      className="w-full text-sm border border-[8F8F8F] px-2 py-3 "
+                      placeholder="Email address"
+                      className="w-full text-xs border border-[8F8F8F] px-2 py-3 "
                     />
-                    <label
+                    </div>
+                    
+                    <div className='flex flex-row gap-3'>
+                      <div className='flex lg:flex-col gap-2 w-[50%]'>
+                      <label
                       htmlFor="role"
                       className="block text-sm font-medium text-gray-700"
                     >
-                      Role
+                      Department
                     </label>
-
-                    <Field
+                      <Field
                       as="select"
                       id="role"
                       name="role"
-                      className="block w-full px-3 py-2 mb-3 text-gray-500 text-sm border rounded shadow-sm focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-600"
+                      className="block w-full px-3 py-2 mb-3 text-gray-500 text-xs border rounded shadow-sm focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-600"
                     >
                       {options.map((option) => (
                         <option key={option.role} value={option.role}>
@@ -388,10 +404,47 @@ const receiptAttendeesHeaders = ['id','Names','Department','Scanned']
                         </option>
                       ))}
                     </Field>
+                      </div>
+
+                     <div className='flex lg:flex-col gap-2 w-[50%]'>
+                     <label
+                      htmlFor="role"
+                      className="block text-sm font-medium text-gray-700"
+                    >
+                      Role
+                    </label>
+                     <Field
+                      as="select"
+                      id="role"
+                      name="role"
+                      className="block w-full px-3 py-2 mb-3 text-gray-500 text-xs border rounded shadow-sm focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-600"
+                    >
+                      {options.map((option) => (
+                        <option key={option.role} value={option.role}>
+                          {option.label}
+                        </option>
+                      ))}
+                    </Field>
+                     </div>
+                    </div>
+                    <div className='flex lg:flex-col gap-2'> 
+                    <label
+                      htmlFor="role"
+                      className="block text-sm font-medium text-gray-700"
+                    >
+                      National Id
+                    </label>
+                    <Field
+                      name="email"
+                      type="email"
+                      placeholder="Enter your National Id"
+                      className="w-full text-xs border border-[8F8F8F] px-2 py-3 "
+                    />
+                    </div>
 
                     <button
                       type="submit"
-                      className="w-full px-2 text-sm py-3 bg-[#078ECE] text-white font-semibold"
+                      className="w-full px-2 text-sm py-3 my-3 bg-[#078ECE] text-white font-semibold"
                     >
                       Submit
                     </button>
