@@ -13,7 +13,7 @@ import InvoiceTable from '../table/InvoiceTable';
 import { IoPrint } from 'react-icons/io5';
 import { GoTrash } from 'react-icons/go';
 import ReactToPrint from 'react-to-print';
-import { Formik } from 'formik';
+import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import { BsQrCode } from 'react-icons/bs';
 import QRCode from 'qrcode';
@@ -42,6 +42,68 @@ export function SendAllNewGuestsToCBMButton() {
 
 export function UpdateAttendeeButton({ attendeeDetails }) {
   const [showUpdateForm, setShowUpdateForm] = useState(false);
+  const [departments, setDepartments] = useState([]);
+  const [roles, setRoles] = useState([]);
+  const token = sessionStorage.getItem('token');
+  const statuses = [
+    { id: 1, name: 'active' },
+    { id: 2, name: 'on leave' },
+    { id: 3, name: 'on pause' },
+  ];
+  //fetching all departments
+  const getAllDepartments = async () => {
+    try {
+      const response = await axios.get(API_BASE_URL + '/departments/all', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      console.log(response.data);
+      const allDepartments = response.data.data.map((dept) => ({
+        id: dept.id,
+        department: dept.department,
+      }));
+      setDepartments(allDepartments);
+    } catch (error) {
+      console.log(
+        'Failed to fetch departments',
+        error.response?.data?.message || error.message
+      );
+    }
+  };
+
+  //fetching all roles
+  const getAllRoles = async () => {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/roles/all`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const allRoles = response.data.data.map((role) => ({
+        id: role.id,
+        role: role.role,
+      }));
+      setRoles(allRoles);
+    } catch (error) {
+      console.log(
+        'Failed to fetch roles',
+        error.response?.data?.message || error.message
+      );
+    }
+  };
+
+  const handleUpdate = () => {
+    console.log('Updating');
+  };
+
+  // Fetch the roles and departments when the component mounts
+  useEffect(() => {
+    getAllRoles();
+    getAllDepartments();
+  }, []);
 
   return (
     <div>
@@ -60,85 +122,141 @@ export function UpdateAttendeeButton({ attendeeDetails }) {
                 <span className="text-gray-600">{attendeeDetails.name}</span>
               </h1>
 
-              <form action="#" className="lg:w-full ">
-                <div className="flex md:flex-row flex-col gap-2">
-                  <div className="flex flex-col w-full md:w-1/2">
-                    <label htmlFor="name" className="text-xs text-gray">
-                      Name:
+              <Formik
+                initialValues={{
+                  names: attendeeDetails.name,
+                  email: attendeeDetails.email,
+                  role: attendeeDetails.role,
+                  NID: attendeeDetails.nationalId,
+                  department: attendeeDetails.department,
+                  status: attendeeDetails.attendanceStatus,
+                }}
+                onSubmit={(values) => {
+                  // Handle form submission logic here (update attendee data)
+                  alert(JSON.stringify(values, null, 2));
+                  handleUpdate;
+                }}
+              >
+                <Form className="flex flex-col w-full lg:h-[26rem] h-[29rem] md:h-[25rem] justify-center gap-[0.4rem]">
+                  <div className="flex flex-col gap-2">
+                    <label
+                      htmlFor="Email"
+                      className="block text-sm font-medium text-gray-700"
+                    >
+                      Names
                     </label>
-                    <input
-                      type="text"
-                      placeholder="Enter guest full name"
-                      name="name"
-                      defaultValue={attendeeDetails.name}
-                      className="outline-none text-sm py-2 px-4 border-[1px] border-gray rounded-md"
-                      required
+                    <div className="flex md:flex-row flex-col gap-3">
+                      <Field
+                        name="names"
+                        type="text"
+                        placeholder="First name"
+                        className="w-full text-xs border focus:border-gray-300 focus:outline-none px-2 py-3 "
+                      />
+                    </div>
+                  </div>
+
+                  <div className="flex flex-col gap-2">
+                    <label
+                      htmlFor="Email"
+                      className="block text-sm font-medium text-gray-700"
+                    >
+                      Email
+                    </label>
+                    <Field
+                      name="email"
+                      type="email"
+                      placeholder="Email address"
+                      className="w-full text-xs border focus:border-gray-300 focus:outline-none px-2 py-3 "
                     />
                   </div>
-                  <div className="flex flex-col w-full md:w-1/2">
-                    <label htmlFor="name" className="text-xs text-gray">
-                      Email:
+
+                  <div className="flex md:flex-row flex-col gap-3">
+                    <div className="flex flex-col gap-2 md:w-1/2">
+                      <label
+                        htmlFor="department"
+                        className="block text-sm font-medium text-gray-700"
+                      >
+                        Department
+                      </label>
+                      <Field
+                        as="select"
+                        id="department"
+                        name="department"
+                        className="block w-full px-3 py-2 mb-3 text-gray-500 text-xs border  focus:border-gray-300 focus:outline-none rounded shadow-sm overflow-x-none"
+                      >
+                        {departments.map((dept) => (
+                          <option
+                            key={dept.id}
+                            value={dept.department}
+                            className="w-full"
+                          >
+                            {dept.department}
+                          </option>
+                        ))}
+                      </Field>
+                    </div>
+
+                    <div className="flex flex-col gap-2 md:w-1/2 w-full">
+                      <label
+                        htmlFor="role"
+                        className="block text-sm font-medium text-gray-700"
+                      >
+                        Role
+                      </label>
+                      <Field
+                        as="select"
+                        id="role"
+                        name="role"
+                        className="block w-full px-3 py-2 mb-3 text-gray-500 text-xs border rounded shadow-sm focus:outline-none"
+                      >
+                        {roles.map((role) => (
+                          <option key={role.id} value={role.role}>
+                            {role.role}
+                          </option>
+                        ))}
+                      </Field>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-col w-full ">
+                    <label htmlFor="status" className="text-xs text-gray">
+                      Status
                     </label>
-                    <input
+                    <Field
+                      as="select"
+                      id="department"
+                      name="department"
+                      className="block w-full px-3 py-2 mb-3 text-gray-500 text-xs border focus:border-gray-300 focus:outline-none rounded shadow"
+                    >
+                      {statuses.map((status) => (
+                        <option key={status.id} value={status.name}>
+                          {status.name}
+                        </option>
+                      ))}
+                    </Field>
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <label
+                      htmlFor="role"
+                      className="block text-sm font-medium text-gray-700"
+                    >
+                      National Id
+                    </label>
+                    <Field
+                      name="NID"
                       type="text"
-                      placeholder="Enter guest full name"
-                      name="name"
-                      defaultValue={attendeeDetails.email}
-                      className="outline-none text-sm py-2 px-4 border-[1px] border-gray rounded-md"
-                      required
+                      placeholder="Enter your National Id"
+                      className="w-full text-xs border focus:border-gray-300 focus:outline-none px-2 py-3 "
                     />
                   </div>
-                </div>
-                <div className="flex flex-col sm:flex-row gap-2">
-                  <div className="flex flex-col w-full md:w-1/2">
-                    <label htmlFor="purpose" className="text-xs text-gray">
-                      Role
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="Enter guest purpose: eg. consultant"
-                      name="purpose"
-                      defaultValue={attendeeDetails.roleName}
-                      className="outline-none text-sm py-2 px-4 border-[1px] border-gray rounded-md"
-                      required
-                    />
-                  </div>
-                  <div className="flex flex-col w-full md:w-1/2">
-                    <label htmlFor="purpose" className="text-xs text-gray">
-                      Department
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="Enter guest purpose: eg. consultant"
-                      name="purpose"
-                      defaultValue={attendeeDetails.Name}
-                      className="outline-none text-sm py-2 px-4 border-[1px] border-gray rounded-md"
-                      required
-                    />
-                  </div>
-                </div>
-                <div className="flex flex-col w-full ">
-                  <label htmlFor="status" className="text-xs text-gray">
-                    Status
-                  </label>
-                  <select
-                    name="status"
-                    defaultValue={attendeeDetails.status}
-                    className="outline-none text-sm py-2 px-4 border-[1px] border-gray rounded-md"
-                    required
+                  <button
+                    type="submit"
+                    className="btn border-2 border-[#078ECE] bg-[#078ECE] text-md font-semibold text-white py-2 px-4 rounded-md w-full hover:bg-white hover:text-mainBlue mt-3"
                   >
-                    <option value="active">Active</option>
-                    <option value="on pause">On Pause</option>
-                    <option value="on leave">On Leave</option>
-                  </select>
-                </div>
-                <button
-                  type="submit"
-                  className="btn border-2 border-[#078ECE] bg-[#078ECE] text-md font-semibold text-white py-2 px-4 rounded-md w-full hover:bg-white hover:text-mainBlue mt-3"
-                >
-                  Update Guest
-                </button>
-              </form>
+                    Update Guest
+                  </button>
+                </Form>
+              </Formik>
             </div>
           </div>
         </div>
@@ -473,7 +591,6 @@ export function AttendeeQrCodeButton({ attendeeDetails }) {
   const { encryptData, secretKey } = useAuth();
   const token = sessionStorage.getItem('token');
 
-
   const generateUniqueIdentifier = () => {
     return `${Date.now()}-${Math.floor(Math.random() * 1000000)}`;
   };
@@ -481,43 +598,43 @@ export function AttendeeQrCodeButton({ attendeeDetails }) {
   const handleGenerateCode = async () => {
     const uniqueIdentifier = generateUniqueIdentifier();
 
-    const qrCodeData = JSON.stringify({
-      id: attendeeDetails.id,
-      email: attendeeDetails.email,
-      uniqueIdentifier,
-    });
+    const qrCodeData = {
+      userId: `${attendeeDetails.userId}`,
+      userEmail: `${attendeeDetails.email}`,
+      qrCodeId: `${uniqueIdentifier}`,
+    };
 
     console.log('qrCodeData: ', qrCodeData);
 
-    const placeholderData = {
-      //remember to use the dynamic data sent form the qrCodeData
-      userId: '7fec8744-5a50-4aae-8e30-aa2fef6360d1',
-      userEmail: 'test@gmail.com',
-      qrCodeId: '1720638513730-623130',
-    };
-    console.log('placeholderData: ', placeholderData);
+    // const qrCodeData = {
+    //   //remember to use the dynamic data sent form the qrCodeData
+    //   userId: '7fec8744-5a50-4aae-8e30-aa2fef6360d1',
+    //   userEmail: 'test@gmail.com',
+    //   qrCodeId: '1720638513730-623130',
+    // };
+    // console.log('placeholderData: ', qrCodeData);
 
     const encryptedData = await encryptData(
-      JSON.stringify(placeholderData),
+      JSON.stringify(qrCodeData),
       secretKey
-    ); //remember to set back to qrCodeData
+    ); 
 
-    console.log('qrCodeData: ', qrCodeData);
-    console.log('token: ', token)
+    console.log('Encrypted qrCodeData: ', encryptedData);
+    console.log('token: ', token);
 
     try {
       const response = await axios.post(
         `${API_BASE_URL}/userQrcodes/save`,
         {
           //remember to use the dynamic data sent form the qrCodeData
-          userId: placeholderData.userId,
-          userEmail: placeholderData.userEmail,
-          qrCodeId: placeholderData.qrCodeId,
+          userId: qrCodeData.userId,
+          userEmail: qrCodeData.userEmail,
+          qrCodeId: qrCodeData.qrCodeId,
         },
         { headers: { Authorization: `Bearer ${token}` } }
       );
       console.log('response: ', response);
-      QRCode.toDataURL(encryptedData).then((value) => setSrc(value)); //remember to use qrCodeData
+      QRCode.toDataURL(encryptedData).then((value) => setSrc(value));
       toast.success('QrCode created successfully', {
         position: 'top-right',
         autoClose: 1000,
@@ -1224,11 +1341,14 @@ export function ReceiptsButtons({
   );
 }
 
-export function AttendeeButtons({ attendeeDetails }) {
-  // console.log('attendee buttons: ', attendeeDetails)
+export function AttendeeButtons({ attendeeDetails, departments, roles }) {
   return (
     <div className="flex gap-2 items-center">
-      <UpdateAttendeeButton attendeeDetails={attendeeDetails} />
+      <UpdateAttendeeButton
+        attendeeDetails={attendeeDetails}
+        departments={departments}
+        roles={roles}
+      />
       <DeleteButton />
       <ViewAttendeeButton attendeeDetails={attendeeDetails} />
       <AttendeeQrCodeButton attendeeDetails={attendeeDetails} />

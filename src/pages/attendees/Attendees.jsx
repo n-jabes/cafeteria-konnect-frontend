@@ -16,6 +16,9 @@ import axios from 'axios';
 import Toast from '../../components/toast/Toast';
 import { Bounce, toast } from 'react-toastify';
 import { MdDangerous } from 'react-icons/md';
+import { ref, onValue } from 'firebase/database';
+import { collection, onSnapshot } from 'firebase/firestore';
+import { database } from '../../utils/firebase';
 
 const validationSchema = Yup.object().shape({
   names: Yup.string()
@@ -90,7 +93,7 @@ function Attendees() {
     }
   };
 
-  //fetching all departments
+  //fetching all attendees
   const getAllAttendees = async () => {
     try {
       const response = await axios.get(`${API_BASE_URL}/users/all`, {
@@ -100,7 +103,7 @@ function Attendees() {
       });
 
       const allUsers = response.data.data.map((attendee, index) => ({
-        id: index,
+        id: ++index,
         userId: attendee.id,
         name: attendee.names,
         email: attendee.email,
@@ -210,7 +213,11 @@ function Attendees() {
     attendeeDetails.name,
     attendeeDetails.roleName,
     attendeeDetails.status,
-    <AttendeeButtons attendeeDetails={attendeeDetails} />,
+    <AttendeeButtons
+      attendeeDetails={attendeeDetails}
+      departments={departments}
+      roles={roles}
+    />,
   ]);
 
   const activeAttendeesData = allAttendees
@@ -412,7 +419,20 @@ function Attendees() {
     if (role === 'HR') {
       getAllRoles();
       getAllDepartments();
-      getAllAttendees();
+
+      // Firebase Realtime Database listener
+      const usersRef = ref(database, 'users');
+      const unsubscribe = onValue(usersRef, (snapshot) => {
+        getAllAttendees(); // Fetch updated data from your API
+      });
+
+      // Firebase Firestore listener
+      // const unsubscribe = onSnapshot(collection(db, 'users'), (snapshot) => {
+      //   getAllAttendees(); // Fetch updated data from your API
+      // });
+
+      // Cleanup function
+      return () => unsubscribe();
     }
   }, []);
 
@@ -624,6 +644,7 @@ function Attendees() {
                         className="w-full text-xs border focus:border-gray-300 focus:outline-none px-2 py-3 "
                       />
                     </div>
+
                     {errorMessage && (
                       <p className="w-[80%] text-sm text-red-500 font-semibold">
                         {errorMessage}
