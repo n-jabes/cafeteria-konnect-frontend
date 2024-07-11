@@ -6,6 +6,8 @@ import {
 } from '../../components/buttons/Buttons';
 import axios from 'axios';
 import { API_BASE_URL } from '../../utils/api';
+import { collection, onSnapshot } from 'firebase/firestore';
+import { firestoreDB } from '../../utils/firebase';
 const token = sessionStorage.getItem('token');
 
 function RestaurantReceipts(props) {
@@ -92,6 +94,29 @@ function RestaurantReceipts(props) {
 
   useEffect(() => {
     getAllReceipts();
+  }, []);
+
+   // Fetch the roles and departments when the component mounts
+   useEffect(() => {
+      getAllReceipts();
+
+      // Create a reference to the 'users' collection
+      const usersCollectionRef = collection(firestoreDB, 'receipts');
+
+      // Set up the real-time listener
+      const unsubscribe = onSnapshot(
+        usersCollectionRef,
+        (snapshot) => {
+          // When Firestore updates, trigger a refresh from the API
+          getAllReceipts();
+        },
+        (error) => {
+          console.error('Error listening to Firestore: ', error);
+        }
+      );
+
+      // Cleanup function
+      return () => unsubscribe();
   }, []);
 
   const receiptHeaders = ['Id', 'Names', 'Department', 'isScanned'];
