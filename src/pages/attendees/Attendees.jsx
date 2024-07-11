@@ -15,6 +15,7 @@ import { useAuth } from '../../context/AuthContext';
 import axios from 'axios';
 import Toast from '../../components/toast/Toast';
 import { Bounce, toast } from 'react-toastify';
+import { MdDangerous } from 'react-icons/md';
 
 const validationSchema = Yup.object().shape({
   names: Yup.string()
@@ -32,8 +33,11 @@ function Attendees() {
   const [extraPeople, setExtraPeople] = useState(7);
   const [departments, setDepartments] = useState([]);
   const [roles, setRoles] = useState([]);
+  const [allAttendees, setAllAttendees] = useState([]);
   const [errorMessage, setErrorMessage] = useState('');
-  const { token } = useAuth();
+  const [allAttendeesErrorMessage, setAllAttendeesErrorMessage] = useState('');
+  const { role } = useAuth();
+  const token = sessionStorage.getItem('token');
 
   const options = [
     { role: 'Intern', label: 'Intern' },
@@ -72,7 +76,6 @@ function Attendees() {
         },
       });
 
-      console.log(response.data);
       const allRoles = response.data.data.map((role) => ({
         id: role.id,
         role: role.role,
@@ -86,109 +89,114 @@ function Attendees() {
     }
   };
 
-    //fetching all departments
-    const getAllAttendees = async () => {
-      try {
-        const response = await axios.get(API_BASE_URL + '/departments/all', {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-  
-        console.log(response.data);
-        const allDepartments = response.data.data.map((dept) => ({
-          id: dept.id,
-          department: dept.department,
-        }));
-        setDepartments(allDepartments);
-      } catch (error) {
-        console.log(
-          'Failed to fetch departments',
-          error.response?.data?.message || error.message
-        );
-      }
-    };
+  //fetching all departments
+  const getAllAttendees = async () => {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/users/all`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-  const allAttendees = [
-    {
-      id: 1,
-      name: 'Nshuti Ruranga Jabes',
-      role: 'intern',
-      email: 'nshutij7@gmail.com',
-      status: 'on leave',
-    },
-    {
-      id: 2,
-      name: 'Jane Smith',
-      role: 'Consultant',
-      email: 'imkenny@gmail.com',
-      status: 'active',
-    },
-    {
-      id: 3,
-      name: 'Sam Johnson',
-      role: 'intern',
-      email: 'bizy@gmail.com',
-      status: 'active',
-    },
-    {
-      id: 4,
-      name: 'Nshuti Ruranga Jabes',
-      role: 'Permant worker',
-      email: 'honnette@gmail.com',
-      status: 'active',
-    },
-    {
-      id: 5,
-      name: 'John Doe',
-      role: 'intern',
-      email: 'marie12@gmail.com',
-      status: 'other',
-    },
-    {
-      id: 6,
-      name: 'Jane Smith',
-      role: 'Consultant',
-      email: 'henriette@gmail.com',
-      status: 'other',
-    },
-    {
-      id: 7,
-      name: 'Sam Johnson',
-      role: 'intern',
-      status: 'active',
-    },
-    {
-      id: 8,
-      name: 'Nshuti Ruranga Jabes',
-      role: 'Intern',
-      status: 'on leave',
-    },
-    {
-      id: 9,
-      name: 'John Doe',
-      role: 'intern',
-      status: 'on leave',
-    },
-    {
-      id: 10,
-      name: 'Jane Smith',
-      role: 'Consultant',
-      status: 'on leave',
-    },
-    {
-      id: 11,
-      name: 'Sam Johnson',
-      role: 'intern',
-      status: 'on leave',
-    },
-    {
-      id: 12,
-      name: 'Nshuti Ruranga Jabes',
-      role: 'consultant',
-      status: 'active',
-    },
-  ];
+      const allUsers = response.data.data.map((attendee, index) => ({
+        id: index,
+        name: attendee.names,
+        role: attendee.roleId,
+        email: attendee.email,
+        status: attendee.attendanceStatus,
+      }));
+      setAllAttendees(allUsers)
+    } catch (error) {
+      console.log(
+        'Failed to fetch all people',
+        error.response?.data?.message || error.message
+      );
+      setAllAttendeesErrorMessage(
+        error.response?.data?.message || error.message
+      );
+    }
+  };
+
+  // const allAttendees = [
+  //   {
+  //     id: 1,
+  //     name: 'Nshuti Ruranga Jabes',
+  //     role: 'intern',
+  //     email: 'nshutij7@gmail.com',
+  //     status: 'on leave',
+  //   },
+  //   {
+  //     id: 2,
+  //     name: 'Jane Smith',
+  //     role: 'Consultant',
+  //     email: 'imkenny@gmail.com',
+  //     status: 'active',
+  //   },
+  //   {
+  //     id: 3,
+  //     name: 'Sam Johnson',
+  //     role: 'intern',
+  //     email: 'bizy@gmail.com',
+  //     status: 'active',
+  //   },
+  //   {
+  //     id: 4,
+  //     name: 'Nshuti Ruranga Jabes',
+  //     role: 'Permant worker',
+  //     email: 'honnette@gmail.com',
+  //     status: 'active',
+  //   },
+  //   {
+  //     id: 5,
+  //     name: 'John Doe',
+  //     role: 'intern',
+  //     email: 'marie12@gmail.com',
+  //     status: 'other',
+  //   },
+  //   {
+  //     id: 6,
+  //     name: 'Jane Smith',
+  //     role: 'Consultant',
+  //     email: 'henriette@gmail.com',
+  //     status: 'other',
+  //   },
+  //   {
+  //     id: 7,
+  //     name: 'Sam Johnson',
+  //     role: 'intern',
+  //     status: 'active',
+  //   },
+  //   {
+  //     id: 8,
+  //     name: 'Nshuti Ruranga Jabes',
+  //     role: 'Intern',
+  //     status: 'on leave',
+  //   },
+  //   {
+  //     id: 9,
+  //     name: 'John Doe',
+  //     role: 'intern',
+  //     status: 'on leave',
+  //   },
+  //   {
+  //     id: 10,
+  //     name: 'Jane Smith',
+  //     role: 'Consultant',
+  //     status: 'on leave',
+  //   },
+  //   {
+  //     id: 11,
+  //     name: 'Sam Johnson',
+  //     role: 'intern',
+  //     status: 'on leave',
+  //   },
+  //   {
+  //     id: 12,
+  //     name: 'Nshuti Ruranga Jabes',
+  //     role: 'consultant',
+  //     status: 'active',
+  //   },
+  // ];
 
   const attendeesData = allAttendees.map((attendeeDetails) => [
     attendeeDetails.id,
@@ -396,8 +404,12 @@ function Attendees() {
 
   // Fetch the roles and departments when the component mounts
   useEffect(() => {
-    getAllRoles();
-    getAllDepartments();
+    if (role === 'HR') {
+      console.log('your role is: ', role);
+      getAllRoles();
+      getAllDepartments();
+      getAllAttendees();
+    }
   }, []);
 
   const initialValues = {
@@ -436,7 +448,7 @@ function Attendees() {
       password: '123456',
     };
 
-    console.log("attendeeData: ", attendeeData)
+    console.log('attendeeData: ', attendeeData);
 
     try {
       // Send the POST request to the API endpoint
@@ -467,7 +479,7 @@ function Attendees() {
         'Failed to create attendee',
         error.response?.data?.message || error.message
       );
-      setErrorMessage( error.response?.data?.message || error.message)
+      setErrorMessage(error.response?.data?.message || error.message);
       toast.error('Failed to create attendee', {
         position: 'top-right',
         autoClose: 1000,
@@ -485,7 +497,7 @@ function Attendees() {
   const handleSubmit = (values, { resetForm }) => {
     handleCreateAttendee(values);
     resetForm();
-    setErrorMessage('')
+    setErrorMessage('');
   };
 
   return (
@@ -613,7 +625,9 @@ function Attendees() {
                       />
                     </div>
                     {errorMessage && (
-                      <p className="w-[80%] text-sm text-red-500 font-semibold">{errorMessage}</p>
+                      <p className="w-[80%] text-sm text-red-500 font-semibold">
+                        {errorMessage}
+                      </p>
                     )}
                     <button
                       type="submit"
@@ -628,6 +642,18 @@ function Attendees() {
           </div>
         )}
 
+        {allAttendeesErrorMessage && (
+          <div className="error text-red-500 mt-2 relative border-[1px] min-h-[10vh] h-max p-2 flex flex-col md:flex-row gap-2 items-start md:items-center">
+            <button
+              className="close border-[1px] border-mainRed rounded-md px-2 text-mainRed absolute right-2 top-2 text-sm"
+              onClick={() => setallUsersErrorMessage()}
+            >
+              x
+            </button>
+            <MdDangerous className="text-6xl" />
+            <p className="w-[80%] text-sm">{allAttendeesErrorMessage}</p>
+          </div>
+        )}
         {/* tabs */}
         <div className="h-full md:flex md:align-center md:justify-between w-full md:w-max">
           <button

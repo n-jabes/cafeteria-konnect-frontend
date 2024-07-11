@@ -470,7 +470,9 @@ export function AttendeeQrCodeButton({ attendeeDetails }) {
   const [src, setSrc] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const qrCodeRef = useRef(null);
-  const { encryptData, token, secretKey } = useAuth();
+  const { encryptData, secretKey } = useAuth();
+  const token = sessionStorage.getItem('token');
+
 
   const generateUniqueIdentifier = () => {
     return `${Date.now()}-${Math.floor(Math.random() * 1000000)}`;
@@ -489,8 +491,8 @@ export function AttendeeQrCodeButton({ attendeeDetails }) {
 
     const placeholderData = {
       //remember to use the dynamic data sent form the qrCodeData
-      userId: '196c7410-e60b-42a1-8df8-9bff5f7890b0',
-      userEmail: 'kenny@gmail.com',
+      userId: '7fec8744-5a50-4aae-8e30-aa2fef6360d1',
+      userEmail: 'test@gmail.com',
       qrCodeId: '1720638513730-623130',
     };
     console.log('placeholderData: ', placeholderData);

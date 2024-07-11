@@ -3,6 +3,9 @@ import { FaTimes, FaCalendarAlt } from 'react-icons/fa';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import CafeteriaAttendeesChart from '../../components/chart/CafeteriaAttendeesChart';
+import { API_BASE_URL } from '../../utils/api';
+import { useAuth } from '../../context/AuthContext';
+import { Bounce, toast } from 'react-toastify';
 
 const RoundedIcon = ({ text, style }) => (
   <div
@@ -14,8 +17,10 @@ const RoundedIcon = ({ text, style }) => (
 
 const StatsCard = ({ title, text, style }) => (
   <div className="p-4 w-full md:w-1/2">
-    <p className='text-slate-500 text-sm mb-2'>{title}</p>
-    <div className={`${style} rounded bg-opacity-25 py-6 px-10 h-[7.3rem] text-center text-[#4069B0] text-xl font-bold shadow-statsCard`}>
+    <p className="text-slate-500 text-sm mb-2">{title}</p>
+    <div
+      className={`${style} rounded bg-opacity-25 py-6 px-10 h-[7.3rem] text-center text-[#4069B0] text-xl font-bold shadow-statsCard`}
+    >
       {text}
     </div>
   </div>
@@ -82,6 +87,7 @@ function Statistics(props) {
   const [filteredData, setFilteredData] = useState(initialChartData);
   const [notifications, setNotifications] = useState(initialNotifications);
   const [visibleNotifications, setVisibleNotifications] = useState(4);
+  const { token } = useAuth();
 
   const toggleCalendar = () => {
     setIsCalendarOpen(!isCalendarOpen);
@@ -115,9 +121,15 @@ function Statistics(props) {
   };
 
   const handleNotificationClose = (id) => {
-    const newNotifications = notifications.filter(notification => notification.id !== id);
+    const newNotifications = notifications.filter(
+      (notification) => notification.id !== id
+    );
     setNotifications(newNotifications);
-    setVisibleNotifications(newNotifications.length < 4 ? newNotifications.length : visibleNotifications);
+    setVisibleNotifications(
+      newNotifications.length < 4
+        ? newNotifications.length
+        : visibleNotifications
+    );
   };
 
   const handleViewMore = () => {
@@ -128,18 +140,59 @@ function Statistics(props) {
     setVisibleNotifications(4);
   };
 
+  const getAttendaceByPeriod = async () => {
+    console.log('token: ', token);
+    try {
+      const response = axios.get(
+        `${API_BASE_URL}/attendance/stats/periods`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+    } catch (error) {
+      console.log(
+        'Failed to create QR code',
+        error.response.data.message || error.message
+      );
+      setErrorMessage(error.response.data.message);
+      toast.error(error.response.data.message, {
+        position: 'top-right',
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'light',
+        transition: Bounce,
+      });
+    }
+  };
+
   return (
-    <div className='w-full sm:h-[80vh] h-auto'>
-      <p className='font-medium font-extrabold'>Cafeteria attendances</p>
-      <div className={`flex flex-col lg:flex-row justify-between p-2 h-[75vh] `}>
+    <div className="w-full sm:h-[80vh] h-auto">
+      <p className="font-medium font-extrabold">Cafeteria attendances</p>
+      <div
+        className={`flex flex-col lg:flex-row justify-between p-2 h-[75vh] `}
+      >
         <div className={`w-full p-4 `}>
-          <div className='flex flex-col md:flex-row justify-between'>
-            <StatsCard title="Today" text="0" style="bg-[#008000] bg-opacity-2" />
-            <StatsCard title="This week" text="1143" style="bg-[#4069B0] bg-opacity-2" />
-            <StatsCard title="This month" text="5203" style="bg-[#808080] bg-opacity-2" />
+          <div className="flex flex-col md:flex-row justify-between">
+            <StatsCard
+              title="Today"
+              text="0"
+              style="bg-[#008000] bg-opacity-2"
+            />
+            <StatsCard
+              title="This week"
+              text="1143"
+              style="bg-[#4069B0] bg-opacity-2"
+            />
+            <StatsCard
+              title="This month"
+              text="5203"
+              style="bg-[#808080] bg-opacity-2"
+            />
           </div>
-          <div className='border border-current rounded w-full lg:h-[80%] px-4 pt-2 md:block relative'>
-            <div className='flex justify-between items-center'>
+          <div className="border border-current rounded w-full lg:h-[80%] px-4 pt-2 md:block relative">
+            <div className="flex justify-between items-center">
               <p>Cafeteria attendees</p>
               <button
                 className="text-mainBlue flex items-center"
@@ -165,7 +218,6 @@ function Statistics(props) {
             </div>
           </div>
         </div>
-        
       </div>
     </div>
   );
