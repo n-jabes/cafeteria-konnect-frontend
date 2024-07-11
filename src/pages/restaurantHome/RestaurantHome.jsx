@@ -9,6 +9,8 @@ import { MdDangerous } from 'react-icons/md';
 import { useAuth } from '../../context/AuthContext';
 import axios from 'axios';
 import { API_BASE_URL } from '../../utils/api';
+import { ref, onValue } from 'firebase/database';
+import { database } from '../../utils/firebase';
 
 const StatsCard = ({ title, text, style }) => (
   <div className="p-4 w-full md:w-1/2 ">
@@ -118,7 +120,7 @@ function RestaurantHome(props) {
 
   const attendenceHeaders = ['Id', 'Name', 'Department'];
   const attendenceData = allAttendence.map((attendence, index) => [
-    index,
+    ++index,
     attendence.names,
     attendence.department.department,
   ]);
@@ -135,6 +137,27 @@ function RestaurantHome(props) {
     setSearchInput(value);
     filterEmails(value);
   };
+
+
+  useEffect(() => {
+    getAttendanceByDate(selectedDate);
+  }, []);
+
+  useEffect(() => {
+    // Firebase Realtime Database listener
+    const attendanceRef = ref(database, 'attendance');
+    const unsubscribe = onValue(attendanceRef, (snapshot) => {
+      getAttendanceByDate(selectedDate) // Fetch updated data from your API
+    });
+
+    // Firebase Firestore listener
+    // const unsubscribe = onSnapshot(collection(db, 'users'), (snapshot) => {
+    //   getAllAttendees(); // Fetch updated data from your API
+    // });
+
+    // Cleanup function
+    return () => unsubscribe();
+  }, []);
 
   const processScannedData = useCallback(async () => {
     setErrorMessage('');
@@ -165,7 +188,7 @@ function RestaurantHome(props) {
       if (isValidScanObject(scannedObject)) {
         let response;
         try {
-          response = await axios.post(
+           response = await axios.post(
             `${API_BASE_URL}/attendance/record`,
             { qrCodeId: String(scannedObject.qrCodeId) },
             {
@@ -201,7 +224,7 @@ function RestaurantHome(props) {
             );
           }
         } catch (error) {
-          console.log(error);
+          console.log(error)
           handleError(error.response.data.message || error.message);
         }
       } else {
@@ -232,7 +255,9 @@ function RestaurantHome(props) {
   useEffect(() => {
     let timer;
     if (scannedInput) {
-      timer = setTimeout(() => {}, 1500);
+      timer = setTimeout(() => {
+        processScannedData();
+      }, 1500);
       // Adjust this delay as needed
     }
     return () => {
@@ -241,8 +266,8 @@ function RestaurantHome(props) {
   }, [scannedInput, processScannedData]);
 
   useEffect(() => {
-    getAttendanceByDate(selectedDate);
-  }, []);
+    console.log('Updated scannedList:', scannedList);
+  }, [scannedList]);
 
   const handleInputChange = (event) => {
     setScannedInput(event.target.value);

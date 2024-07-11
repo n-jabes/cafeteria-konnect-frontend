@@ -604,23 +604,12 @@ export function AttendeeQrCodeButton({ attendeeDetails }) {
       qrCodeId: `${uniqueIdentifier}`,
     };
 
-    console.log('qrCodeData: ', qrCodeData);
-
-    // const qrCodeData = {
-    //   //remember to use the dynamic data sent form the qrCodeData
-    //   userId: '7fec8744-5a50-4aae-8e30-aa2fef6360d1',
-    //   userEmail: 'test@gmail.com',
-    //   qrCodeId: '1720638513730-623130',
-    // };
-    // console.log('placeholderData: ', qrCodeData);
+    // console.log('qrCodeData: ', qrCodeData);
 
     const encryptedData = await encryptData(
       JSON.stringify(qrCodeData),
       secretKey
     ); 
-
-    console.log('Encrypted qrCodeData: ', encryptedData);
-    console.log('token: ', token);
 
     try {
       const response = await axios.post(

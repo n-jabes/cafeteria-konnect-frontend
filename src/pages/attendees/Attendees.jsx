@@ -56,7 +56,6 @@ function Attendees() {
         },
       });
 
-      console.log(response.data);
       const allDepartments = response.data.data.map((dept) => ({
         id: dept.id,
         department: dept.department,
