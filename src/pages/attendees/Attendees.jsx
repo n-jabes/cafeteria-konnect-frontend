@@ -35,6 +35,7 @@ function Attendees() {
   const [roles, setRoles] = useState([]);
   const [allAttendees, setAllAttendees] = useState([]);
   const [errorMessage, setErrorMessage] = useState('');
+  const [creatingAttendee, setCreatingAttendee] = useState(false);
   const [allAttendeesErrorMessage, setAllAttendeesErrorMessage] = useState('');
   const { role } = useAuth();
   const token = sessionStorage.getItem('token');
@@ -100,12 +101,18 @@ function Attendees() {
 
       const allUsers = response.data.data.map((attendee, index) => ({
         id: index,
+        userId: attendee.id,
         name: attendee.names,
-        role: attendee.roleId,
         email: attendee.email,
+        roleId: attendee.role.id,
+        roleName: attendee.role.role,
+        departmentId: attendee.department.id,
+        departmentName: attendee.department.department,
         status: attendee.attendanceStatus,
+        nationalId: attendee.nationalId,
       }));
-      setAllAttendees(allUsers)
+      console.log('all users: ', allUsers);
+      setAllAttendees(allUsers);
     } catch (error) {
       console.log(
         'Failed to fetch all people',
@@ -201,8 +208,7 @@ function Attendees() {
   const attendeesData = allAttendees.map((attendeeDetails) => [
     attendeeDetails.id,
     attendeeDetails.name,
-    attendeeDetails.role,
-    // <Status status={attendeeDetails.status} />,
+    attendeeDetails.roleName,
     attendeeDetails.status,
     <AttendeeButtons attendeeDetails={attendeeDetails} />,
   ]);
@@ -212,9 +218,8 @@ function Attendees() {
     .map((attendeeDetails) => [
       attendeeDetails.id,
       attendeeDetails.name,
-      attendeeDetails.role,
+      attendeeDetails.roleName,
       attendeeDetails.status,
-      // <Status status={attendeeDetails.status} />,
       <AttendeeButtons attendeeDetails={attendeeDetails} />,
     ]);
 
@@ -405,7 +410,6 @@ function Attendees() {
   // Fetch the roles and departments when the component mounts
   useEffect(() => {
     if (role === 'HR') {
-      console.log('your role is: ', role);
       getAllRoles();
       getAllDepartments();
       getAllAttendees();
@@ -442,14 +446,14 @@ function Attendees() {
     const attendeeData = {
       names: fullName,
       email: values.email,
-      nationalId: values.NID,
+      nationalId: values.NID.toString(),
       roleId: roleId,
       departmentId: departmentId,
       password: '123456',
     };
 
     console.log('attendeeData: ', attendeeData);
-
+    setCreatingAttendee(true);
     try {
       // Send the POST request to the API endpoint
       const response = await axios.post(
@@ -474,6 +478,7 @@ function Attendees() {
         theme: 'light',
         transition: Bounce,
       });
+      setCreatingAttendee(false);
     } catch (error) {
       console.log(
         'Failed to create attendee',
@@ -507,7 +512,7 @@ function Attendees() {
         <Toast />
         {addNewAttendee && (
           <div className="fixed top-0 left-0 bg-bgBlue z-[40] h-screen w-screen overflow-y-auto overflow-x-auto flex items-center justify-center">
-            <div className="relative bg-white w-[90%] md:w-[50%]  lg:w-[38%] sm:w-[70%] lg:h-[28.5rem] sm:h-[36rem] md:h-[32rem] h-[38rem] px-[3.5%] py-[1.7%] rounded-md">
+            <div className="relative bg-white w-[90%] md:w-[50%]  lg:w-[38%] sm:w-[70%] lg:h-[32.5rem] sm:h-[36rem] md:h-[32rem] h-[38rem] px-[3.5%] py-[1.7%] rounded-md overflow-y-auto">
               <div className="w-[90%] mx-auto flex flex-col gap-[4rem] h-full">
                 <button
                   className="close border-2 border-mainRed rounded-md px-2 text-mainRed absolute right-4 top-4"
@@ -515,7 +520,7 @@ function Attendees() {
                 >
                   x
                 </button>
-                <h1 className="w-[70%] sm:h-[2rem] h-max capitalize text-[#078ECE] font-semibold text-xl">
+                <h1 className="w-[70%] sm:h-[2rem] h-max capitalize text-[#078ECE] font-semibold text-xl mb-4">
                   Add New attendee
                 </h1>
 
@@ -533,17 +538,11 @@ function Attendees() {
                         Names
                       </label>
                       <div className="flex md:flex-row flex-col gap-3">
-                        <input
-                          name="names"
-                          type="text"
-                          placeholder="First name"
-                          className="w-full text-xs border focus:border-gray-300 focus:outline-none  px-2 py-3 "
-                        />
                         <Field
                           name="names"
                           type="text"
-                          placeholder="Last name"
-                          className="w-full text-xs border focus:border-gray-300 focus:outline-none px-2 py-3 "
+                          placeholder="Full names"
+                          className="w-full text-xs border focus:border-gray-300 focus:outline-none  px-2 py-3 "
                         />
                       </div>
                     </div>
@@ -564,31 +563,6 @@ function Attendees() {
                     </div>
 
                     <div className="flex md:flex-row flex-col gap-3">
-                      <div className="flex flex-col gap-2 md:w-1/2">
-                        <label
-                          htmlFor="department"
-                          className="block text-sm font-medium text-gray-700"
-                        >
-                          Department
-                        </label>
-                        <Field
-                          as="select"
-                          id="department"
-                          name="department"
-                          className="block w-full px-3 py-2 mb-3 text-gray-500 text-xs border  focus:border-gray-300 focus:outline-none rounded shadow-sm overflow-x-none"
-                        >
-                          {departments.map((dept) => (
-                            <option
-                              key={dept.id}
-                              value={dept.department}
-                              className="w-full"
-                            >
-                              {dept.department}
-                            </option>
-                          ))}
-                        </Field>
-                      </div>
-
                       <div className="flex flex-col gap-2 md:w-1/2 w-full">
                         <label
                           htmlFor="role"
@@ -602,6 +576,7 @@ function Attendees() {
                           name="role"
                           className="block w-full px-3 py-2 mb-3 text-gray-500 text-xs border rounded shadow-sm focus:outline-none"
                         >
+                          <option value="">Select</option>
                           {roles.map((role) => (
                             <option key={role.id} value={role.role}>
                               {role.role}
@@ -609,10 +584,35 @@ function Attendees() {
                           ))}
                         </Field>
                       </div>
+                      <div className="flex flex-col gap-2 md:w-1/2">
+                        <label
+                          htmlFor="department"
+                          className="block text-sm font-medium text-gray-700"
+                        >
+                          Department
+                        </label>
+                        <Field
+                          as="select"
+                          id="department"
+                          name="department"
+                          className="block w-full px-3 py-2 mb-3 text-gray-500 text-xs border  focus:border-gray-300 focus:outline-none rounded shadow-sm overflow-x-none"
+                        >
+                          <option value="">Select</option>
+                          {departments.map((dept) => (
+                            <option
+                              key={dept.id}
+                              value={dept.department}
+                              className="w-full"
+                            >
+                              {dept.department}
+                            </option>
+                          ))}
+                        </Field>
+                      </div>
                     </div>
                     <div className="flex flex-col gap-2">
                       <label
-                        htmlFor="role"
+                        htmlFor="NID"
                         className="block text-sm font-medium text-gray-700"
                       >
                         National Id
@@ -631,9 +631,11 @@ function Attendees() {
                     )}
                     <button
                       type="submit"
-                      className="w-full px-2 text-sm py-3 my-3 bg-[#078ECE] text-white font-semibold"
+                      className={`w-full px-2 text-sm py-3 my-3 cursor-pointer text-white font-semibold bg-[#078ECE]`}
+                      disabled={creatingAttendee}
                     >
-                      Submit
+                      {/* {creatingAttendee ? 'Creating' : 'Submit'} */}
+                      submit
                     </button>
                   </Form>
                 </Formik>
@@ -646,7 +648,7 @@ function Attendees() {
           <div className="error text-red-500 mt-2 relative border-[1px] min-h-[10vh] h-max p-2 flex flex-col md:flex-row gap-2 items-start md:items-center">
             <button
               className="close border-[1px] border-mainRed rounded-md px-2 text-mainRed absolute right-2 top-2 text-sm"
-              onClick={() => setallUsersErrorMessage()}
+              onClick={() => setAllAttendeesErrorMessage()}
             >
               x
             </button>

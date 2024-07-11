@@ -56,7 +56,7 @@ export function UpdateAttendeeButton({ attendeeDetails }) {
             </button>
             <div className=" flex flex-col gap-3">
               <h1 className="text-mainBlue font-semibold text-md md:text-xl ">
-                Update Attendee:{' '}
+                Update Attendee:
                 <span className="text-gray-600">{attendeeDetails.name}</span>
               </h1>
 
@@ -83,7 +83,7 @@ export function UpdateAttendeeButton({ attendeeDetails }) {
                       type="text"
                       placeholder="Enter guest full name"
                       name="name"
-                      defaultValue={attendeeDetails.name}
+                      defaultValue={attendeeDetails.email}
                       className="outline-none text-sm py-2 px-4 border-[1px] border-gray rounded-md"
                       required
                     />
@@ -98,7 +98,7 @@ export function UpdateAttendeeButton({ attendeeDetails }) {
                       type="text"
                       placeholder="Enter guest purpose: eg. consultant"
                       name="purpose"
-                      defaultValue={attendeeDetails.role}
+                      defaultValue={attendeeDetails.roleName}
                       className="outline-none text-sm py-2 px-4 border-[1px] border-gray rounded-md"
                       required
                     />
@@ -111,7 +111,7 @@ export function UpdateAttendeeButton({ attendeeDetails }) {
                       type="text"
                       placeholder="Enter guest purpose: eg. consultant"
                       name="purpose"
-                      defaultValue={attendeeDetails.role}
+                      defaultValue={attendeeDetails.Name}
                       className="outline-none text-sm py-2 px-4 border-[1px] border-gray rounded-md"
                       required
                     />
@@ -128,8 +128,8 @@ export function UpdateAttendeeButton({ attendeeDetails }) {
                     required
                   >
                     <option value="active">Active</option>
-                    <option value="on_pause">On Pause</option>
-                    <option value="on_leave">On Leave</option>
+                    <option value="on pause">On Pause</option>
+                    <option value="on leave">On Leave</option>
                   </select>
                 </div>
                 <button
@@ -1225,6 +1225,7 @@ export function ReceiptsButtons({
 }
 
 export function AttendeeButtons({ attendeeDetails }) {
+  // console.log('attendee buttons: ', attendeeDetails)
   return (
     <div className="flex gap-2 items-center">
       <UpdateAttendeeButton attendeeDetails={attendeeDetails} />
