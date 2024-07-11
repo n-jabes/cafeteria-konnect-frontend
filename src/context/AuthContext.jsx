@@ -9,7 +9,7 @@ export const AuthProvider = ({ children }) => {
     return sessionStorage.getItem('isAuthenticated') === 'true';
   });
   const [role, setRole] = useState(() => sessionStorage.getItem('role') || '');
-  const [token, setToken] = useState(()=> sessionStorage.getItem('token') || '')
+  const [token, setToken] = useState('')
 
   const login = (token) => {
     const decodedToken = jwtDecode(token);
@@ -18,6 +18,7 @@ export const AuthProvider = ({ children }) => {
     sessionStorage.setItem('isAuthenticated', true);
     sessionStorage.setItem('token', token)
     setRole(decodedToken.role);
+    setToken(sessionStorage.getItem('token'))
     setIsAuthenticated(true);
   };
 

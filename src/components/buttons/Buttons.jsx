@@ -21,6 +21,8 @@ import { WhatsappShareButton } from 'react-share';
 import { useAuth } from '../../context/AuthContext';
 import axios from 'axios';
 import { API_BASE_URL } from '../../utils/api';
+import { Bounce, toast } from 'react-toastify';
+import { MdDangerous } from 'react-icons/md';
 
 export function MainButton({ text }) {
   return (
@@ -466,6 +468,7 @@ export function ViewAttendeeButton({ attendeeDetails }) {
 export function AttendeeQrCodeButton({ attendeeDetails }) {
   const [showViewCode, setShowViewCode] = useState(false);
   const [src, setSrc] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
   const qrCodeRef = useRef(null);
   const { encryptData, token, secretKey } = useAuth();
 
@@ -482,31 +485,65 @@ export function AttendeeQrCodeButton({ attendeeDetails }) {
       uniqueIdentifier,
     });
 
+    console.log('qrCodeData: ', qrCodeData);
+
     const placeholderData = {
       //remember to use the dynamic data sent form the qrCodeData
       userId: '196c7410-e60b-42a1-8df8-9bff5f7890b0',
       userEmail: 'kenny@gmail.com',
       qrCodeId: '1720638513730-623130',
     };
-    
-    const encryptedData = await encryptData(JSON.stringify(placeholderData), secretKey);//remember to set back to qrCodeData
-    console.log('qrCodeData: ', qrCodeData);
-    const response = await axios.post(
-      `${API_BASE_URL}/userQrcodes/save`,
-      {
-        //remember to use the dynamic data sent form the qrCodeData
-        userId: placeholderData.userId,
-        userEmail: placeholderData.userEmail,
-        qrCodeId: placeholderData.qrCodeId,
-      },
-      { headers: { Authorization: `Bearer ${token}` } }
-    );
-    console.log('response: ', response);
+    console.log('placeholderData: ', placeholderData);
 
-    if (response.status === 201) {
+    const encryptedData = await encryptData(
+      JSON.stringify(placeholderData),
+      secretKey
+    ); //remember to set back to qrCodeData
+
+    console.log('qrCodeData: ', qrCodeData);
+    console.log('token: ', token)
+
+    try {
+      const response = await axios.post(
+        `${API_BASE_URL}/userQrcodes/save`,
+        {
+          //remember to use the dynamic data sent form the qrCodeData
+          userId: placeholderData.userId,
+          userEmail: placeholderData.userEmail,
+          qrCodeId: placeholderData.qrCodeId,
+        },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      console.log('response: ', response);
       QRCode.toDataURL(encryptedData).then((value) => setSrc(value)); //remember to use qrCodeData
-    } else {
-      console.log('Failed to create QR code');
+      toast.success('QrCode created successfully', {
+        position: 'top-right',
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'light',
+        transition: Bounce,
+      });
+    } catch (error) {
+      console.log(
+        'Failed to create QR code',
+        error.response.data.message || error.message
+      );
+      setErrorMessage(error.response.data.message);
+      toast.error(error.response.data.message, {
+        position: 'top-right',
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'light',
+        transition: Bounce,
+      });
     }
   };
 
@@ -562,6 +599,18 @@ export function AttendeeQrCodeButton({ attendeeDetails }) {
                   <img className="h-[90%] w-[70%] text-mainBlue" src={src} />
                 )}
               </div>
+              {errorMessage && (
+                <div className="error text-red-500 mt-2 relative border-[1px] min-h-[10vh] h-max p-2 flex flex-col md:flex-row gap-2 items-start md:items-center">
+                  <button
+                    className="close border-[1px] border-mainRed rounded-md px-2 text-mainRed absolute right-2 top-2 text-sm"
+                    onClick={() => setErrorMessage()}
+                  >
+                    x
+                  </button>
+                  <MdDangerous className="text-6xl" />
+                  <p className="w-[80%] text-sm">{errorMessage}</p>
+                </div>
+              )}
               <div className="my-2 flex w-[80%] md:w-[60%] flex-col md:flex-row items-start md:items-center md:justify-between gap-4 md:gap-8 mx-auto">
                 <button
                   className="text-white flex items-center py-2 px-4 gap-2 border-[1px] border-[#078ECE] bg-[#078ECE] hover:bg-white hover:text-[#078ECE]"
