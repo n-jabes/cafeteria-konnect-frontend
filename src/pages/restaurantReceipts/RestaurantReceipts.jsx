@@ -1,11 +1,15 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import TableComponent from '../../components/table/TableComponent';
 import {
   RestaurantButtons,
   ViewRestaurantReceiptButton,
 } from '../../components/buttons/Buttons';
+import axios from 'axios';
+import { API_BASE_URL } from '../../utils/api';
+const token = sessionStorage.getItem('token');
 
 function RestaurantReceipts(props) {
+  const [allReceipts, setAllReceipts] = useState([]);
   const allAttendees = [
     {
       id: 1,
@@ -63,88 +67,45 @@ function RestaurantReceipts(props) {
     },
   ];
 
-  const allReceipts = [
-    {
-      id: 20240602,
-      date: '2024-06-01',
-      attendees: '30',
-    },
-    {
-      id: 20240602,
-      date: '2024-06-02',
-      attendees: '30',
-    },
-    {
-      id: 20240602,
-      date: '2024-06-03',
-      attendees: '30',
-    },
+  const getAllReceipts = async () => {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/receipts/all`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setAllReceipts(response.data.data);
+    } catch (error) {
+      console.log('Failed to fetch stats', error.response || error.message);
+      // setErrorMessage(error.response.data.message);
+      // toast.error('Failed to Fetch Stats' + error.response.data.message, {
+      //   position: 'top-right',
+      //   autoClose: 1000,
+      //   hideProgressBar: false,
+      //   closeOnClick: true,
+      //   pauseOnHover: true,
+      //   draggable: true,
+      //   progress: undefined,
+      //   theme: 'light',
+      //   transition: Bounce,
+      // });
+    }
+  };
 
-    {
-      id: 20240603,
-      date: '2024-06-04',
-      attendees: '30',
-    },
-    {
-      id: 20240603,
-      date: '2024-06-05',
-      attendees: '30',
-    },
-    {
-      id: 20240603,
-      date: '2024-06-06',
-      attendees: '30',
-    },
-    {
-      id: 20240603,
-      date: '2024-06-07',
-      attendees: '30',
-    },
-    {
-      id: 20240603,
-      date: '2024-06-08',
-      attendees: '30',
-    },
-    {
-      id: 20240603,
-      date: '2024-06-09',
-      attendees: '30',
-    },
-    {
-      id: 20240603,
-      date: '2024-06-10',
-      attendees: '30',
-    },
-    {
-      id: 20240603,
-      date: '2024-06-11',
-      attendees: '30',
-    },
-    {
-      id: 20240603,
-      date: '2024-06-12',
-      attendees: '30',
-    },
-  ];
+  useEffect(() => {
+    getAllReceipts();
+  }, []);
 
-  const receiptAttendees = allAttendees.map((attendee) => [
-    attendee.id,
-    attendee.name,
-    attendee.department,
-  ]);
-
-  const receiptHeaders = ['Attendee Id', 'Name', 'Department'];
+  const receiptHeaders = ['Id', 'Names', 'Department', 'isScanned'];
   const headers = ['Receipt Id', 'Date', 'Clients', 'Actions'];
 
   const receiptsToDisplay = allReceipts.map((receipt) => [
-    receipt.id,
-    receipt.date,
-    receipt.attendees,
+    receipt.receiptId,
+    receipt.createdAt,
+    receipt.numberOfAttendees,
     <ViewRestaurantReceiptButton
       receipt={receipt}
       receiptHeaders={receiptHeaders}
-      receiptData={receiptAttendees}
-      receiptDate={receipt.date}
+      receiptData={receipt}
+      receiptDate={receipt.createdAt}
     />,
   ]);
 

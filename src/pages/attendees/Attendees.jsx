@@ -17,7 +17,7 @@ import Toast from '../../components/toast/Toast';
 import { Bounce, toast } from 'react-toastify';
 import { MdDangerous } from 'react-icons/md';
 import { ref, onValue } from 'firebase/database';
-import { firestoreDB } from '../../utils/firebase';
+import { database, firestoreDB } from '../../utils/firebase';
 import { collection, getFirestore, onSnapshot } from 'firebase/firestore';
 
 const validationSchema = Yup.object().shape({
@@ -92,6 +92,65 @@ function Attendees() {
     }
   };
 
+  //fetching all estimated attendees
+  const getEstimatedAttendees = async () => {
+    try {
+      setEstimatedAttendees(extraPeople);
+      const response = await axios.get(
+        `${API_BASE_URL}/users/estimatedAttendees`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      console.log(
+        'estimated attendees: ',
+        response.data.data.estimatedAttendeesCount
+      );
+      setTotalAttendees(response.data.data.estimatedAttendeesCount)
+    } catch (error) {
+      console.log(
+        'Failed to fetch roles',
+        error.response?.data?.message || error.message
+      );
+    }
+  };
+
+  //setting the number all estimated attendees
+  const setEstimatedAttendees = async (additionalPeople) => {
+    try {
+      const response = await axios.post(
+        `${API_BASE_URL}/users/estimatedAttendeesCount`,
+        { additionalPeople },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      toast.success('Estimated attendees updated!', {
+        position: 'top-right',
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'light',
+        transition: Bounce,
+      });
+      
+    } catch (error) {
+      console.log(
+        'Failed to fetch roles',
+        error.response?.data?.message || error.message
+      );
+    }
+  };
+
   //fetching all attendees
   const getAllAttendees = async () => {
     try {
@@ -113,7 +172,7 @@ function Attendees() {
         status: attendee.attendanceStatus,
         nationalId: attendee.nationalId,
       }));
-      console.log('all users: ', allUsers);
+
       setAllAttendees(allUsers);
     } catch (error) {
       console.log(
@@ -125,87 +184,6 @@ function Attendees() {
       );
     }
   };
-
-  // const allAttendees = [
-  //   {
-  //     id: 1,
-  //     name: 'Nshuti Ruranga Jabes',
-  //     role: 'intern',
-  //     email: 'nshutij7@gmail.com',
-  //     status: 'on leave',
-  //   },
-  //   {
-  //     id: 2,
-  //     name: 'Jane Smith',
-  //     role: 'Consultant',
-  //     email: 'imkenny@gmail.com',
-  //     status: 'active',
-  //   },
-  //   {
-  //     id: 3,
-  //     name: 'Sam Johnson',
-  //     role: 'intern',
-  //     email: 'bizy@gmail.com',
-  //     status: 'active',
-  //   },
-  //   {
-  //     id: 4,
-  //     name: 'Nshuti Ruranga Jabes',
-  //     role: 'Permant worker',
-  //     email: 'honnette@gmail.com',
-  //     status: 'active',
-  //   },
-  //   {
-  //     id: 5,
-  //     name: 'John Doe',
-  //     role: 'intern',
-  //     email: 'marie12@gmail.com',
-  //     status: 'other',
-  //   },
-  //   {
-  //     id: 6,
-  //     name: 'Jane Smith',
-  //     role: 'Consultant',
-  //     email: 'henriette@gmail.com',
-  //     status: 'other',
-  //   },
-  //   {
-  //     id: 7,
-  //     name: 'Sam Johnson',
-  //     role: 'intern',
-  //     status: 'active',
-  //   },
-  //   {
-  //     id: 8,
-  //     name: 'Nshuti Ruranga Jabes',
-  //     role: 'Intern',
-  //     status: 'on leave',
-  //   },
-  //   {
-  //     id: 9,
-  //     name: 'John Doe',
-  //     role: 'intern',
-  //     status: 'on leave',
-  //   },
-  //   {
-  //     id: 10,
-  //     name: 'Jane Smith',
-  //     role: 'Consultant',
-  //     status: 'on leave',
-  //   },
-  //   {
-  //     id: 11,
-  //     name: 'Sam Johnson',
-  //     role: 'intern',
-  //     status: 'on leave',
-  //   },
-  //   {
-  //     id: 12,
-  //     name: 'Nshuti Ruranga Jabes',
-  //     role: 'consultant',
-  //     status: 'active',
-  //   },
-  // ];
 
   const attendeesData = allAttendees.map((attendeeDetails) => [
     attendeeDetails.id,
@@ -395,14 +373,15 @@ function Attendees() {
       setExtraPeople(0);
       const newExtraPeople = 0;
       setExtraPeople(newExtraPeople);
-      setTotalAttendees(activeAttendeesCount + newExtraPeople);
+      setEstimatedAttendees(activeAttendeesCount + newExtraPeople);
     } else {
       const newExtraPeople = parseInt(extraPeople, 10); // Convert extraPeople to integer
       setExtraPeople(newExtraPeople);
-      setTotalAttendees(activeAttendeesCount + newExtraPeople);
+      setEstimatedAttendees(activeAttendeesCount + newExtraPeople);
     }
   };
 
+  // input for setting estimated people
   const handleInputChange = (e) => {
     const value = e.target.value.trim();
     // Remove any leading zero when user starts typing a new number
@@ -418,7 +397,9 @@ function Attendees() {
     if (role === 'HR') {
       getAllRoles();
       getAllDepartments();
+      setEstimatedAttendees(activeAttendeesCount + extraPeople);
       getAllAttendees(); // Initial data load from API
+      getEstimatedAttendees();
 
       // Create a reference to the 'users' collection
       const usersCollectionRef = collection(firestoreDB, 'users');
@@ -438,6 +419,18 @@ function Attendees() {
       // Cleanup function
       return () => unsubscribe();
     }
+  }, []);
+
+  // Get realtime data for estimated attendees
+  useEffect(() => {
+    // Firebase Realtime Database listener
+    const estimatedAttendanceRef = ref(database, 'EstimatedAttendeesCount');
+    const unsubscribe = onValue(estimatedAttendanceRef, (snapshot) => {
+      getEstimatedAttendees(); // Fetch updated data from your API
+    });
+
+    // Cleanup function
+    return () => unsubscribe();
   }, []);
 
   const initialValues = {
@@ -490,7 +483,6 @@ function Attendees() {
         }
       );
 
-      console.log(response.data);
       resetForm();
       toast.success('Attendee created successfully', {
         position: 'top-right',

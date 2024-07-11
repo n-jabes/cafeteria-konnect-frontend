@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FaTimes, FaCalendarAlt } from 'react-icons/fa';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -6,6 +6,8 @@ import CafeteriaAttendeesChart from '../../components/chart/CafeteriaAttendeesCh
 import { API_BASE_URL } from '../../utils/api';
 import { useAuth } from '../../context/AuthContext';
 import { Bounce, toast } from 'react-toastify';
+import axios from 'axios';
+const token = sessionStorage.getItem('token');
 
 const RoundedIcon = ({ text, style }) => (
   <div
@@ -19,7 +21,7 @@ const StatsCard = ({ title, text, style }) => (
   <div className="p-4 w-full md:w-1/2">
     <p className="text-slate-500 text-sm mb-2">{title}</p>
     <div
-      className={`${style} rounded bg-opacity-25 py-6 px-10 h-[7.3rem] text-center text-[#4069B0] text-xl font-bold shadow-statsCard`}
+      className={`${style} rounded bg-opacity-25 py-6 px-10 h-[7.3rem] flex items-center justify-center text-center text-[#4069B0] text-4xl font-bold shadow-statsCard`}
     >
       {text}
     </div>
@@ -87,7 +89,9 @@ function Statistics(props) {
   const [filteredData, setFilteredData] = useState(initialChartData);
   const [notifications, setNotifications] = useState(initialNotifications);
   const [visibleNotifications, setVisibleNotifications] = useState(4);
-  const { token } = useAuth();
+  const [todayValue, setTodayValue] = useState(0);
+  const [weekValue, setWeekValue] = useState(0);
+  const [monthValue, setMonthValue] = useState(0);
 
   const toggleCalendar = () => {
     setIsCalendarOpen(!isCalendarOpen);
@@ -141,19 +145,24 @@ function Statistics(props) {
   };
 
   const getAttendaceByPeriod = async () => {
-    console.log('token: ', token);
     try {
-      const response = axios.get(
-        `${API_BASE_URL}/attendance/stats/periods`,
-        { headers: { Authorization: `Bearer ${token}` } }
+      const response = await axios.get(
+        `${API_BASE_URL}/attendance/stats/period`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
       );
+
+      setTodayValue(response.data.data.today);
+      setWeekValue(response.data.data.week);
+      setMonthValue(response.data.data.month);
     } catch (error) {
       console.log(
-        'Failed to create QR code',
+        'Failed to fetch stats',
         error.response.data.message || error.message
       );
-      setErrorMessage(error.response.data.message);
-      toast.error(error.response.data.message, {
+      // setErrorMessage(error.response.data.message);
+      toast.error('Failed to Fetch Stats' + error.response.data.message, {
         position: 'top-right',
         autoClose: 1000,
         hideProgressBar: false,
@@ -167,6 +176,10 @@ function Statistics(props) {
     }
   };
 
+  useEffect(() => {
+    getAttendaceByPeriod();
+  }, []);
+
   return (
     <div className="w-full sm:h-[80vh] h-auto">
       <p className="font-medium font-extrabold">Cafeteria attendances</p>
@@ -177,17 +190,17 @@ function Statistics(props) {
           <div className="flex flex-col md:flex-row justify-between">
             <StatsCard
               title="Today"
-              text="0"
+              text={todayValue}
               style="bg-[#008000] bg-opacity-2"
             />
             <StatsCard
               title="This week"
-              text="1143"
+              text={weekValue}
               style="bg-[#4069B0] bg-opacity-2"
             />
             <StatsCard
               title="This month"
-              text="5203"
+              text={monthValue}
               style="bg-[#808080] bg-opacity-2"
             />
           </div>

@@ -23,6 +23,7 @@ import axios from 'axios';
 import { API_BASE_URL } from '../../utils/api';
 import { Bounce, toast } from 'react-toastify';
 import { MdDangerous } from 'react-icons/md';
+const token = sessionStorage.getItem('token');
 
 export function MainButton({ text }) {
   return (
@@ -58,7 +59,7 @@ export function UpdateAttendeeButton({ attendeeDetails }) {
           Authorization: `Bearer ${token}`,
         },
       });
-      
+
       const allDepartments = response.data.data.map((dept) => ({
         id: dept.id,
         department: dept.department,
@@ -608,7 +609,7 @@ export function AttendeeQrCodeButton({ attendeeDetails }) {
     const encryptedData = await encryptData(
       JSON.stringify(qrCodeData),
       secretKey
-    ); 
+    );
 
     try {
       const response = await axios.post(
@@ -1143,8 +1144,46 @@ export function ViewRestaurantReceiptButton({
   receiptHeaders,
 }) {
   const [viewReceipt, setViewReceipt] = useState(false);
+  const [receiptAttendees, setReceiptAttendees] = useState([]);
   const receiptRef = useRef();
 
+  const getReceiptsAttendees = async (receiptId) => {
+    try {
+      const response = await axios.get(
+        `${API_BASE_URL}/receipts/getAttendees/by-receiptId/${receiptId}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      setReceiptAttendees(response.data.data);
+    } catch (error) {
+      console.log(
+        'Failed to receipt attendees',
+        error.response || error.message
+      );
+      // setErrorMessage(error.response.data.message);
+      // toast.error('Failed to Fetch Stats' + error.response.data.message, {
+      //   position: 'top-right',
+      //   autoClose: 1000,
+      //   hideProgressBar: false,
+      //   closeOnClick: true,
+      //   pauseOnHover: true,
+      //   draggable: true,
+      //   progress: undefined,
+      //   theme: 'light',
+      //   transition: Bounce,
+      // });
+    }
+  };
+
+  getReceiptsAttendees(receiptData.receiptId);
+
+  const receiptAttendeesData = receiptAttendees.map((attendee, index) => [
+    ++index,
+    attendee.names,
+    attendee.department,
+    attendee.isScanned,
+  ]);
   return (
     <div>
       {viewReceipt && (
@@ -1164,11 +1203,14 @@ export function ViewRestaurantReceiptButton({
                 </h2>
                 <h2 className="flex items-center text-mainGray text-3xl px-8 py-4 font-semibold border-[1px] border-gray-200 w-max">
                   <span className="text-lg mr-4">Total attendees: </span>
-                  {receiptData.length}
+                  {receiptAttendees.length}
                 </h2>
               </div>
               <div className="w-full border-2 border-gray-200 rounded-md h-[60vh]">
-                <TableComponent headers={receiptHeaders} data={receiptData} />
+                <TableComponent
+                  headers={receiptHeaders}
+                  data={receiptAttendeesData}
+                />
               </div>
             </div>
           </div>
