@@ -450,7 +450,7 @@ function Attendees() {
   };
 
   // Function to create a new attendee
-  const handleCreateAttendee = async (values) => {
+  const handleCreateAttendee = async (values, { resetForm }) => {
     // Concatenate first name and last name
     const fullName = values.names;
 
@@ -491,6 +491,7 @@ function Attendees() {
       );
 
       console.log(response.data);
+      resetForm();
       toast.success('Attendee created successfully', {
         position: 'top-right',
         autoClose: 1000,
@@ -524,8 +525,7 @@ function Attendees() {
   };
 
   const handleSubmit = (values, { resetForm }) => {
-    handleCreateAttendee(values);
-    resetForm();
+    handleCreateAttendee(values, { resetForm });
     setErrorMessage('');
   };
 
@@ -657,9 +657,7 @@ function Attendees() {
                     <button
                       type="submit"
                       className={`w-full px-2 text-sm py-3 my-3 cursor-pointer text-white font-semibold bg-[#078ECE]`}
-                      disabled={creatingAttendee}
                     >
-                      {/* {creatingAttendee ? 'Creating' : 'Submit'} */}
                       submit
                     </button>
                   </Form>
