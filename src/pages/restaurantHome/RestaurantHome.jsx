@@ -34,36 +34,29 @@ const EstimatedAttendeesCard = ({ text, style, time }) => (
   </div>
 );
 
-const allAttendence = [
-  {
-    id: 20240602,
-    name: 'Nshuti Ruranga Jabes',
-    department: 'Consultant',
-    date: '2024-06-04',
-    email: 'nshuti@gmail.com',
-  },
-  {
-    id: 20240602,
-    name: 'Ineza Kajuga',
-    department: 'intern',
-    date: '2024-06-04',
-    email: 'jabes@gmail.com',
-  },
-  {
-    id: 20240602,
-    name: 'Marie Honnette',
-    department: 'intern',
-    date: '2024-06-04',
-    email: 'honnette@gmail.com',
-  },
-];
-
-const attendenceHeaders = ['Id', 'Name', 'Department'];
-const attendenceData = allAttendence.map((attendence) => [
-  attendence.id,
-  attendence.name,
-  attendence.department,
-]);
+// const allAttendence = [
+//   {
+//     id: 20240602,
+//     name: 'Nshuti Ruranga Jabes',
+//     department: 'Consultant',
+//     date: '2024-06-04',
+//     email: 'nshuti@gmail.com',
+//   },
+//   {
+//     id: 20240602,
+//     name: 'Ineza Kajuga',
+//     department: 'intern',
+//     date: '2024-06-04',
+//     email: 'jabes@gmail.com',
+//   },
+//   {
+//     id: 20240602,
+//     name: 'Marie Honnette',
+//     department: 'intern',
+//     date: '2024-06-04',
+//     email: 'honnette@gmail.com',
+//   },
+// ];
 
 const validationSchema = Yup.object().shape({
   names: Yup.string()
@@ -80,9 +73,12 @@ function RestaurantHome(props) {
   const [searchInput, setSearchInput] = useState('');
   const [scannedInput, setScannedInput] = useState('');
   const [scannedList, setScannedList] = useState([]);
+  const [allAttendence, setAllAttendence] = useState([]);
   const [filteredEmails, setFilteredEmails] = useState([]);
   const [errorMessage, setErrorMessage] = useState('');
-  const { decryptData, secretKey, token } = useAuth();
+  const [dateError, setDateError] = useState('');
+  const { decryptData, secretKey } = useAuth();
+  const token = sessionStorage.getItem('token');
 
   const getFormattedDate = (date) => {
     const year = date.getFullYear();
@@ -97,8 +93,35 @@ function RestaurantHome(props) {
 
   const handleSelectedDate = (event) => {
     setSelectedDate(event.target.value);
-    console.log('selected date: ', selectedDate);
+    getAttendanceByDate(event.target.value);
   };
+
+  //fetching attendance by data
+  const getAttendanceByDate = async (date) => {
+    const [year, month, day] = date.split('-');
+    const formattedDate = `${month}-${day}-${year}`;
+    try {
+      const attendanceList = await axios.get(
+        `${API_BASE_URL}/attendance/stats/specific-date/${formattedDate}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      setAllAttendence(attendanceList.data.data.attendees);
+    } catch (error) {
+      setDateError(error.message || error.response.data.message);
+    }
+  };
+
+  const attendenceHeaders = ['Id', 'Name', 'Department'];
+  const attendenceData = allAttendence.map((attendence, index) => [
+    index,
+    attendence.names,
+    attendence.department.department,
+  ]);
 
   const filterEmails = (input) => {
     const filtered = allAttendence.filter((attendence) =>
@@ -142,7 +165,7 @@ function RestaurantHome(props) {
       if (isValidScanObject(scannedObject)) {
         let response;
         try {
-           response = await axios.post(
+          response = await axios.post(
             `${API_BASE_URL}/attendance/record`,
             { qrCodeId: String(scannedObject.qrCodeId) },
             {
@@ -178,7 +201,7 @@ function RestaurantHome(props) {
             );
           }
         } catch (error) {
-          console.log(error)
+          console.log(error);
           handleError(error.response.data.message || error.message);
         }
       } else {
@@ -209,9 +232,7 @@ function RestaurantHome(props) {
   useEffect(() => {
     let timer;
     if (scannedInput) {
-      timer = setTimeout(() => {
-        processScannedData();
-      }, 1500);
+      timer = setTimeout(() => {}, 1500);
       // Adjust this delay as needed
     }
     return () => {
@@ -220,8 +241,8 @@ function RestaurantHome(props) {
   }, [scannedInput, processScannedData]);
 
   useEffect(() => {
-    console.log('Updated scannedList:', scannedList);
-  }, [scannedList]);
+    getAttendanceByDate(selectedDate);
+  }, []);
 
   const handleInputChange = (event) => {
     setScannedInput(event.target.value);
@@ -341,6 +362,18 @@ function RestaurantHome(props) {
 
         <div className="flex flex-col md:flex-row gap-3 md:items-center mb-3 mt-5">
           <div className="w-1/3 text-lg text-gray-500 font-semibold">
+            {dateError && (
+              <div className="error text-red-500 mt-2 relative border-[1px] min-h-[10vh] h-max p-2 flex flex-col md:flex-row gap-2 items-start md:items-center">
+                <button
+                  className="close border-[1px] border-mainRed rounded-md px-2 text-mainRed absolute right-2 top-2 text-sm"
+                  onClick={() => setDateError()}
+                >
+                  x
+                </button>
+                <MdDangerous className="text-6xl" />
+                <p className="w-[80%] text-sm">{dateError}</p>
+              </div>
+            )}
             <form action="">
               <div>
                 <label className="text-sm mr-4">Choose date: </label>

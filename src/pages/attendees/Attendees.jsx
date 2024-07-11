@@ -17,7 +17,6 @@ import Toast from '../../components/toast/Toast';
 import { Bounce, toast } from 'react-toastify';
 import { MdDangerous } from 'react-icons/md';
 import { ref, onValue } from 'firebase/database';
-import { collection, onSnapshot } from 'firebase/firestore';
 import { database } from '../../utils/firebase';
 
 const validationSchema = Yup.object().shape({
