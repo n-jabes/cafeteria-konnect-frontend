@@ -80,6 +80,9 @@ function RestaurantHome(props) {
   const [errorMessage, setErrorMessage] = useState('');
   const [dateError, setDateError] = useState('');
   const { decryptData, secretKey } = useAuth();
+  const [todayValue, setTodayValue] = useState(0);
+  const [weekValue, setWeekValue] = useState(0);
+  const [monthValue, setMonthValue] = useState(0);
   const token = sessionStorage.getItem('token');
 
   const getFormattedDate = (date) => {
@@ -268,23 +271,63 @@ function RestaurantHome(props) {
     setScannedInput(event.target.value);
   };
 
+  const getAttendaceByPeriod = async () => {
+    try {
+      const response = await axios.get(
+        `${API_BASE_URL}/attendance/stats/period`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      setTodayValue(response.data.data.today);
+      setWeekValue(response.data.data.week);
+      setMonthValue(response.data.data.month);
+    } catch (error) {
+      console.log(
+        'Failed to fetch stats',
+        error.response.data.message || error.message
+      );
+      // setErrorMessage(error.response.data.message);
+      toast.error('Failed to Fetch Stats' + error.response.data.message, {
+        position: 'top-right',
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'light',
+        transition: Bounce,
+      });
+    }
+  };
+
+  useEffect(() => {
+    getAttendaceByPeriod();
+  }, []);
+
   return (
     <div>
       <h1 className="font-semibold text-mainGray">This Week</h1>
 
       <div className={`w-full px-4 py-2`}>
         <div className="w-full flex flex-col md:flex-row justify-between items-end ">
-          <StatsCard title="Today" text="0" style="bg-[#008000] bg-opacity-2" />
-          <StatsCard
-            title="This week"
-            text="1143"
-            style="bg-[#4069B0] bg-opacity-2"
-          />
-          <StatsCard
-            title="This month"
-            text="5203"
-            style="bg-[#808080] bg-opacity-2"
-          />
+        <StatsCard
+              title="Today"
+              text={todayValue}
+              style="bg-[#008000] bg-opacity-2"
+            />
+            <StatsCard
+              title="This week"
+              text={weekValue}
+              style="bg-[#4069B0] bg-opacity-2"
+            />
+            <StatsCard
+              title="This month"
+              text={monthValue}
+              style="bg-[#808080] bg-opacity-2"
+            />
         </div>
       </div>
 
