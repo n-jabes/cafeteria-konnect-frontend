@@ -77,6 +77,7 @@ function RestaurantHome(props) {
   const [scannedList, setScannedList] = useState([]);
   const [allAttendence, setAllAttendence] = useState([]);
   const [filteredEmails, setFilteredEmails] = useState([]);
+  const [estimatedAttendees, setEstimatedAttendees] = useState();
   const [errorMessage, setErrorMessage] = useState('');
   const [dateError, setDateError] = useState('');
   const { decryptData, secretKey } = useAuth();
@@ -141,7 +142,6 @@ function RestaurantHome(props) {
     filterEmails(value);
   };
 
-
   useEffect(() => {
     getAttendanceByDate(selectedDate);
   }, []);
@@ -150,7 +150,7 @@ function RestaurantHome(props) {
     // Firebase Realtime Database listener
     const attendanceRef = ref(database, 'attendance');
     const unsubscribe = onValue(attendanceRef, (snapshot) => {
-      getAttendanceByDate(selectedDate) // Fetch updated data from your API
+      getAttendanceByDate(selectedDate); // Fetch updated data from your API
     });
 
     // Cleanup function
@@ -186,7 +186,7 @@ function RestaurantHome(props) {
       if (isValidScanObject(scannedObject)) {
         let response;
         try {
-           response = await axios.post(
+          response = await axios.post(
             `${API_BASE_URL}/attendance/record`,
             { qrCodeId: String(scannedObject.qrCodeId) },
             {
@@ -222,7 +222,7 @@ function RestaurantHome(props) {
             );
           }
         } catch (error) {
-          console.log(error)
+          console.log(error);
           handleError(error.response.data.message || error.message);
         }
       } else {
@@ -271,6 +271,31 @@ function RestaurantHome(props) {
     setScannedInput(event.target.value);
   };
 
+  //fetching all estimated attendees
+  const getEstimatedAttendees = async () => {
+    try {
+      const response = await axios.get(
+        `${API_BASE_URL}/users/estimatedAttendees`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      console.log(
+        'estimated attendees: ',
+        response.data.data.estimatedAttendeesCount
+      );
+      setEstimatedAttendees(response.data.data.estimatedAttendeesCount);
+    } catch (error) {
+      console.log(
+        'Failed to fetch roles',
+        error.response?.data?.message || error.message
+      );
+    }
+  };
+
   const getAttendaceByPeriod = async () => {
     try {
       const response = await axios.get(
@@ -305,6 +330,7 @@ function RestaurantHome(props) {
 
   useEffect(() => {
     getAttendaceByPeriod();
+    getEstimatedAttendees();
   }, []);
 
   return (
@@ -313,21 +339,21 @@ function RestaurantHome(props) {
 
       <div className={`w-full px-4 py-2`}>
         <div className="w-full flex flex-col md:flex-row justify-between items-end ">
-        <StatsCard
-              title="Today"
-              text={todayValue}
-              style="bg-[#008000] bg-opacity-2"
-            />
-            <StatsCard
-              title="This week"
-              text={weekValue}
-              style="bg-[#4069B0] bg-opacity-2"
-            />
-            <StatsCard
-              title="This month"
-              text={monthValue}
-              style="bg-[#808080] bg-opacity-2"
-            />
+          <StatsCard
+            title="Today"
+            text={todayValue}
+            style="bg-[#008000] bg-opacity-2"
+          />
+          <StatsCard
+            title="This week"
+            text={weekValue}
+            style="bg-[#4069B0] bg-opacity-2"
+          />
+          <StatsCard
+            title="This month"
+            text={monthValue}
+            style="bg-[#808080] bg-opacity-2"
+          />
         </div>
       </div>
 
@@ -488,7 +514,7 @@ function RestaurantHome(props) {
             Estimated attendees
           </p>
           <EstimatedAttendeesCard
-            text="345"
+            text={estimatedAttendees}
             time="3hr ago"
             style="bg-[#008000] bg-opacity-2 "
           />
