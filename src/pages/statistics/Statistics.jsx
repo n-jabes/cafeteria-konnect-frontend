@@ -7,7 +7,6 @@ import { API_BASE_URL } from '../../utils/api';
 import { useAuth } from '../../context/AuthContext';
 import { Bounce, toast } from 'react-toastify';
 import axios from 'axios';
-const token = sessionStorage.getItem('token');
 
 const RoundedIcon = ({ text, style }) => (
   <div
@@ -92,6 +91,7 @@ function Statistics(props) {
   const [todayValue, setTodayValue] = useState(0);
   const [weekValue, setWeekValue] = useState(0);
   const [monthValue, setMonthValue] = useState(0);
+  const token = sessionStorage.getItem('token');
 
   const toggleCalendar = () => {
     setIsCalendarOpen(!isCalendarOpen);
