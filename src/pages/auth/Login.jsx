@@ -7,6 +7,9 @@ import axios from 'axios';
 import { API_BASE_URL } from '../../utils/api';
 import { useAuth } from '../../context/AuthContext';
 
+import BlueLogo from '../../assets/BLueLogo.png';
+import LoginBg from '../../assets/Login.png';
+
 const validationSchema = Yup.object().shape({
   email: Yup.string()
     .email('Invalid email format')
@@ -47,7 +50,7 @@ const Login = () => {
   return (
     <div
       className="flex flex-col justify-center items-center h-screen bg-cover bg-no-repeat bg-center"
-      style={{ backgroundImage: 'url(../../assets/Login.png)' }}
+      style={{ backgroundImage: `url(${LoginBg})` }}
     >
       <div className="flex flex-col w-[90%] sm:w-[55%] lg:w-[43%] bg-white h-[27rem] rounded-md shadow-md items-center justify-content ">
         <div className=" flex flex-col md:flex-row items-center w-[90%] md:w-[75%] mt-4 justify-center">
@@ -55,11 +58,7 @@ const Login = () => {
             <h1 className="font-black text-2xl">Welcome to </h1>
           </div>
           <div className="">
-            <img
-              className="w-[8rem] h-[4rem]"
-              src="../../assets/BLueLogo.png"
-              alt=""
-            />
+            <img className="w-[8rem] h-[4rem]" src={BlueLogo} alt="" />
           </div>
         </div>
 
