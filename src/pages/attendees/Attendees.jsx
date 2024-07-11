@@ -17,7 +17,8 @@ import Toast from '../../components/toast/Toast';
 import { Bounce, toast } from 'react-toastify';
 import { MdDangerous } from 'react-icons/md';
 import { ref, onValue } from 'firebase/database';
-import { database } from '../../utils/firebase';
+import { firestoreDB } from '../../utils/firebase';
+import { collection, getFirestore, onSnapshot } from 'firebase/firestore';
 
 const validationSchema = Yup.object().shape({
   names: Yup.string()
@@ -417,17 +418,22 @@ function Attendees() {
     if (role === 'HR') {
       getAllRoles();
       getAllDepartments();
+      getAllAttendees(); // Initial data load from API
 
-      // Firebase Realtime Database listener
-      const usersRef = ref(database, 'users');
-      const unsubscribe = onValue(usersRef, (snapshot) => {
-        getAllAttendees(); // Fetch updated data from your API
-      });
+      // Create a reference to the 'users' collection
+      const usersCollectionRef = collection(firestoreDB, 'users');
 
-      // Firebase Firestore listener
-      // const unsubscribe = onSnapshot(collection(db, 'users'), (snapshot) => {
-      //   getAllAttendees(); // Fetch updated data from your API
-      // });
+      // Set up the real-time listener
+      const unsubscribe = onSnapshot(
+        usersCollectionRef,
+        (snapshot) => {
+          // When Firestore updates, trigger a refresh from the API
+          getAllAttendees();
+        },
+        (error) => {
+          console.error('Error listening to Firestore: ', error);
+        }
+      );
 
       // Cleanup function
       return () => unsubscribe();

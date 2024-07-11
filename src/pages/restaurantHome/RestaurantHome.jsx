@@ -150,11 +150,6 @@ function RestaurantHome(props) {
       getAttendanceByDate(selectedDate) // Fetch updated data from your API
     });
 
-    // Firebase Firestore listener
-    // const unsubscribe = onSnapshot(collection(db, 'users'), (snapshot) => {
-    //   getAllAttendees(); // Fetch updated data from your API
-    // });
-
     // Cleanup function
     return () => unsubscribe();
   }, []);

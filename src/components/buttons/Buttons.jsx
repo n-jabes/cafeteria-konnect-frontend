@@ -58,8 +58,7 @@ export function UpdateAttendeeButton({ attendeeDetails }) {
           Authorization: `Bearer ${token}`,
         },
       });
-
-      console.log(response.data);
+      
       const allDepartments = response.data.data.map((dept) => ({
         id: dept.id,
         department: dept.department,
