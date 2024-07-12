@@ -131,17 +131,18 @@ function Attendees() {
         }
       );
 
-      toast.success('Estimated attendees updated!', {
-        position: 'top-right',
-        autoClose: 1000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: 'light',
-        transition: Bounce,
-      });
+      console.log('Estimated attendees updated!')
+      // toast.success('Estimated attendees updated!', {
+      //   position: 'top-right',
+      //   autoClose: 1000,
+      //   hideProgressBar: false,
+      //   closeOnClick: true,
+      //   pauseOnHover: true,
+      //   draggable: true,
+      //   progress: undefined,
+      //   theme: 'light',
+      //   transition: Bounce,
+      // });
       
     } catch (error) {
       console.log(
@@ -159,20 +160,23 @@ function Attendees() {
           Authorization: `Bearer ${token}`,
         },
       });
-      console.log('response: ', response.data.data)
+      
+      console.log('Response data:', response.data.data);
+  
       const allUsers = response.data.data.map((attendee, index) => ({
-        id: ++index,
-        userId: attendee.id,
-        name: attendee.names,
-        email: attendee.email,
-        roleId: attendee.role.id,
-        roleName: attendee.role.role,
-        departmentId: attendee.department.id,
-        departmentName: attendee.department.department,
-        status: attendee.attendanceStatus,
-        nationalId: attendee.nationalId,
+        id: index + 1,
+        userId: attendee.id || '',
+        name: attendee.names || '',
+        email: attendee.email || '',
+        roleId: attendee.role?.id || '',
+        roleName: attendee.role?.role || '',
+        departmentId: attendee.department?.id || '',
+        departmentName: attendee.department?.department || '',
+        status: attendee.attendanceStatus || '',
+        nationalId: attendee.nationalId || '',
       }));
-
+  
+      console.log('Processed users:', allUsers);
       setAllAttendees(allUsers);
     } catch (error) {
       console.log(
