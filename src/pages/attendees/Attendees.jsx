@@ -4,6 +4,7 @@ import {
   AttendeeButtons,
   ReceiptsButtons,
   RestaurantButtons,
+  ViewRestaurantReceiptButton,
 } from '../../components/buttons/Buttons';
 import { MainButton } from '../../components/buttons/Buttons';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
@@ -39,6 +40,7 @@ function Attendees() {
   const [allAttendees, setAllAttendees] = useState([]);
   const [errorMessage, setErrorMessage] = useState('');
   const [creatingAttendee, setCreatingAttendee] = useState(false);
+  const [allReceipts, setAllReceipts] = useState([]);
   const [allAttendeesErrorMessage, setAllAttendeesErrorMessage] = useState('');
   const { role } = useAuth();
   const token = sessionStorage.getItem('token');
@@ -109,7 +111,7 @@ function Attendees() {
         'estimated attendees: ',
         response.data.data.estimatedAttendeesCount
       );
-      setTotalAttendees(response.data.data.estimatedAttendeesCount)
+      setTotalAttendees(response.data.data.estimatedAttendeesCount);
     } catch (error) {
       console.log(
         'Failed to fetch roles',
@@ -131,19 +133,8 @@ function Attendees() {
         }
       );
 
-      console.log('Estimated attendees updated!')
-      // toast.success('Estimated attendees updated!', {
-      //   position: 'top-right',
-      //   autoClose: 1000,
-      //   hideProgressBar: false,
-      //   closeOnClick: true,
-      //   pauseOnHover: true,
-      //   draggable: true,
-      //   progress: undefined,
-      //   theme: 'light',
-      //   transition: Bounce,
-      // });
-      
+      console.log('Estimated attendees updated!');
+     
     } catch (error) {
       console.log(
         'Failed to fetch roles',
@@ -160,9 +151,9 @@ function Attendees() {
           Authorization: `Bearer ${token}`,
         },
       });
-      
-      console.log('Response data:', response.data.data);
-  
+
+      // console.log('Response data:', response.data.data);
+
       const allUsers = response.data.data.map((attendee, index) => ({
         id: index + 1,
         userId: attendee.id || '',
@@ -175,8 +166,8 @@ function Attendees() {
         status: attendee.attendanceStatus || '',
         nationalId: attendee.nationalId || '',
       }));
-  
-      console.log('Processed users:', allUsers);
+
+      // console.log('Processed users:', allUsers);
       setAllAttendees(allUsers);
     } catch (error) {
       console.log(
@@ -216,73 +207,72 @@ function Attendees() {
     activeAttendeesCount + extraPeople
   );
 
-  const allReceipts = [
-    {
-      id: 20240602,
-      date: '2024-06-18',
-      attendees: '30',
-    },
-    {
-      id: 20240602,
-      date: '2024-06-18',
-      attendees: '30',
-    },
-    {
-      id: 20240602,
-      date: '2024-06-18',
-      attendees: '30',
-    },
+  // const allReceipts = [
+  //   {
+  //     id: 20240602,
+  //     date: '2024-06-18',
+  //     attendees: '30',
+  //   },
+  //   {
+  //     id: 20240602,
+  //     date: '2024-06-18',
+  //     attendees: '30',
+  //   },
+  //   {
+  //     id: 20240602,
+  //     date: '2024-06-18',
+  //     attendees: '30',
+  //   },
 
-    {
-      id: 20240603,
-      date: '2024-06-18',
-      attendees: '30',
-    },
-    {
-      id: 20240603,
-      date: '2024-06-18',
-      attendees: '30',
-    },
-    {
-      id: 20240603,
-      date: '2024-06-18',
-      attendees: '30',
-    },
-    {
-      id: 20240603,
-      date: '2024-06-18',
-      attendees: '30',
-    },
-    {
-      id: 20240603,
-      date: '2024-06-18',
-      attendees: '30',
-    },
-    {
-      id: 20240603,
-      date: '2024-06-18',
-      attendees: '30',
-    },
-    {
-      id: 20240603,
-      date: '2024-06-18',
-      attendees: '30',
-    },
-    {
-      id: 20240603,
-      date: '2024-06-18',
-      attendees: '30',
-    },
-    {
-      id: 20240603,
-      date: '2024-06-18',
-      attendees: '30',
-    },
-  ];
-
-  const receiptsHeaders = ['Receipt Id', 'Date', 'Clients', 'Actions'];
+  //   {
+  //     id: 20240603,
+  //     date: '2024-06-18',
+  //     attendees: '30',
+  //   },
+  //   {
+  //     id: 20240603,
+  //     date: '2024-06-18',
+  //     attendees: '30',
+  //   },
+  //   {
+  //     id: 20240603,
+  //     date: '2024-06-18',
+  //     attendees: '30',
+  //   },
+  //   {
+  //     id: 20240603,
+  //     date: '2024-06-18',
+  //     attendees: '30',
+  //   },
+  //   {
+  //     id: 20240603,
+  //     date: '2024-06-18',
+  //     attendees: '30',
+  //   },
+  //   {
+  //     id: 20240603,
+  //     date: '2024-06-18',
+  //     attendees: '30',
+  //   },
+  //   {
+  //     id: 20240603,
+  //     date: '2024-06-18',
+  //     attendees: '30',
+  //   },
+  //   {
+  //     id: 20240603,
+  //     date: '2024-06-18',
+  //     attendees: '30',
+  //   },
+  //   {
+  //     id: 20240603,
+  //     date: '2024-06-18',
+  //     attendees: '30',
+  //   },
+  // ];
 
   //receiptAttendees data
+
   const attendanceData = [
     {
       id: 1,
@@ -356,17 +346,65 @@ function Attendees() {
     attendee.Scanned,
   ]);
 
+  const getAllReceipts = async () => {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/receipts/all`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setAllReceipts(response.data.data);
+    } catch (error) {
+      console.log('Failed to fetch stats', error.response || error.message);
+      // setErrorMessage(error.response.data.message);
+      // toast.error('Failed to Fetch Stats' + error.response.data.message, {
+      //   position: 'top-right',
+      //   autoClose: 1000,
+      //   hideProgressBar: false,
+      //   closeOnClick: true,
+      //   pauseOnHover: true,
+      //   draggable: true,
+      //   progress: undefined,
+      //   theme: 'light',
+      //   transition: Bounce,
+      // });
+    }
+  };
+
+  // Fetch the roles and departments when the component mounts
+  useEffect(() => {
+    getAllReceipts();
+
+    // Create a reference to the 'users' collection
+    const usersCollectionRef = collection(firestoreDB, 'receipts');
+
+    // Set up the real-time listener
+    const unsubscribe = onSnapshot(
+      usersCollectionRef,
+      (snapshot) => {
+        // When Firestore updates, trigger a refresh from the API
+        getAllReceipts();
+      },
+      (error) => {
+        console.error('Error listening to Firestore: ', error);
+      }
+    );
+
+    // Cleanup function
+    return () => unsubscribe();
+  }, []);
+
   const receiptAttendeesHeaders = ['id', 'Names', 'Department', 'Scanned'];
 
+  const receiptHeaders = ['Receipt Id', 'Date', 'Clients', 'Actions'];
+
   const receiptsToDisplay = allReceipts.map((receipt) => [
-    receipt.id,
-    receipt.date,
-    receipt.attendees,
-    <ReceiptsButtons
+    receipt.receiptId,
+    receipt.createdAt,
+    receipt.numberOfAttendees,
+    <ViewRestaurantReceiptButton
       receipt={receipt}
-      receiptDate={receipt.date}
-      receiptAttendeesHeaders={receiptAttendeesHeaders}
-      receiptData={receiptAttendees}
+      receiptHeaders={receiptAttendeesHeaders}
+      receiptData={receipt}
+      receiptDate={receipt.createdAt}
     />,
   ]);
 
@@ -793,7 +831,7 @@ function Attendees() {
         <div className="w-full flex md:flex-row flex-col-reverse gap-6">
           <div className="md:w-4/5 w-full overflow-x-auto h-[70vh] border border-3 border-gray rounded-md pl-4 py-4">
             <TableComponent
-              headers={receiptsHeaders}
+              headers={receiptHeaders}
               data={receiptsToDisplay}
               showCheckBox={false}
               showFilter={true}

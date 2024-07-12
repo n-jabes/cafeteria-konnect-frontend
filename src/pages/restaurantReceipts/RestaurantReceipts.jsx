@@ -12,62 +12,6 @@ const token = sessionStorage.getItem('token');
 
 function RestaurantReceipts(props) {
   const [allReceipts, setAllReceipts] = useState([]);
-  const allAttendees = [
-    {
-      id: 1,
-      name: 'Nshuti Ruranga Jabes',
-      role: 'intern',
-      department: 'FMIS',
-    },
-    {
-      id: 2,
-      name: 'Jane Smith',
-      role: 'Consultant',
-      department: 'Budget',
-    },
-    {
-      id: 3,
-      name: 'Sam Johnson',
-      role: 'intern',
-      department: 'Human Resource',
-    },
-    {
-      id: 4,
-      name: 'Nshuti Ruranga Jabes',
-      role: 'intern',
-      department: 'FMIS',
-    },
-    {
-      id: 5,
-      name: 'Jane Smith',
-      role: 'Consultant',
-      department: 'Budget',
-    },
-    {
-      id: 6,
-      name: 'Sam Johnson',
-      role: 'intern',
-      department: 'Human Resource',
-    },
-    {
-      id: 7,
-      name: 'Nshuti Ruranga Jabes',
-      role: 'intern',
-      department: 'FMIS',
-    },
-    {
-      id: 8,
-      name: 'Jane Smith',
-      role: 'Consultant',
-      department: 'Budget',
-    },
-    {
-      id: 9,
-      name: 'Sam Johnson',
-      role: 'intern',
-      department: 'Human Resource',
-    },
-  ];
 
   const getAllReceipts = async () => {
     try {
@@ -91,10 +35,6 @@ function RestaurantReceipts(props) {
       // });
     }
   };
-
-  useEffect(() => {
-    getAllReceipts();
-  }, []);
 
    // Fetch the roles and departments when the component mounts
    useEffect(() => {
