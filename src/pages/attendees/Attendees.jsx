@@ -97,7 +97,7 @@ function Attendees() {
   //fetching all estimated attendees
   const getEstimatedAttendees = async () => {
     try {
-      setEstimatedAttendees(extraPeople);
+      // setEstimatedAttendees(extraPeople);
       const response = await axios.get(
         `${API_BASE_URL}/users/estimatedAttendees`,
         {
@@ -111,6 +111,7 @@ function Attendees() {
         'estimated attendees: ',
         response.data.data.estimatedAttendeesCount
       );
+      
       setTotalAttendees(response.data.data.estimatedAttendeesCount);
     } catch (error) {
       console.log(
@@ -466,7 +467,7 @@ function Attendees() {
   // Get realtime data for estimated attendees
   useEffect(() => {
     // Firebase Realtime Database listener
-    const estimatedAttendanceRef = ref(database, 'EstimatedAttendeesCount');
+    const estimatedAttendanceRef = ref(database, 'EstimatedAttendees');
     const unsubscribe = onValue(estimatedAttendanceRef, (snapshot) => {
       getEstimatedAttendees(); // Fetch updated data from your API
     });
