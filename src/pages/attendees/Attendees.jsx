@@ -273,78 +273,78 @@ function Attendees() {
 
   //receiptAttendees data
 
-  const attendanceData = [
-    {
-      id: 1,
-      name: 'Nshuti Ruranga Jabes',
-      role: 'intern',
-      department: 'FMIS',
-      Scanned: 'Yes',
-    },
-    {
-      id: 2,
-      name: 'Jane Smith',
-      role: 'Consultant',
-      department: 'Budget',
-      Scanned: 'No',
-    },
-    {
-      id: 3,
-      name: 'Sam Johnson',
-      role: 'intern',
-      department: 'Human Resource',
-      Scanned: 'Yes',
-    },
-    {
-      id: 4,
-      name: 'Nshuti Ruranga Jabes',
-      role: 'intern',
-      department: 'FMIS',
-      Scanned: 'Yes',
-    },
-    {
-      id: 5,
-      name: 'Jane Smith',
-      role: 'Consultant',
-      department: 'Budget',
-      Scanned: 'Yes',
-    },
-    {
-      id: 6,
-      name: 'Sam Johnson',
-      role: 'intern',
-      department: 'Human Resource',
-      Scanned: 'Yes',
-    },
-    {
-      id: 7,
-      name: 'Nshuti Ruranga Jabes',
-      role: 'intern',
-      department: 'FMIS',
-      Scanned: 'No',
-    },
-    {
-      id: 8,
-      name: 'Jane Smith',
-      role: 'Consultant',
-      department: 'Budget',
-      Scanned: 'yes',
-    },
-    {
-      id: 9,
-      name: 'Sam Johnson',
-      role: 'intern',
-      department: 'Human Resource',
-      Scanned: 'active',
-    },
-  ];
+  // const attendanceData = [
+  //   {
+  //     id: 1,
+  //     name: 'Nshuti Ruranga Jabes',
+  //     role: 'intern',
+  //     department: 'FMIS',
+  //     Scanned: 'Yes',
+  //   },
+  //   {
+  //     id: 2,
+  //     name: 'Jane Smith',
+  //     role: 'Consultant',
+  //     department: 'Budget',
+  //     Scanned: 'No',
+  //   },
+  //   {
+  //     id: 3,
+  //     name: 'Sam Johnson',
+  //     role: 'intern',
+  //     department: 'Human Resource',
+  //     Scanned: 'Yes',
+  //   },
+  //   {
+  //     id: 4,
+  //     name: 'Nshuti Ruranga Jabes',
+  //     role: 'intern',
+  //     department: 'FMIS',
+  //     Scanned: 'Yes',
+  //   },
+  //   {
+  //     id: 5,
+  //     name: 'Jane Smith',
+  //     role: 'Consultant',
+  //     department: 'Budget',
+  //     Scanned: 'Yes',
+  //   },
+  //   {
+  //     id: 6,
+  //     name: 'Sam Johnson',
+  //     role: 'intern',
+  //     department: 'Human Resource',
+  //     Scanned: 'Yes',
+  //   },
+  //   {
+  //     id: 7,
+  //     name: 'Nshuti Ruranga Jabes',
+  //     role: 'intern',
+  //     department: 'FMIS',
+  //     Scanned: 'No',
+  //   },
+  //   {
+  //     id: 8,
+  //     name: 'Jane Smith',
+  //     role: 'Consultant',
+  //     department: 'Budget',
+  //     Scanned: 'yes',
+  //   },
+  //   {
+  //     id: 9,
+  //     name: 'Sam Johnson',
+  //     role: 'intern',
+  //     department: 'Human Resource',
+  //     Scanned: 'active',
+  //   },
+  // ];
 
-  const receiptAttendees = attendanceData.map((attendee) => [
-    attendee.id,
-    attendee.name,
-    attendee.department,
-    attendee.Scanned,
-  ]);
+  // const receiptAttendees = attendanceData.map((attendee) => [
+  //   attendee.id,
+  //   attendee.name,
+  //   attendee.department,
+  //   attendee.Scanned,
+  // ]);
 
   const getAllReceipts = async () => {
     try {

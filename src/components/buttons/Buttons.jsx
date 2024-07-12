@@ -1159,7 +1159,7 @@ export function ViewRestaurantReceiptButton({
     } catch (error) {
       console.log(
         'Failed to receipt attendees',
-        error.response || error.message
+        error.response.data.message || error.message
       );
       // setErrorMessage(error.response.data.message);
       // toast.error('Failed to Fetch Stats' + error.response.data.message, {
@@ -1176,7 +1176,9 @@ export function ViewRestaurantReceiptButton({
     }
   };
 
+  console.log('receiptId: ', receiptData.receiptId)
   getReceiptsAttendees(receiptData.receiptId);
+
 
   const receiptAttendeesData = receiptAttendees.map((attendee, index) => [
     ++index,
