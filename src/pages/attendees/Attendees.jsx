@@ -42,6 +42,7 @@ function Attendees() {
   const [allAttendeesErrorMessage, setAllAttendeesErrorMessage] = useState('');
   const { role } = useAuth();
   const token = sessionStorage.getItem('token');
+  console.log('used token: ', token)
 
   const options = [
     { role: 'Intern', label: 'Intern' },
