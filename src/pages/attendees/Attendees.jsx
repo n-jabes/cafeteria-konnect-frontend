@@ -42,7 +42,6 @@ function Attendees() {
   const [allAttendeesErrorMessage, setAllAttendeesErrorMessage] = useState('');
   const { role } = useAuth();
   const token = sessionStorage.getItem('token');
-  console.log('used token: ', token)
 
   const options = [
     { role: 'Intern', label: 'Intern' },
@@ -160,7 +159,7 @@ function Attendees() {
           Authorization: `Bearer ${token}`,
         },
       });
-
+      console.log('response: ', response.data.data)
       const allUsers = response.data.data.map((attendee, index) => ({
         id: ++index,
         userId: attendee.id,
