@@ -38,6 +38,7 @@ function Attendees() {
   const [departments, setDepartments] = useState([]);
   const [roles, setRoles] = useState([]);
   const [allAttendees, setAllAttendees] = useState([]);
+  const [activeAttendees, setActiveAttendees] = useState(0);
   const [errorMessage, setErrorMessage] = useState('');
   const [creatingAttendee, setCreatingAttendee] = useState(false);
   const [allReceipts, setAllReceipts] = useState([]);
@@ -112,7 +113,7 @@ function Attendees() {
         response.data.data.estimatedAttendeesCount
       );
 
-      setTotalAttendees(response.data.data.estimatedAttendeesCount);
+      setActiveAttendees(response.data.data.estimatedAttendeesCount);
     } catch (error) {
       console.log(
         'Failed to fetch roles',
@@ -134,7 +135,8 @@ function Attendees() {
         }
       );
 
-      console.log('Estimated attendees updated!');
+      console.log('Estimated attendees updated! ', additionalPeople);
+      setTotalEstimatedAttendees(additionalPeople);
     } catch (error) {
       console.log(
         'Failed to set estimated attendees',
@@ -201,150 +203,10 @@ function Attendees() {
       attendeeDetails.status,
       <AttendeeButtons attendeeDetails={attendeeDetails} />,
     ]);
-
-  const activeAttendeesCount = activeAttendeesData.length;
-  const [totalAttendees, setTotalAttendees] = useState(
-    activeAttendeesCount + extraPeople
+    
+  const [totalEstimatedAttendees, setTotalEstimatedAttendees] = useState(
+    activeAttendees + extraPeople
   );
-
-  // const allReceipts = [
-  //   {
-  //     id: 20240602,
-  //     date: '2024-06-18',
-  //     attendees: '30',
-  //   },
-  //   {
-  //     id: 20240602,
-  //     date: '2024-06-18',
-  //     attendees: '30',
-  //   },
-  //   {
-  //     id: 20240602,
-  //     date: '2024-06-18',
-  //     attendees: '30',
-  //   },
-
-  //   {
-  //     id: 20240603,
-  //     date: '2024-06-18',
-  //     attendees: '30',
-  //   },
-  //   {
-  //     id: 20240603,
-  //     date: '2024-06-18',
-  //     attendees: '30',
-  //   },
-  //   {
-  //     id: 20240603,
-  //     date: '2024-06-18',
-  //     attendees: '30',
-  //   },
-  //   {
-  //     id: 20240603,
-  //     date: '2024-06-18',
-  //     attendees: '30',
-  //   },
-  //   {
-  //     id: 20240603,
-  //     date: '2024-06-18',
-  //     attendees: '30',
-  //   },
-  //   {
-  //     id: 20240603,
-  //     date: '2024-06-18',
-  //     attendees: '30',
-  //   },
-  //   {
-  //     id: 20240603,
-  //     date: '2024-06-18',
-  //     attendees: '30',
-  //   },
-  //   {
-  //     id: 20240603,
-  //     date: '2024-06-18',
-  //     attendees: '30',
-  //   },
-  //   {
-  //     id: 20240603,
-  //     date: '2024-06-18',
-  //     attendees: '30',
-  //   },
-  // ];
-
-  //receiptAttendees data
-
-  // const attendanceData = [
-  //   {
-  //     id: 1,
-  //     name: 'Nshuti Ruranga Jabes',
-  //     role: 'intern',
-  //     department: 'FMIS',
-  //     Scanned: 'Yes',
-  //   },
-  //   {
-  //     id: 2,
-  //     name: 'Jane Smith',
-  //     role: 'Consultant',
-  //     department: 'Budget',
-  //     Scanned: 'No',
-  //   },
-  //   {
-  //     id: 3,
-  //     name: 'Sam Johnson',
-  //     role: 'intern',
-  //     department: 'Human Resource',
-  //     Scanned: 'Yes',
-  //   },
-  //   {
-  //     id: 4,
-  //     name: 'Nshuti Ruranga Jabes',
-  //     role: 'intern',
-  //     department: 'FMIS',
-  //     Scanned: 'Yes',
-  //   },
-  //   {
-  //     id: 5,
-  //     name: 'Jane Smith',
-  //     role: 'Consultant',
-  //     department: 'Budget',
-  //     Scanned: 'Yes',
-  //   },
-  //   {
-  //     id: 6,
-  //     name: 'Sam Johnson',
-  //     role: 'intern',
-  //     department: 'Human Resource',
-  //     Scanned: 'Yes',
-  //   },
-  //   {
-  //     id: 7,
-  //     name: 'Nshuti Ruranga Jabes',
-  //     role: 'intern',
-  //     department: 'FMIS',
-  //     Scanned: 'No',
-  //   },
-  //   {
-  //     id: 8,
-  //     name: 'Jane Smith',
-  //     role: 'Consultant',
-  //     department: 'Budget',
-  //     Scanned: 'yes',
-  //   },
-  //   {
-  //     id: 9,
-  //     name: 'Sam Johnson',
-  //     role: 'intern',
-  //     department: 'Human Resource',
-  //     Scanned: 'active',
-  //   },
-  // ];
-
-  // const receiptAttendees = attendanceData.map((attendee) => [
-  //   attendee.id,
-  //   attendee.name,
-  //   attendee.department,
-  //   attendee.Scanned,
-  // ]);
 
   const getAllReceipts = async () => {
     try {
@@ -415,11 +277,11 @@ function Attendees() {
       setExtraPeople(0);
       const newExtraPeople = 0;
       setExtraPeople(newExtraPeople);
-      setEstimatedAttendees(activeAttendeesCount + newExtraPeople);
+      setEstimatedAttendees(activeAttendees + newExtraPeople);
     } else {
       const newExtraPeople = parseInt(extraPeople, 10); // Convert extraPeople to integer
       setExtraPeople(newExtraPeople);
-      setEstimatedAttendees(activeAttendeesCount + newExtraPeople);
+      setEstimatedAttendees(activeAttendees + newExtraPeople);
     }
   };
 
@@ -439,7 +301,7 @@ function Attendees() {
     if (role === 'HR') {
       getAllRoles();
       getAllDepartments();
-      setEstimatedAttendees(activeAttendeesCount + extraPeople);
+      setEstimatedAttendees(activeAttendees + extraPeople);
       getAllAttendees(); // Initial data load from API
       getEstimatedAttendees();
 
@@ -465,6 +327,7 @@ function Attendees() {
 
   // Get realtime data for estimated attendees
   useEffect(() => {
+    getEstimatedAttendees();
     // Firebase Realtime Database listener
     const estimatedAttendanceRef = ref(database, 'EstimatedAttendees');
     const unsubscribe = onValue(estimatedAttendanceRef, (snapshot) => {
@@ -767,7 +630,7 @@ function Attendees() {
             <div className="w-full md:w-max md:flex flex-col gap-4 md:flex-row items-center justify-evenly my-4">
               <div className="flex flex-row items-center justify-evenly gap-2 md:gap-10">
                 <div className="font-bold text-3xl text-mainGray">
-                  {activeAttendeesCount}
+                  {activeAttendees}
                 </div>
                 <p>+</p>
                 <form className="flex" onSubmit={handleExpectedAttendees}>
@@ -789,8 +652,7 @@ function Attendees() {
 
               <div className="flex items-center md:flex-row flex-row-reverse md:mt-0 mt-6">
                 <div className="font-bold text-3xl text-mainGray bg-green-200 h-max py-[2px] px-[8px] sm:py-2 sm:px-4 rounded-sm ml-6 mr-4">
-                  {/* {totalAttendees} */}
-                  {activeAttendeesCount}
+                  {totalEstimatedAttendees}
                 </div>
                 <p className="font-light text-xs text-[#078ECE] w-full md:w-[200px] flex mt-2 mb:mt-[0px] gap-2 items-center">
                   <CgDanger className="text-2xl md:text-6xl" />
