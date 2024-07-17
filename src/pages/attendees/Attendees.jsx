@@ -643,7 +643,10 @@ function Attendees() {
                     className="border-[1px] border-gray-200 px-4 py-2 outline-none rounded-sm text-mainGray font-semibold mr-2"
                     onChange={handleInputChange}
                   />
-                  <button className="py-2 px-4 rounded-sm bg-mainBlue text-white text-xs">
+                  <button
+                    type="submit"
+                    className="py-2 px-4 rounded-sm bg-mainBlue text-white text-xs"
+                  >
                     Confirm
                   </button>
                 </form>
@@ -652,7 +655,7 @@ function Attendees() {
 
               <div className="flex items-center md:flex-row flex-row-reverse md:mt-0 mt-6">
                 <div className="font-bold text-3xl text-mainGray bg-green-200 h-max py-[2px] px-[8px] sm:py-2 sm:px-4 rounded-sm ml-6 mr-4">
-                  {totalEstimatedAttendees}
+                  {totalEstimatedAttendees + extraPeople}
                 </div>
                 <p className="font-light text-xs text-[#078ECE] w-full md:w-[200px] flex mt-2 mb:mt-[0px] gap-2 items-center">
                   <CgDanger className="text-2xl md:text-6xl" />
