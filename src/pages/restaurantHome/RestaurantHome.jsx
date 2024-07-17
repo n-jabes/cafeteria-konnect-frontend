@@ -36,7 +36,7 @@ const EstimatedAttendeesCard = ({ text, style, time }) => (
   </div>
 );
 
-// const allAttendence = [
+// const allAttendance = [
 //   {
 //     id: 20240602,
 //     name: 'Nshuti Ruranga Jabes',
@@ -75,7 +75,8 @@ function RestaurantHome(props) {
   const [searchInput, setSearchInput] = useState('');
   const [scannedInput, setScannedInput] = useState('');
   const [scannedList, setScannedList] = useState([]);
-  const [allAttendence, setAllAttendence] = useState([]);
+  const [allAttendees, setAllAttendees] = useState([]);
+  const [allAttendance, setAllAttendance] = useState([]);
   const [filteredEmails, setFilteredEmails] = useState([]);
   const [estimatedAttendees, setEstimatedAttendees] = useState();
   const [errorMessage, setErrorMessage] = useState('');
@@ -116,65 +117,73 @@ function RestaurantHome(props) {
         }
       );
 
-      setAllAttendence(attendanceList.data.data.attendees);
+      setAllAttendance(attendanceList.data.data.attendees);
     } catch (error) {
       setDateError(error.message || error.response.data.message);
     }
   };
 
-  const attendenceHeaders = ['Id', 'Name', 'Department'];
-  const attendenceData = allAttendence.map((attendence, index) => [
+  const attendanceHeaders = ['Id', 'Name', 'Department'];
+  const attendanceData = allAttendance.map((attendance, index) => [
     ++index,
-    attendence.names,
-    attendence.department.department,
+    attendance.names,
+    attendance.department.department,
   ]);
 
   const filterEmails = (input) => {
-    const filtered = allAttendence.filter((attendence) =>
-      attendence.email.toLowerCase().includes(input.toLowerCase())
+    const filtered = activeAttendeesData.filter((attendance) =>
+      attendance.email.toLowerCase().includes(input.toLowerCase())
     );
     setFilteredEmails(filtered);
   };
 
   const handleSearchChange = (event) => {
     const value = event.target.value;
+    console.log('search value: ', value);
     setSearchInput(value);
     filterEmails(value);
   };
 
-  // const getAttendaceByPeriod = async () => {
-  //   try {
-  //     const response = await axios.get(
-  //       `${API_BASE_URL}/attendance/stats/period`,
-  //       {
-  //         headers: { Authorization: `Bearer ${token}` },
-  //       }
-  //     );
+  //fetching all attendees
+  const getAllAttendees = async () => {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/users/all`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-  //     console.log(response.data.data)
+      // console.log('Response data:', response.data.data);
 
-  //     setTodayValue(response.data.data.today);
-  //     setWeekValue(response.data.data.week);
-  //     setMonthValue(response.data.data.month);
-  //   } catch (error) {
-  //     console.log(
-  //       'Failed to fetch stats',
-  //       error.response.data.message || error.message
-  //     );
-  //     // setErrorMessage(error.response.data.message);
-  //     toast.error('Failed to Fetch Stats' + error.response.data.message, {
-  //       position: 'top-right',
-  //       autoClose: 1000,
-  //       hideProgressBar: false,
-  //       closeOnClick: true,
-  //       pauseOnHover: true,
-  //       draggable: true,
-  //       progress: undefined,
-  //       theme: 'light',
-  //       transition: Bounce,
-  //     });
-  //   }
-  // };
+      const allUsers = response.data.data.map((attendee, index) => ({
+        id: index + 1,
+        userId: attendee.id || '',
+        name: attendee.names || '',
+        email: attendee.email || '',
+        roleId: attendee.role?.id || '',
+        roleName: attendee.role?.role || '',
+        departmentId: attendee.department?.id || '',
+        departmentName: attendee.department?.department || '',
+        status: attendee.attendanceStatus || '',
+        nationalId: attendee.nationalId || '',
+      }));
+
+      console.log('all users:', allUsers);
+      setAllAttendees(allUsers);
+    } catch (error) {
+      console.log(
+        'Failed to fetch all people',
+        error.response?.data?.message || error.message
+      );
+      // setAllAttendeesErrorMessage(
+      //   error.response?.data?.message || error.message
+      // );
+    }
+  };
+
+  // getting active attendees
+  const activeAttendeesData = allAttendees
+  .filter((attendee) => attendee.status === 'active');
 
   useEffect(() => {
     getAttendanceByDate(selectedDate);
@@ -345,6 +354,7 @@ function RestaurantHome(props) {
       //   'estimated attendees: ',
       //   response.data.data.estimatedAttendeesCount
       // );
+
       setEstimatedAttendees(response.data.data.estimatedAttendeesCount);
     } catch (error) {
       console.log(
@@ -356,6 +366,7 @@ function RestaurantHome(props) {
 
   useEffect(() => {
     getEstimatedAttendees();
+    getAllAttendees();
   }, []);
 
   return (
@@ -411,13 +422,13 @@ function RestaurantHome(props) {
                   <h2 className="text-gray-500">Matching results</h2>
                   <ul className="w-full mt-2 h-[30vh] border-2 border-gray-200 overflow-y-auto px-2 py-4 rounded-md">
                     {filteredEmails.length > 0 ? (
-                      filteredEmails.map((attendence) => (
+                      filteredEmails.map((attendance) => (
                         <div
                           className="w-full flex items-center justify-between border-[1px] border-gray-200 my-2 p-2"
-                          key={attendence.id}
+                          key={attendance.id}
                         >
-                          <li className="text-sm">{attendence.email}</li>
-                          <AddAttendeeManually email={attendence.email} />
+                          <li className="text-sm">{attendance.email}</li>
+                          <AddAttendeeManually email={attendance.email} />
                         </div>
                       ))
                     ) : (
@@ -506,7 +517,7 @@ function RestaurantHome(props) {
             onClick={() => setAddToAddendence(true)}
           >
             <div>
-              {/* <MainButton text={'+ Add To Attendence'} /> */}
+              {/* <MainButton text={'+ Add To Attendance'} /> */}
               <button className="btn btn-primary text-white float-right bg-mainBlue border-2 rounded-md mb-2 py-2 px-4 hover:bg-white hover:text-mainBlue hover:border-2 hover:border-mainBlue">
                 Scan Qr Code
               </button>
@@ -531,7 +542,7 @@ function RestaurantHome(props) {
           <p className="text-xs font-semibold">
             Date: <span className="text-mainBlue">{selectedDate}</span>
           </p>
-          <TableComponent headers={attendenceHeaders} data={attendenceData} />
+          <TableComponent headers={attendanceHeaders} data={attendanceData} />
         </div>
         <div className="w-full md:w-1/4 p-4 border-[1px] border-gray-200 rounded-md mt-4 bg-[#4069B0] bg-opacity-[7%] flex flex-col items-center gap-2">
           <h1 className="text">Recent Activity</h1>

@@ -138,7 +138,7 @@ function Attendees() {
      
     } catch (error) {
       console.log(
-        'Failed to fetch roles',
+        'Failed to set estimated attendees',
         error.response?.data?.message || error.message
       );
     }

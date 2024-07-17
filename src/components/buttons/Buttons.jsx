@@ -1179,7 +1179,6 @@ export function ViewRestaurantReceiptButton({
   // console.log('receiptId: ', receiptData.receiptId)
   getReceiptsAttendees(receiptData.receiptId);
 
-
   const receiptAttendeesData = receiptAttendees.map((attendee, index) => [
     ++index,
     attendee.names,
@@ -1413,9 +1412,20 @@ export function Status({ status }) {
   );
 }
 
-export function AddAttendeeManually({ email }) {
-  const handleAddManually = () => {
-    console.log(email);
+export function AddAttendeeManually({ emailToAddManually }) {
+  const handleAddManually = async () => {
+    try {
+      const response = await axios.post(
+        `${API_BASE_URL}/attendance/record/manual/${emailToAddManually}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
