@@ -13,10 +13,10 @@ import { ref, onValue } from 'firebase/database';
 import { database } from '../../utils/firebase';
 
 const StatsCard = ({ title, text, style }) => (
-  <div className="p-4 w-full md:w-1/2 ">
+  <div className="p-4 w-full md:w-1/2">
     <p className="text-slate-500 text-sm mb-2">{title}</p>
     <div
-      className={`${style} rounded bg-opacity-25 py-6 px-10 text-center text-[#4069B0] text-xl font-bold shadow-statsCard`}
+      className={`${style} rounded bg-opacity-25 py-6 px-10 h-[7.3rem] flex items-center justify-center text-center text-[#4069B0] text-4xl font-bold shadow-statsCard`}
     >
       {text}
     </div>

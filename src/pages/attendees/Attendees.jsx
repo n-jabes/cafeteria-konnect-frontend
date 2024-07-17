@@ -111,7 +111,7 @@ function Attendees() {
         'estimated attendees: ',
         response.data.data.estimatedAttendeesCount
       );
-      
+
       setTotalAttendees(response.data.data.estimatedAttendeesCount);
     } catch (error) {
       console.log(
@@ -135,7 +135,6 @@ function Attendees() {
       );
 
       console.log('Estimated attendees updated!');
-     
     } catch (error) {
       console.log(
         'Failed to set estimated attendees',
@@ -790,7 +789,8 @@ function Attendees() {
 
               <div className="flex items-center md:flex-row flex-row-reverse md:mt-0 mt-6">
                 <div className="font-bold text-3xl text-mainGray bg-green-200 h-max py-[2px] px-[8px] sm:py-2 sm:px-4 rounded-sm ml-6 mr-4">
-                  {totalAttendees}
+                  {/* {totalAttendees} */}
+                  {activeAttendeesCount}
                 </div>
                 <p className="font-light text-xs text-[#078ECE] w-full md:w-[200px] flex mt-2 mb:mt-[0px] gap-2 items-center">
                   <CgDanger className="text-2xl md:text-6xl" />
