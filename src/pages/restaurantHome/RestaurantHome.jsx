@@ -142,19 +142,77 @@ function RestaurantHome(props) {
     filterEmails(value);
   };
 
+  // const getAttendaceByPeriod = async () => {
+  //   try {
+  //     const response = await axios.get(
+  //       `${API_BASE_URL}/attendance/stats/period`,
+  //       {
+  //         headers: { Authorization: `Bearer ${token}` },
+  //       }
+  //     );
+
+  //     console.log(response.data.data)
+
+  //     setTodayValue(response.data.data.today);
+  //     setWeekValue(response.data.data.week);
+  //     setMonthValue(response.data.data.month);
+  //   } catch (error) {
+  //     console.log(
+  //       'Failed to fetch stats',
+  //       error.response.data.message || error.message
+  //     );
+  //     // setErrorMessage(error.response.data.message);
+  //     toast.error('Failed to Fetch Stats' + error.response.data.message, {
+  //       position: 'top-right',
+  //       autoClose: 1000,
+  //       hideProgressBar: false,
+  //       closeOnClick: true,
+  //       pauseOnHover: true,
+  //       draggable: true,
+  //       progress: undefined,
+  //       theme: 'light',
+  //       transition: Bounce,
+  //     });
+  //   }
+  // };
+
   useEffect(() => {
     getAttendanceByDate(selectedDate);
   }, []);
 
   useEffect(() => {
-    // Firebase Realtime Database listener
+    // Firebase Realtime Database listener for attendance
     const attendanceRef = ref(database, 'attendance');
     const unsubscribe = onValue(attendanceRef, (snapshot) => {
       getAttendanceByDate(selectedDate); // Fetch updated data from your API
     });
 
     // Cleanup function
-    return () => unsubscribe();
+    return () => {
+      unsubscribe();
+    };
+  }, []);
+
+  useEffect(() => {
+    // Firebase Realtime Database listener for stats
+    const statsRef = ref(database, 'attendanceStats');
+    const unsubscribeStats = onValue(
+      statsRef,
+      (snapshot) => {
+        if (snapshot.exists()) {
+          // setStats(snapshot.val());
+          // console.log('Snapshot value: ', snapshot.val());
+          setTodayValue(snapshot.val().today);
+          setWeekValue(snapshot.val().week);
+          setMonthValue(snapshot.val().month);
+        }
+      },
+      (error) => {
+        console.error('Error fetching attendance stats:', error);
+      }
+    );
+
+    return () => unsubscribeStats();
   }, []);
 
   const processScannedData = useCallback(async () => {
@@ -263,9 +321,9 @@ function RestaurantHome(props) {
     };
   }, [scannedInput, processScannedData]);
 
-  useEffect(() => {
-    console.log('Updated scannedList:', scannedList);
-  }, [scannedList]);
+  // useEffect(() => {
+  //   console.log('Updated scannedList:', scannedList);
+  // }, [scannedList]);
 
   const handleInputChange = (event) => {
     setScannedInput(event.target.value);
@@ -283,10 +341,10 @@ function RestaurantHome(props) {
         }
       );
 
-      console.log(
-        'estimated attendees: ',
-        response.data.data.estimatedAttendeesCount
-      );
+      // console.log(
+      //   'estimated attendees: ',
+      //   response.data.data.estimatedAttendeesCount
+      // );
       setEstimatedAttendees(response.data.data.estimatedAttendeesCount);
     } catch (error) {
       console.log(
@@ -296,40 +354,7 @@ function RestaurantHome(props) {
     }
   };
 
-  const getAttendaceByPeriod = async () => {
-    try {
-      const response = await axios.get(
-        `${API_BASE_URL}/attendance/stats/period`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-
-      setTodayValue(response.data.data.today);
-      setWeekValue(response.data.data.week);
-      setMonthValue(response.data.data.month);
-    } catch (error) {
-      console.log(
-        'Failed to fetch stats',
-        error.response.data.message || error.message
-      );
-      // setErrorMessage(error.response.data.message);
-      toast.error('Failed to Fetch Stats' + error.response.data.message, {
-        position: 'top-right',
-        autoClose: 1000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: 'light',
-        transition: Bounce,
-      });
-    }
-  };
-
   useEffect(() => {
-    getAttendaceByPeriod();
     getEstimatedAttendees();
   }, []);
 

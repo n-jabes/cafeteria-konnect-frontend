@@ -7,6 +7,8 @@ import { API_BASE_URL } from '../../utils/api';
 import { useAuth } from '../../context/AuthContext';
 import { Bounce, toast } from 'react-toastify';
 import axios from 'axios';
+import { onValue, ref } from 'firebase/database';
+import { database } from '../../utils/firebase';
 
 const RoundedIcon = ({ text, style }) => (
   <div
@@ -144,40 +146,62 @@ function Statistics(props) {
     setVisibleNotifications(4);
   };
 
-  const getAttendaceByPeriod = async () => {
-    try {
-      const response = await axios.get(
-        `${API_BASE_URL}/attendance/stats/period`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+  // const getAttendaceByPeriod = async () => {
+  //   try {
+  //     const response = await axios.get(
+  //       `${API_BASE_URL}/attendance/stats/period`,
+  //       {
+  //         headers: { Authorization: `Bearer ${token}` },
+  //       }
+  //     );
 
-      setTodayValue(response.data.data.today);
-      setWeekValue(response.data.data.week);
-      setMonthValue(response.data.data.month);
-    } catch (error) {
-      console.log(
-        'Failed to fetch stats',
-        error.response.data.message || error.message
-      );
-      // setErrorMessage(error.response.data.message);
-      toast.error('Failed to Fetch Stats' + error.response.data.message, {
-        position: 'top-right',
-        autoClose: 1000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: 'light',
-        transition: Bounce,
-      });
-    }
-  };
+  //     setTodayValue(response.data.data.today);
+  //     setWeekValue(response.data.data.week);
+  //     setMonthValue(response.data.data.month);
+  //   } catch (error) {
+  //     console.log(
+  //       'Failed to fetch stats',
+  //       error.response.data.message || error.message
+  //     );
+  //     // setErrorMessage(error.response.data.message);
+  //     toast.error('Failed to Fetch Stats' + error.response.data.message, {
+  //       position: 'top-right',
+  //       autoClose: 1000,
+  //       hideProgressBar: false,
+  //       closeOnClick: true,
+  //       pauseOnHover: true,
+  //       draggable: true,
+  //       progress: undefined,
+  //       theme: 'light',
+  //       transition: Bounce,
+  //     });
+  //   }
+  // };
 
+  // useEffect(() => {
+  //   getAttendaceByPeriod();
+  // }, []);
+  
   useEffect(() => {
-    getAttendaceByPeriod();
+    // Firebase Realtime Database listener for stats
+    const statsRef = ref(database, 'attendanceStats');
+    const unsubscribeStats = onValue(
+      statsRef,
+      (snapshot) => {
+        if (snapshot.exists()) {
+          // setStats(snapshot.val());
+          // console.log('Snapshot value: ', snapshot.val());
+          setTodayValue(snapshot.val().today);
+          setWeekValue(snapshot.val().week);
+          setMonthValue(snapshot.val().month);
+        }
+      },
+      (error) => {
+        console.error('Error fetching attendance stats:', error);
+      }
+    );
+
+    return () => unsubscribeStats();
   }, []);
 
   return (

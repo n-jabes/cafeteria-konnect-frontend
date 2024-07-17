@@ -1176,7 +1176,7 @@ export function ViewRestaurantReceiptButton({
     }
   };
 
-  console.log('receiptId: ', receiptData.receiptId)
+  // console.log('receiptId: ', receiptData.receiptId)
   getReceiptsAttendees(receiptData.receiptId);
 
 
