@@ -108,10 +108,10 @@ function Attendees() {
         }
       );
 
-      console.log(
-        'estimated attendees: ',
-        response.data.data.estimatedAttendeesCount
-      );
+      // console.log(
+      //   'estimated attendees: ',
+      //   response.data.data.estimatedAttendeesCount
+      // );
 
       setActiveAttendees(response.data.data.estimatedAttendeesCount);
     } catch (error) {
@@ -135,7 +135,7 @@ function Attendees() {
         }
       );
 
-      console.log('Estimated attendees updated! ', additionalPeople);
+      // console.log('Estimated attendees updated! ', additionalPeople);
       setTotalEstimatedAttendees(additionalPeople);
     } catch (error) {
       console.log(
@@ -203,7 +203,7 @@ function Attendees() {
       attendeeDetails.status,
       <AttendeeButtons attendeeDetails={attendeeDetails} />,
     ]);
-    
+
   const [totalEstimatedAttendees, setTotalEstimatedAttendees] = useState(
     activeAttendees + extraPeople
   );
