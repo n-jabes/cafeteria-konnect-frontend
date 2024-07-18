@@ -34,7 +34,7 @@ function Attendees() {
   const [addNewAttendee, setaddNewAttendee] = useState(false);
   const headers = ['Id', 'Name', 'Role', 'Status', 'Actions'];
   const [tab, setTab] = useState('active attendees');
-  const [extraPeople, setExtraPeople] = useState(7);
+  const [extraPeople, setExtraPeople] = useState(5);
   const [departments, setDepartments] = useState([]);
   const [roles, setRoles] = useState([]);
   const [allAttendees, setAllAttendees] = useState([]);
@@ -327,7 +327,7 @@ function Attendees() {
 
   // Get realtime data for estimated attendees
   useEffect(() => {
-    getEstimatedAttendees();
+    // getEstimatedAttendees();
     // Firebase Realtime Database listener
     const estimatedAttendanceRef = ref(database, 'EstimatedAttendees');
     const unsubscribe = onValue(estimatedAttendanceRef, (snapshot) => {
@@ -655,7 +655,8 @@ function Attendees() {
 
               <div className="flex items-center md:flex-row flex-row-reverse md:mt-0 mt-6">
                 <div className="font-bold text-3xl text-mainGray bg-green-200 h-max py-[2px] px-[8px] sm:py-2 sm:px-4 rounded-sm ml-6 mr-4">
-                  {totalEstimatedAttendees + extraPeople}
+                  {totalEstimatedAttendees}
+                  {/* {activeAttendees? activeAttendees + extraPeople : 0} */}
                 </div>
                 <p className="font-light text-xs text-[#078ECE] w-full md:w-[200px] flex mt-2 mb:mt-[0px] gap-2 items-center">
                   <CgDanger className="text-2xl md:text-6xl" />

@@ -109,7 +109,7 @@ export function UpdateAttendeeButton({ attendeeDetails }) {
     <div>
       {showUpdateForm && (
         <div className="fixed top-0 left-0  bg-bgBlue h-screen w-screen overflow-y-auto z-40 overflow-x-auto flex items-center justify-center">
-          <div className="relative bg-white w-[90%] md:left-[7%] lg:w-[40%] md:w-[58%] sm:w-[75%] h-max px-[3.5%] py-[3%] rounded-md">
+          <div className="relative bg-white w-[90%] md:left-[7%] lg:w-[40%] md:w-[58%] sm:w-[75%] h-max px-[3.5%] py-[3%] rounded-md overflow-y-auto">
             <button
               className="close border-2 border-mainRed rounded-md px-2 text-mainRed absolute right-4 top-4"
               onClick={() => setShowUpdateForm(false)}
@@ -137,7 +137,7 @@ export function UpdateAttendeeButton({ attendeeDetails }) {
                   handleUpdate;
                 }}
               >
-                <Form className="flex flex-col w-full lg:h-[26rem] h-[29rem] md:h-[25rem] justify-center gap-[0.4rem]">
+                <Form className="flex flex-col w-full lg:h-max h-max md:h-max justify-center gap-[0.4rem]">
                   <div className="flex flex-col gap-2">
                     <label
                       htmlFor="Email"
@@ -234,6 +234,37 @@ export function UpdateAttendeeButton({ attendeeDetails }) {
                         </option>
                       ))}
                     </Field>
+                  </div>
+                  <div className="flex md:flex-row flex-col gap-3">
+                    <div className="flex flex-col gap-2 md:w-1/2">
+                      <label
+                        htmlFor="startDate"
+                        className="block text-sm font-medium text-gray-700"
+                      >
+                        Start Date
+                      </label>
+                      <Field
+                        type="date"
+                        id="startDate"
+                        name="startDate"
+                        className="block w-full cursor-pointer px-3 py-2 mb-3 text-gray-500 text-xs border  focus:border-gray-300 focus:outline-none rounded shadow-sm overflow-x-none"
+                      ></Field>
+                    </div>
+
+                    <div className="flex flex-col gap-2 md:w-1/2 w-full">
+                      <label
+                        htmlFor="endDate"
+                        className="block text-sm font-medium text-gray-700"
+                      >
+                        End Date
+                      </label>
+                      <Field
+                        type="date"
+                        id="endDate"
+                        name="endDate"
+                        className="block w-full cursor-pointer px-3 py-2 mb-3 text-gray-500 text-xs border rounded shadow-sm focus:outline-none"
+                      ></Field>
+                    </div>
                   </div>
                   <div className="flex flex-col gap-2">
                     <label
