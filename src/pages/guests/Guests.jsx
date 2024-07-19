@@ -6,11 +6,17 @@ import {
   SendAllNewGuestsToCBMButton,
 } from '../../components/buttons/Buttons';
 import EmailTemplate from '../../components/email/EmailTemplate';
+import Toast from '../../components/toast/Toast';
+import { Bounce, toast } from 'react-toastify';
+import { API_BASE_URL } from '../../utils/api';
+import axios from 'axios';
 
 function Guests(props) {
   const [showForm, setShowForm] = useState(false);
   const [sendGuestsToCBM, setSendGuestsToCBM] = useState(false);
   const [uploadFormat, setUploadFormat] = useState('form');
+  const [sendToCBM, setSendToCBM] = useState('no');
+  const token = sessionStorage.getItem('token');
 
   const allGuests = [
     {
@@ -158,8 +164,83 @@ function Guests(props) {
     .filter((guest) => guest.status === 'New')
     .map((guest) => [guest.id, guest.name, guest.purpose]);
 
+  const handleSubmitCreateGuest = async (event) => {
+    event.preventDefault(); // Prevent default form submission
+
+    try {
+      // Gather form data
+      const formData = new FormData(event.target);
+      const names = formData.get('name');
+      const purpose = formData.get('purpose');
+      const email = formData.get('email');
+      const startingDate = formData.get('startDate');
+      const endDate = formData.get('endDate');
+
+      // Determine attendanceStatus based on sendToCBM
+      const attendanceStatus = sendToCBM === 'yes' ? 'New' : 'Approved';
+
+      console.log('sendToCbm: ', sendToCBM);
+      console.log('status: ', attendanceStatus);
+
+      // Prepare data for API call
+      const guestData = {
+        names,
+        email,
+        purpose,
+        startingDate,
+        endDate,
+        attendanceStatus,
+      };
+
+      // console.log('guestData: ', guestData)
+
+      // Make API call
+      const response = await axios.post(
+        `${API_BASE_URL}/users/addGuest`,
+        guestData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
+      // Handle successful response
+      console.log('Guest created:', response.data);
+      toast.success(response.message || 'Guest added successfully', {
+        position: 'top-right',
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'light',
+        transition: Bounce,
+      });
+
+      // Optionally, reset the form or update your guest list
+      // event.target.reset();
+    } catch (error) {
+      console.error('Error creating guest:', error);
+      toast.error(error.response?.data?.message || error.message, {
+        position: 'top-right',
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'light',
+        transition: Bounce,
+      });
+    }
+  };
+
   return (
     <div className="">
+      <Toast />
       {sendGuestsToCBM && (
         <div className=" fixed top-0 left-0 bg-bgBlue z-[40] h-screen w-screen overflow-y-auto overflow-x-auto flex items-center justify-center">
           <div className=" relative bg-white w-[90%] lg:w-[55%] h-max px-[3.5%] py-[4%] rounded-md">
@@ -242,7 +323,11 @@ function Guests(props) {
 
             {/* upload from form inputs  */}
             {uploadFormat === 'form' && (
-              <form action="#" className="w-full">
+              <form
+                action="#"
+                className="w-full"
+                onSubmit={handleSubmitCreateGuest}
+              >
                 <div className="flex flex-col mb-2">
                   <label htmlFor="name" className="text-xs text-gray">
                     Name:
@@ -252,6 +337,20 @@ function Guests(props) {
                     id="name"
                     placeholder="Enter guest full name"
                     name="name"
+                    className="outline-none text-sm py-2 px-4 border-[1px] border-gray rounded-md"
+                    required
+                  />
+                </div>
+
+                <div className="flex flex-col mb-2">
+                  <label htmlFor="email" className="text-xs text-gray">
+                    Email
+                  </label>
+                  <input
+                    type="text"
+                    id="email"
+                    placeholder="guest@gmail.com"
+                    name="email"
                     className="outline-none text-sm py-2 px-4 border-[1px] border-gray rounded-md"
                     required
                   />
@@ -305,37 +404,24 @@ function Guests(props) {
                     Will send to CBM?
                   </legend>
                   <div className="flex gap-8 border-[1px] border-gray-300 w-max py-2 px-4 rounded-md">
-                    <div className="flex gap-3 items-center">
+                    <label>
                       <input
                         type="radio"
-                        id="sendToCBMYes"
                         name="sendToCBM"
-                        className="cursor-pointer"
                         value="yes"
-                      />
-                      <label
-                        htmlFor="sendToCBMYes"
-                        className="text-xs text-gray"
-                      >
-                        Yes
-                      </label>
-                    </div>
-                    <div className="flex gap-3 items-center">
+                        onChange={(e) => setSendToCBM(e.target.value)}
+                      ></input>
+                      Yes
+                    </label>
+                    <label>
                       <input
                         type="radio"
-                        id="sendToCBMNo"
                         name="sendToCBM"
-                        className="cursor-pointer"
                         value="no"
-                        defaultChecked
-                      />
-                      <label
-                        htmlFor="sendToCBMNo"
-                        className="text-xs text-gray"
-                      >
-                        No
-                      </label>
-                    </div>
+                        onChange={(e) => setSendToCBM(e.target.value)}
+                      ></input>
+                      No
+                    </label>
                   </div>
                 </fieldset>
 

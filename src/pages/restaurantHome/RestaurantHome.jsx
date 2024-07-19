@@ -428,7 +428,7 @@ function RestaurantHome(props) {
                           key={attendance.id}
                         >
                           <li className="text-sm">{attendance.email}</li>
-                          <AddAttendeeManually email={attendance.email} />
+                          <AddAttendeeManually token={token} emailToAddManually={attendance.email} />
                         </div>
                       ))
                     ) : (

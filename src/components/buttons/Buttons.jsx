@@ -23,6 +23,7 @@ import axios from 'axios';
 import { API_BASE_URL } from '../../utils/api';
 import { Bounce, toast } from 'react-toastify';
 import { MdDangerous } from 'react-icons/md';
+import Toast from '../toast/Toast';
 const token = sessionStorage.getItem('token');
 
 export function MainButton({ text }) {
@@ -1443,29 +1444,55 @@ export function Status({ status }) {
   );
 }
 
-export function AddAttendeeManually({ emailToAddManually }) {
+export function AddAttendeeManually({ token, emailToAddManually }) {
   const handleAddManually = async () => {
     try {
       const response = await axios.post(
         `${API_BASE_URL}/attendance/record/manual/${emailToAddManually}`,
+        {},
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         }
       );
+      toast.success('Added successfully', {
+        position: 'top-right',
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'light',
+        transition: Bounce,
+      });
     } catch (error) {
       console.log(error);
+      console.log('error.message: ', error.message);
+      toast.error(error.message || error.response.data.message, {
+        position: 'top-right',
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'light',
+        transition: Bounce,
+      });
     }
   };
 
   return (
-    <button
-      className="btn btn-primary text-white text-sm float-right bg-[#078ECE] border-2 rounded-md border-[1px] py-2 px-3 hover:bg-white hover:text-[#078ECE] hover:border-[1px] hover:border-[#078ECE]"
-      onClick={() => handleAddManually()}
-    >
-      + Add
-    </button>
+    <div>
+      <button
+        className="btn btn-primary text-white text-sm float-right bg-[#078ECE] border-2 rounded-md border-[1px] py-2 px-3 hover:bg-white hover:text-[#078ECE] hover:border-[1px] hover:border-[#078ECE]"
+        onClick={() => handleAddManually()}
+      >
+        + Add
+      </button>
+    </div>
   );
 }
 
