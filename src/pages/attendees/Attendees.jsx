@@ -136,12 +136,34 @@ function Attendees() {
       );
 
       // console.log('Estimated attendees updated! ', additionalPeople);
+      toast.success('Estimated attendees updated!', {
+        position: 'top-right',
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'light',
+        transition: Bounce,
+      });
       setTotalEstimatedAttendees(additionalPeople);
     } catch (error) {
       console.log(
         'Failed to set estimated attendees',
         error.response?.data?.message || error.message
       );
+      toast.error(error.response?.data?.message || error.message, {
+        position: 'top-right',
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'light',
+        transition: Bounce,
+      });
     }
   };
 
@@ -195,9 +217,13 @@ function Attendees() {
   ]);
 
   const activeAttendeesData = allAttendees
-    .filter((attendee) => attendee.status === 'active')
-    .map((attendeeDetails) => [
-      attendeeDetails.id,
+    .filter(
+      (attendee) =>
+        (attendee.status === 'active' || attendee.status === 'approved') &&
+        attendee.roleName != 'RESTAURANT'
+    )
+    .map((attendeeDetails, index) => [
+      ++index,
       attendeeDetails.name,
       attendeeDetails.roleName,
       attendeeDetails.status,
@@ -231,7 +257,7 @@ function Attendees() {
     }
   };
 
-  // Fetch the roles and departments when the component mounts
+  // Fetch the receipts
   useEffect(() => {
     getAllReceipts();
 
@@ -277,11 +303,13 @@ function Attendees() {
       setExtraPeople(0);
       const newExtraPeople = 0;
       setExtraPeople(newExtraPeople);
-      setEstimatedAttendees(activeAttendees + newExtraPeople);
+      const additionalPeople = activeAttendees + newExtraPeople;
+      setEstimatedAttendees(additionalPeople);
     } else {
       const newExtraPeople = parseInt(extraPeople, 10); // Convert extraPeople to integer
       setExtraPeople(newExtraPeople);
-      setEstimatedAttendees(activeAttendees + newExtraPeople);
+      const additionalPeople = activeAttendees + newExtraPeople;
+      setEstimatedAttendees(additionalPeople);
     }
   };
 
@@ -630,7 +658,7 @@ function Attendees() {
             <div className="w-full md:w-max md:flex flex-col gap-4 md:flex-row items-center justify-evenly my-4">
               <div className="flex flex-row items-center justify-evenly gap-2 md:gap-10">
                 <div className="font-bold text-3xl text-mainGray">
-                  {activeAttendees}
+                  {activeAttendeesData.length}
                 </div>
                 <p>+</p>
                 <form className="flex" onSubmit={handleExpectedAttendees}>

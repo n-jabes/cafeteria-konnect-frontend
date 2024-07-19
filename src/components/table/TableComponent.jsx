@@ -94,9 +94,23 @@ const TableComponent = ({ headers, data, title, showCheckBox, showFilter }) => {
           padding: '2px 8px',
           borderRadius: '4px',
         };
-      case 'on leave':
+      case 'approved':
+        return {
+          backgroundColor: '#bbf7d0',
+          color: '#30415F',
+          padding: '2px 8px',
+          borderRadius: '4px',
+        };
+      case 'declined':
         return {
           backgroundColor: '#fecaca',
+          color: '#30415F',
+          padding: '2px 8px',
+          borderRadius: '4px',
+        };
+      case 'on leave':
+        return {
+          backgroundColor: '#fcc2c2',
           color: '#30415F',
           padding: '2px 8px',
           borderRadius: '4px',
@@ -108,23 +122,20 @@ const TableComponent = ({ headers, data, title, showCheckBox, showFilter }) => {
           padding: '2px 8px',
           borderRadius: '4px',
         };
-      case 'New':
+      case 'new':
         return {
-          color: 'blue',
+          backgroundColor: '#bdcff0',
+          color: '#30415F',
+          padding: '2px 8px',
+          borderRadius: '4px',
         };
-      case 'Approved':
+      case 'pending':
         return {
-          color: 'green',
+          backgroundColor: '#ffdec4',
+          color: '#30415F',
+          padding: '2px 8px',
+          borderRadius: '4px',
         };
-      case 'Pending':
-        return {
-          color: 'orange',
-        };
-      case 'Declined':
-        return {
-          color: 'red',
-        };
-      
     }
   };
 

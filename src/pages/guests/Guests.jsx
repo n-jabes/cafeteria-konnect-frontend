@@ -177,7 +177,7 @@ function Guests(props) {
       const endDate = formData.get('endDate');
 
       // Determine attendanceStatus based on sendToCBM
-      const attendanceStatus = sendToCBM === 'yes' ? 'New' : 'Approved';
+      const attendanceStatus = sendToCBM === 'yes' ? 'new' : 'approved';
 
       console.log('sendToCbm: ', sendToCBM);
       console.log('status: ', attendanceStatus);
@@ -192,7 +192,7 @@ function Guests(props) {
         attendanceStatus,
       };
 
-      // console.log('guestData: ', guestData)
+      console.log('guestData: ', guestData)
 
       // Make API call
       const response = await axios.post(
@@ -207,10 +207,10 @@ function Guests(props) {
       );
 
       // Handle successful response
-      console.log('Guest created:', response.data);
+      // console.log('Guest created:', response.data);
       toast.success(response.message || 'Guest added successfully', {
         position: 'top-right',
-        autoClose: 3000,
+        autoClose: 2000,
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: true,
@@ -221,12 +221,12 @@ function Guests(props) {
       });
 
       // Optionally, reset the form or update your guest list
-      // event.target.reset();
+      event.target.reset();
     } catch (error) {
       console.error('Error creating guest:', error);
       toast.error(error.response?.data?.message || error.message, {
         position: 'top-right',
-        autoClose: 3000,
+        autoClose: 2000,
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: true,

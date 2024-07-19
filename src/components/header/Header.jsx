@@ -1,18 +1,45 @@
 // src/components/Header.jsx
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FaBars, FaBell, FaRegEdit, FaTimes } from 'react-icons/fa';
 import { ViewNotification } from '../buttons/Buttons';
 import { MdEdit } from 'react-icons/md';
+import { API_BASE_URL } from '../../utils/api';
+import axios from 'axios';
 
 const Header = ({ toggleSidebar, headerTitle }) => {
   const [viewNotification, setViewNotificattion] = useState(false);
   const [viewProfile, setViewProfile] = useState(false);
   const [viewEditForm, setViewEditForm] = useState(true);
+  const [user, setUser] = useState();
+  const token = sessionStorage.getItem('token');
 
   const handleHideProfile = () => {
-    setViewProfile(!viewProfile)
-    setViewEditForm(!viewEditForm)
-  }
+    setViewProfile(!viewProfile);
+    setViewEditForm(!viewEditForm);
+  };
+
+  const getUserProfile = async () => {
+    // console.log('token: ',token)
+    try {
+      const response = await axios.get(`${API_BASE_URL}/users/profile`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      console.log('Fetched Succesfully: ', response);
+      setUser(response.data.data);
+    } catch (error) {
+      console.log(error);
+      console.log(
+        'Failed to get user details: ',
+        error.data?.message || error.message
+      );
+    }
+  };
+
+  useEffect(() => {
+    getUserProfile();
+  }, [token]);
+
   return (
     <header className="bg-white shadow-md p-4 relative flex w-[100vw] md:w-full justify-between items-center">
       <div className="flex items-center">
@@ -31,10 +58,7 @@ const Header = ({ toggleSidebar, headerTitle }) => {
         <div>
           <ViewNotification />
         </div>
-        <div
-          className="flex gap-4"
-          onClick={handleHideProfile}
-        >
+        <div className="flex gap-4" onClick={handleHideProfile}>
           <img
             src="/profile.jpg"
             alt="Profile"
@@ -42,7 +66,7 @@ const Header = ({ toggleSidebar, headerTitle }) => {
           />
           <div className="text-left cursor-pointer hidden md:block">
             <p className="text-gray-600 text-sm sm:text-md font-medium">
-              Nshuti Ruranga Jabes
+              {user.names}
             </p>
             <p className="text-xs text-gray-400">Human Resource Manager</p>
           </div>
@@ -51,8 +75,11 @@ const Header = ({ toggleSidebar, headerTitle }) => {
       {viewProfile && (
         <div className="w-[90vw] sm:w-[75vw] md:w-[55vw] lg:w-[25vw] h-max py-4 px-4 bg-white absolute right-[2.5rem] top-[12.5vh] flex flex-col items-center z-[5] shadow-xl rounded-md">
           <div className="w-full flex items-center justify-between mb-2">
-            <button className="w-max flex items-start py-2 px-4 bg-transparent border-[1px] border-blue-200 rounded-[5px] text-xs text-blue-400 hover:bg-blue-500 hover:text-white"  onClick={() => setViewEditForm(!viewEditForm)}>
-              <span className="">{viewEditForm? 'Back' : 'Edit'}</span>
+            <button
+              className="w-max flex items-start py-2 px-4 bg-transparent border-[1px] border-blue-200 rounded-[5px] text-xs text-blue-400 hover:bg-blue-500 hover:text-white"
+              onClick={() => setViewEditForm(!viewEditForm)}
+            >
+              <span className="">{viewEditForm ? 'Back' : 'Edit'}</span>
             </button>
             <button
               className="p-2 bg-transparent border-[1px] border-red-200 rounded-[5px] text-red-500 bg-[#626262] hover:bg-red-600 hover:text-white hover:border-red-600"
@@ -72,12 +99,17 @@ const Header = ({ toggleSidebar, headerTitle }) => {
                 <input
                   type="text"
                   className="w-full outline-none border-b-[1px] border-b-gray-300 py-2 px-2 text-sm mb-2"
-                  placeholder="Name"
+                  placeholder={`${user.names}`}
                 />
                 <input
                   type="email"
                   className="w-full outline-none border-b-[1px] border-b-gray-300 py-2 px-2 text-sm mb-2"
-                  placeholder="Email"
+                  placeholder={`${user.email}`}
+                />
+                <input
+                  type="text"
+                  className="w-full outline-none border-b-[1px] border-b-gray-300 py-2 px-2 text-sm mb-2"
+                  placeholder={`${user.nationalId}`}
                 />
                 <input
                   type="password"
@@ -101,7 +133,7 @@ const Header = ({ toggleSidebar, headerTitle }) => {
                 <h2 className="text-gray-500 font-medium text-sm">
                   Name:
                   <span className="ml-4 text-gray-700 font-medium">
-                    Nshuti Ruranga Jabes
+                    {user.names}
                   </span>
                 </h2>
                 <h2 className="text-gray-500 font-medium text-sm">
@@ -113,7 +145,13 @@ const Header = ({ toggleSidebar, headerTitle }) => {
                 <h2 className="text-gray-500 font-medium text-sm">
                   Email:
                   <span className="ml-4 text-gray-400 font-medium">
-                    nshutij7@gmail.com
+                    {user.email}
+                  </span>
+                </h2>
+                <h2 className="text-gray-500 font-medium text-sm">
+                  National ID:
+                  <span className="ml-4 text-gray-400 font-medium">
+                    {user.nationalId}
                   </span>
                 </h2>
               </div>
