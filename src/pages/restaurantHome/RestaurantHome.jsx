@@ -457,7 +457,7 @@ function RestaurantHome(props) {
 
         {addToAddendence && (
           <div className="fixed top-0 left-0 bg-bgBlue z-[40] h-screen w-screen overflow-y-auto overflow-x-auto flex items-center justify-center">
-            <Toast />
+           
             <div className="relative bg-white w-[90%] lg:w-[38%] lg:h-max h-max px-[3.5%] lg:py-[1.7%] md:py-[3%] py-[10%] rounded-md ">
               <div className="w-[90%] mx-auto flex flex-col gap-8 h-full">
                 <button
