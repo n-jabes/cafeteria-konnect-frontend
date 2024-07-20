@@ -179,9 +179,6 @@ function Guests(props) {
       // Determine attendanceStatus based on sendToCBM
       const attendanceStatus = sendToCBM === 'yes' ? 'new' : 'approved';
 
-      console.log('sendToCbm: ', sendToCBM);
-      console.log('status: ', attendanceStatus);
-
       // Prepare data for API call
       const guestData = {
         names,
@@ -192,7 +189,7 @@ function Guests(props) {
         attendanceStatus,
       };
 
-      console.log('guestData: ', guestData)
+      console.log('guestData: ', guestData);
 
       // Make API call
       const response = await axios.post(
@@ -221,7 +218,7 @@ function Guests(props) {
       });
 
       // Optionally, reset the form or update your guest list
-      event.target.reset();
+      // event.target.reset();
     } catch (error) {
       console.error('Error creating guest:', error);
       toast.error(error.response?.data?.message || error.message, {
@@ -418,6 +415,7 @@ function Guests(props) {
                         type="radio"
                         name="sendToCBM"
                         value="no"
+                        defaultChecked
                         onChange={(e) => setSendToCBM(e.target.value)}
                       ></input>
                       No

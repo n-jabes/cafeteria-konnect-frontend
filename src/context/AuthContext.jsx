@@ -1,6 +1,8 @@
 import { jwtDecode } from 'jwt-decode';
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import CryptoJS from 'crypto-js';
+import axios from 'axios';
+import { API_BASE_URL } from '../utils/api';
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
@@ -9,6 +11,24 @@ export const AuthProvider = ({ children }) => {
   });
   const [role, setRole] = useState(() => sessionStorage.getItem('role') || '');
   const [token, setToken] = useState('');
+
+  // const getUserProfile = async (token) => {
+  //   console.log('token: ', token);
+  //   try {
+  //     const response = await axios.get(`${API_BASE_URL}/users/profile`, {
+  //       headers: { Authorization: `Bearer ${token}` },
+  //     });
+
+  //     console.log('Fetched Succesfully: ', response);
+  //     setUser(response.data.data);
+  //   } catch (error) {
+  //     console.log(error);
+  //     console.log(
+  //       'Failed to get user details: ',
+  //       error.data?.message || error.message
+  //     );
+  //   }
+  // };
 
   const login = (token) => {
     const decodedToken = jwtDecode(token);
@@ -53,13 +73,12 @@ export const AuthProvider = ({ children }) => {
       console.error('Decryption error:', error);
       return null;
     }
-  };  
+  };
 
   useEffect(() => {
     setIsAuthenticated(sessionStorage.getItem('isAuthenticated') === 'true');
     setRole(sessionStorage.getItem('role') || '');
   }, [sessionStorage]);
-
 
   return (
     <AuthContext.Provider
@@ -72,6 +91,8 @@ export const AuthProvider = ({ children }) => {
         encryptData,
         decryptData,
         secretKey,
+        // getUserProfile,
+        
       }}
     >
       {children}

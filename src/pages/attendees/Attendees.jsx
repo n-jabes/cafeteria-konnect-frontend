@@ -114,6 +114,9 @@ function Attendees() {
       // );
 
       setActiveAttendees(response.data.data.estimatedAttendeesCount);
+      setTotalEstimatedAttendees(
+        response.data.data.estimatedAttendeesCount
+      );
     } catch (error) {
       console.log(
         'Failed to fetch roles',
@@ -123,31 +126,20 @@ function Attendees() {
   };
 
   //setting the number all estimated attendees
-  const setEstimatedAttendees = async (additionalPeople) => {
+  const setEstimatedAttendees = async (extraPeople) => {
+    console.log('extra people: ', extraPeople)
     try {
       const response = await axios.post(
         `${API_BASE_URL}/users/estimatedAttendeesCount`,
-        { additionalPeople },
+        { extraPeople },
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         }
       );
-
-      // console.log('Estimated attendees updated! ', additionalPeople);
-      toast.success('Estimated attendees updated!', {
-        position: 'top-right',
-        autoClose: 2000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: 'light',
-        transition: Bounce,
-      });
-      setTotalEstimatedAttendees(additionalPeople);
+      console.log(response)
+      setTotalEstimatedAttendees(activeAttendeesData.length + extraPeople);
     } catch (error) {
       console.log(
         'Failed to set estimated attendees',
@@ -230,10 +222,6 @@ function Attendees() {
       <AttendeeButtons attendeeDetails={attendeeDetails} />,
     ]);
 
-  const [totalEstimatedAttendees, setTotalEstimatedAttendees] = useState(
-    activeAttendees + extraPeople
-  );
-
   const getAllReceipts = async () => {
     try {
       const response = await axios.get(`${API_BASE_URL}/receipts/all`, {
@@ -256,6 +244,11 @@ function Attendees() {
       // });
     }
   };
+
+  const [totalEstimatedAttendees, setTotalEstimatedAttendees] = useState(
+    activeAttendeesData?.length || 0
+  );
+  console.log('totalEstimatedAttendees: ', totalEstimatedAttendees);
 
   // Fetch the receipts
   useEffect(() => {
@@ -303,13 +296,11 @@ function Attendees() {
       setExtraPeople(0);
       const newExtraPeople = 0;
       setExtraPeople(newExtraPeople);
-      const additionalPeople = activeAttendees + newExtraPeople;
-      setEstimatedAttendees(additionalPeople);
+      setEstimatedAttendees(extraPeople);
     } else {
       const newExtraPeople = parseInt(extraPeople, 10); // Convert extraPeople to integer
       setExtraPeople(newExtraPeople);
-      const additionalPeople = activeAttendees + newExtraPeople;
-      setEstimatedAttendees(additionalPeople);
+      setEstimatedAttendees(extraPeople);
     }
   };
 
@@ -331,7 +322,6 @@ function Attendees() {
       getAllDepartments();
       setEstimatedAttendees(activeAttendees + extraPeople);
       getAllAttendees(); // Initial data load from API
-      getEstimatedAttendees();
 
       // Create a reference to the 'users' collection
       const usersCollectionRef = collection(firestoreDB, 'users');
@@ -355,7 +345,7 @@ function Attendees() {
 
   // Get realtime data for estimated attendees
   useEffect(() => {
-    // getEstimatedAttendees();
+    getEstimatedAttendees();
     // Firebase Realtime Database listener
     const estimatedAttendanceRef = ref(database, 'EstimatedAttendees');
     const unsubscribe = onValue(estimatedAttendanceRef, (snapshot) => {
@@ -684,7 +674,6 @@ function Attendees() {
               <div className="flex items-center md:flex-row flex-row-reverse md:mt-0 mt-6">
                 <div className="font-bold text-3xl text-mainGray bg-green-200 h-max py-[2px] px-[8px] sm:py-2 sm:px-4 rounded-sm ml-6 mr-4">
                   {totalEstimatedAttendees}
-                  {/* {activeAttendees? activeAttendees + extraPeople : 0} */}
                 </div>
                 <p className="font-light text-xs text-[#078ECE] w-full md:w-[200px] flex mt-2 mb:mt-[0px] gap-2 items-center">
                   <CgDanger className="text-2xl md:text-6xl" />

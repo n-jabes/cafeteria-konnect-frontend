@@ -182,8 +182,11 @@ function RestaurantHome(props) {
   };
 
   // getting active attendees
-  const activeAttendeesData = allAttendees
-  .filter((attendee) => attendee.status === 'active');
+  const activeAttendeesData = allAttendees.filter(
+    (attendee) =>
+      (attendee.status === 'active' || attendee.status === 'approved') &&
+      attendee.roleName != 'RESTAURANT'
+  );
 
   useEffect(() => {
     getAttendanceByDate(selectedDate);
@@ -365,8 +368,16 @@ function RestaurantHome(props) {
   };
 
   useEffect(() => {
-    getEstimatedAttendees();
     getAllAttendees();
+    getEstimatedAttendees();
+    // Firebase Realtime Database listener
+    const estimatedAttendanceRef = ref(database, 'EstimatedAttendees');
+    const unsubscribe = onValue(estimatedAttendanceRef, (snapshot) => {
+      getEstimatedAttendees(); // Fetch updated data from your API
+    });
+
+    // Cleanup function
+    return () => unsubscribe();
   }, []);
 
   return (
@@ -428,7 +439,10 @@ function RestaurantHome(props) {
                           key={attendance.id}
                         >
                           <li className="text-sm">{attendance.email}</li>
-                          <AddAttendeeManually token={token} emailToAddManually={attendance.email} />
+                          <AddAttendeeManually
+                            token={token}
+                            emailToAddManually={attendance.email}
+                          />
                         </div>
                       ))
                     ) : (

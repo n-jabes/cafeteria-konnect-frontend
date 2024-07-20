@@ -25,7 +25,7 @@ const Header = ({ toggleSidebar, headerTitle }) => {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      console.log('Fetched Succesfully: ', response);
+      // console.log('Fetched Succesfully: ', response);
       setUser(response.data.data);
     } catch (error) {
       console.log(error);
@@ -66,7 +66,7 @@ const Header = ({ toggleSidebar, headerTitle }) => {
           />
           <div className="text-left cursor-pointer hidden md:block">
             <p className="text-gray-600 text-sm sm:text-md font-medium">
-              {user.names}
+              {user?.names || ''}
             </p>
             <p className="text-xs text-gray-400">Human Resource Manager</p>
           </div>
