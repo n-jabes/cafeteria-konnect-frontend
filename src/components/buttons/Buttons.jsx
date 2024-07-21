@@ -1468,9 +1468,9 @@ export function AddAttendeeManually({ token, emailToAddManually }) {
         transition: Bounce,
       });
     } catch (error) {
-      console.log(error);
-      console.log('error.message: ', error.message);
-      toast.error(error.message || error.response.data.message, {
+      // console.log(error);
+      // console.log('error.message: ', error.message);
+      toast.error(error?.response?.data?.message || error.message, {
         position: 'top-right',
         autoClose: 2000,
         hideProgressBar: false,
