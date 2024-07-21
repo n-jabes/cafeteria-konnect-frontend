@@ -34,7 +34,7 @@ function Attendees() {
   const [addNewAttendee, setaddNewAttendee] = useState(false);
   const headers = ['Id', 'Name', 'Role', 'Status', 'Actions'];
   const [tab, setTab] = useState('active attendees');
-  const [extraPeople, setExtraPeople] = useState(5);
+  const [extraPeople, setExtraPeople] = useState(parseInt(localStorage.getItem('extraPeople'), 10) || 5);
   const [departments, setDepartments] = useState([]);
   const [roles, setRoles] = useState([]);
   const [allAttendees, setAllAttendees] = useState([]);
@@ -137,6 +137,17 @@ function Attendees() {
       );
       // console.log(response);
       setTotalEstimatedAttendees(activeAttendeesData.length + extraPeople);
+      toast.success(response?.data?.message || 'Updated successfully!', {
+        position: 'top-right',
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'light',
+        transition: Bounce,
+      });
     } catch (error) {
       console.log(
         'Failed to set estimated attendees',
@@ -291,6 +302,7 @@ function Attendees() {
     e.preventDefault();
     const newExtraPeople = isNaN(extraPeople) ? 0 : parseInt(extraPeople, 10);
     setExtraPeople(newExtraPeople);
+    localStorage.setItem('extraPeople', newExtraPeople.toString());
     setEstimatedAttendees(newExtraPeople);
   };
 
@@ -310,7 +322,6 @@ function Attendees() {
     if (role === 'HR') {
       getAllRoles();
       getAllDepartments();
-      setEstimatedAttendees(activeAttendees + extraPeople);
       getAllAttendees(); // Initial data load from API
 
       // Create a reference to the 'users' collection
@@ -335,6 +346,12 @@ function Attendees() {
 
   // Get realtime data for estimated attendees
   useEffect(() => {
+    const savedExtraPeople = localStorage.getItem('extraPeople');
+
+    if (savedExtraPeople !== null) {
+      setExtraPeople(parseInt(savedExtraPeople, 10));
+      setEstimatedAttendees(activeAttendees + extraPeople);
+    }
     getEstimatedAttendees();
     // Firebase Realtime Database listener
     const estimatedAttendanceRef = ref(database, 'EstimatedAttendees');
