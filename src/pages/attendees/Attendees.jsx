@@ -113,10 +113,7 @@ function Attendees() {
       //   response.data.data.estimatedAttendeesCount
       // );
 
-      setActiveAttendees(response.data.data.estimatedAttendeesCount);
-      setTotalEstimatedAttendees(
-        response.data.data.estimatedAttendeesCount
-      );
+      setTotalEstimatedAttendees(response.data.data.estimatedAttendeesCount);
     } catch (error) {
       console.log(
         'Failed to fetch roles',
@@ -127,18 +124,18 @@ function Attendees() {
 
   //setting the number all estimated attendees
   const setEstimatedAttendees = async (extraPeople) => {
-    console.log('extra people: ', extraPeople)
+    // console.log('extra people: ', extraPeople);
     try {
       const response = await axios.post(
         `${API_BASE_URL}/users/estimatedAttendeesCount`,
-        { extraPeople },
+        { additionalAttendees: extraPeople },
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         }
       );
-      console.log(response)
+      // console.log(response);
       setTotalEstimatedAttendees(activeAttendeesData.length + extraPeople);
     } catch (error) {
       console.log(
@@ -248,7 +245,7 @@ function Attendees() {
   const [totalEstimatedAttendees, setTotalEstimatedAttendees] = useState(
     activeAttendeesData?.length || 0
   );
-  console.log('totalEstimatedAttendees: ', totalEstimatedAttendees);
+  // console.log('totalEstimatedAttendees: ', totalEstimatedAttendees);
 
   // Fetch the receipts
   useEffect(() => {
@@ -292,16 +289,9 @@ function Attendees() {
   //attendance report data to be displayed
   const handleExpectedAttendees = (e) => {
     e.preventDefault();
-    if (isNaN(extraPeople)) {
-      setExtraPeople(0);
-      const newExtraPeople = 0;
-      setExtraPeople(newExtraPeople);
-      setEstimatedAttendees(extraPeople);
-    } else {
-      const newExtraPeople = parseInt(extraPeople, 10); // Convert extraPeople to integer
-      setExtraPeople(newExtraPeople);
-      setEstimatedAttendees(extraPeople);
-    }
+    const newExtraPeople = isNaN(extraPeople) ? 0 : parseInt(extraPeople, 10);
+    setExtraPeople(newExtraPeople);
+    setEstimatedAttendees(newExtraPeople);
   };
 
   // input for setting estimated people
@@ -448,7 +438,6 @@ function Attendees() {
     <div>
       {/* tabs component */}
       <div className="flex flex-col md:flex-row w-full md:justify-between mb-2 border-b-[1px] border-b-gray-200">
-      
         {addNewAttendee && (
           <div className="fixed top-0 left-0 bg-bgBlue z-[40] h-screen w-screen overflow-y-auto overflow-x-auto flex items-center justify-center">
             <div className="relative bg-white w-[90%] md:w-[50%]  lg:w-[38%] sm:w-[70%] lg:h-[32.5rem] sm:h-[36rem] md:h-[32rem] h-[38rem] px-[3.5%] py-[1.7%] rounded-md overflow-y-auto">
