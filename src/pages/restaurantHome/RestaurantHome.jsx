@@ -26,7 +26,7 @@ const StatsCard = ({ title, text, style }) => (
 const EstimatedAttendeesCard = ({ text, style, time }) => (
   <div className="p-4 w-[70%] ">
     <div
-      className={`${style} rounded bg-opacity-25 py-6 px-10 text-center text-[#4069B0] text-xl font-bold shadow-statsCard relative`}
+      className={`${style} rounded bg-opacity-25 py-4 px-10 text-center text-[#4069B0] text-5xl font-bold shadow-statsCard relative`}
     >
       <p className="mb-2">{text}</p>
       <p className="absolute text-xs font-light mt-4 bottom-2 right-2">
@@ -79,6 +79,7 @@ function RestaurantHome(props) {
   const [allAttendance, setAllAttendance] = useState([]);
   const [filteredEmails, setFilteredEmails] = useState([]);
   const [estimatedAttendees, setEstimatedAttendees] = useState();
+  const [dateOfEstimatedAttendees, setDateOfEstimatedAttendees] = useState();
   const [errorMessage, setErrorMessage] = useState('');
   const [dateError, setDateError] = useState('');
   const { decryptData, secretKey } = useAuth();
@@ -359,6 +360,7 @@ function RestaurantHome(props) {
       // );
 
       setEstimatedAttendees(response.data.data.estimatedAttendeesCount);
+      setDateOfEstimatedAttendees(response.data.data.date);
     } catch (error) {
       console.log(
         'Failed to fetch roles',
@@ -457,7 +459,6 @@ function RestaurantHome(props) {
 
         {addToAddendence && (
           <div className="fixed top-0 left-0 bg-bgBlue z-[40] h-screen w-screen overflow-y-auto overflow-x-auto flex items-center justify-center">
-           
             <div className="relative bg-white w-[90%] lg:w-[38%] lg:h-max h-max px-[3.5%] lg:py-[1.7%] md:py-[3%] py-[10%] rounded-md ">
               <div className="w-[90%] mx-auto flex flex-col gap-8 h-full">
                 <button
@@ -565,7 +566,7 @@ function RestaurantHome(props) {
           </p>
           <EstimatedAttendeesCard
             text={estimatedAttendees}
-            time="3hr ago"
+            time={dateOfEstimatedAttendees}
             style="bg-[#008000] bg-opacity-2 "
           />
         </div>
