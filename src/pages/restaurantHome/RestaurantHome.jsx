@@ -294,7 +294,7 @@ function RestaurantHome(props) {
           }
         } catch (error) {
           console.log(error);
-          handleError(error.response.data.message || error.message);
+          handleError(error?.response?.data?.message || error.message);
         }
       } else {
         handleError('Invalid QR Code');

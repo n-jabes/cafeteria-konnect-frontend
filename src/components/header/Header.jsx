@@ -25,13 +25,13 @@ const Header = ({ toggleSidebar, headerTitle }) => {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      // console.log('Fetched Succesfully: ', response);
+      console.log('Fetched Succesfully: ', response);
       setUser(response.data.data);
     } catch (error) {
       console.log(error);
       console.log(
         'Failed to get user details: ',
-        error.data?.message || error.message
+        error?.data?.message || error.message
       );
     }
   };

@@ -34,7 +34,9 @@ function Attendees() {
   const [addNewAttendee, setaddNewAttendee] = useState(false);
   const headers = ['Id', 'Name', 'Role', 'Status', 'Actions'];
   const [tab, setTab] = useState('active attendees');
-  const [extraPeople, setExtraPeople] = useState(parseInt(localStorage.getItem('extraPeople'), 10) || 5);
+  const [extraPeople, setExtraPeople] = useState(
+    parseInt(localStorage.getItem('extraPeople'), 10) || 5
+  );
   const [departments, setDepartments] = useState([]);
   const [roles, setRoles] = useState([]);
   const [allAttendees, setAllAttendees] = useState([]);
@@ -450,6 +452,7 @@ function Attendees() {
     handleCreateAttendee(values, { resetForm });
     setErrorMessage('');
   };
+
 
   return (
     <div>

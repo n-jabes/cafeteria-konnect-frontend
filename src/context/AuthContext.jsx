@@ -47,6 +47,8 @@ export const AuthProvider = ({ children }) => {
     sessionStorage.removeItem('role');
     sessionStorage.removeItem('isAuthenticated');
     sessionStorage.removeItem('token');
+    localStorage.clear()
+    sessionStorage.clear()
 
     setIsAuthenticated(false);
   };
@@ -92,7 +94,7 @@ export const AuthProvider = ({ children }) => {
         decryptData,
         secretKey,
         // getUserProfile,
-        
+
       }}
     >
       {children}

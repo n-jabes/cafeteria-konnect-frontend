@@ -10,12 +10,14 @@ import Toast from '../../components/toast/Toast';
 import { Bounce, toast } from 'react-toastify';
 import { API_BASE_URL } from '../../utils/api';
 import axios from 'axios';
+import Papa from 'papaparse';
 
 function Guests(props) {
   const [showForm, setShowForm] = useState(false);
   const [sendGuestsToCBM, setSendGuestsToCBM] = useState(false);
   const [uploadFormat, setUploadFormat] = useState('form');
   const [sendToCBM, setSendToCBM] = useState('no');
+  const [csvData, setCsvData] = useState([]);
   const token = sessionStorage.getItem('token');
 
   const allGuests = [
@@ -235,6 +237,21 @@ function Guests(props) {
     }
   };
 
+  const handleCreateGuestsFromBatch = async () => {
+    console.log('Csv Data: ', csvData);
+  };
+
+  const handleReadFromCsv = (e) => {
+    const file = e.target.files[0];
+    Papa.parse(file, {
+      header: true,
+      dynamicTyping: true,
+      complete: (results) => {
+        setCsvData(results.data);
+      },
+    });
+  };
+
   return (
     <div className="">
       <Toast />
@@ -435,10 +452,24 @@ function Guests(props) {
             {/* upload from csv file  */}
             {uploadFormat === 'file' && (
               <div>
-                <input type="file" accept=".csv" className="py-4" />
-                <button className="btn border-2 border-{#078ECE} bg-[#078ECE] font-semibold text-white py-2 px-4 rounded-md w-full hover:bg-white hover:text-[#078ECE] mt-3">
+                <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                  <input
+                    type="file"
+                    accept=".csv"
+                    className="py-4"
+                    onChange={handleReadFromCsv}
+                  />
+                  <button className="w-full sm:w-1/2 btn btn-primary text-white float-right bg-mainBlue border-2 rounded-md mb-2 py-2 px-4 hover:bg-white hover:text-[#4069B0] hover:border-2 hover:border-[#4069B0]">
+                    Get Template
+                  </button>
+                </div>
+                <button
+                  className="btn border-2 border-{#078ECE} bg-[#078ECE] font-semibold text-white py-2 px-4 rounded-md w-full hover:bg-white hover:text-[#078ECE] mt-3"
+                  onClick={handleCreateGuestsFromBatch}
+                >
                   Upload CSV File
                 </button>
+                {csvData && <p>{csvData}</p>}
               </div>
             )}
           </div>
