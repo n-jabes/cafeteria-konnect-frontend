@@ -10,7 +10,7 @@ const Header = ({ toggleSidebar, headerTitle }) => {
   const [viewNotification, setViewNotificattion] = useState(false);
   const [viewProfile, setViewProfile] = useState(false);
   const [viewEditForm, setViewEditForm] = useState(true);
-  const [user, setUser] = useState();
+  const [user, setUser] = useState(JSON.parse(sessionStorage.getItem('user')));
   const token = sessionStorage.getItem('token');
 
   const handleHideProfile = () => {
@@ -27,11 +27,12 @@ const Header = ({ toggleSidebar, headerTitle }) => {
 
       console.log('Fetched Succesfully: ', response);
       setUser(response.data.data);
+      sessionStorage.setItem('User', JSON.stringify(response.data.data));
     } catch (error) {
       console.log(error);
       console.log(
         'Failed to get user details: ',
-        error?.data?.message || error.message
+        error?.response?.data?.message || error.message
       );
     }
   };

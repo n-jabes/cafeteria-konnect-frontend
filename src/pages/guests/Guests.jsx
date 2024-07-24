@@ -19,6 +19,8 @@ function Guests(props) {
   const [sendToCBM, setSendToCBM] = useState('no');
   const [csvData, setCsvData] = useState([]);
   const token = sessionStorage.getItem('token');
+  const roles = JSON.parse(sessionStorage.getItem('roles'));
+  const departments = JSON.parse(sessionStorage.getItem('departments'));
 
   const allGuests = [
     {
@@ -239,6 +241,67 @@ function Guests(props) {
 
   const handleCreateGuestsFromBatch = async () => {
     console.log('Csv Data: ', csvData);
+
+    const batchData = csvData
+      .filter((data) => data.names != null && data.email != null)
+      .map((filteredData) => {
+        const department = departments.filter(
+          (dept) => dept.department === filteredData.department
+        )[0];
+        const role = roles.filter((role) => role.role === filteredData.role)[0];
+
+        return {
+          names: String(filteredData.names),
+          email: String(filteredData.email),
+          nationalId: String(filteredData.nationalId),
+          departmentId: department ? String(department.id) : null,
+          roleId: role ? String(role.id) : null,
+          password: String(filteredData.password) || null,
+        };
+      });
+
+    console.log('batch data: ', batchData);
+
+    try {
+      const response = await axios.post(
+        `${API_BASE_URL}/users/register-batch`,
+        { users: batchData },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      console.log('Response: ', response);
+      toast.success(response.message || 'Batch added successfully', {
+        position: 'top-right',
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'light',
+        transition: Bounce,
+      });
+    } catch (error) {
+      console.error('Error creating batch:', error);
+      toast.error(
+        error.response?.data?.message ||
+          error.response?.data?.error ||
+          error.message,
+        {
+          position: 'top-right',
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: 'light',
+          transition: Bounce,
+        }
+      );
+    }
   };
 
   const handleReadFromCsv = (e) => {
@@ -459,9 +522,14 @@ function Guests(props) {
                     className="py-4"
                     onChange={handleReadFromCsv}
                   />
-                  <button className="w-full sm:w-1/2 btn btn-primary text-white float-right bg-mainBlue border-2 rounded-md mb-2 py-2 px-4 hover:bg-white hover:text-[#4069B0] hover:border-2 hover:border-[#4069B0]">
+                  <a
+                    href="https://docs.google.com/spreadsheets/d/1h4FuZrxelBbpRAPgv9i3uIpMJDKfoOc0xc1-Hzl0kyo/edit?usp=sharing"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full sm:w-1/2 btn btn-primary text-center text-white float-right bg-mainBlue border-2 rounded-md mb-2 py-2 px-4 hover:bg-white hover:text-[#4069B0] hover:border-2 hover:border-[#4069B0]"
+                  >
                     Get Template
-                  </button>
+                  </a>
                 </div>
                 <button
                   className="btn border-2 border-{#078ECE} bg-[#078ECE] font-semibold text-white py-2 px-4 rounded-md w-full hover:bg-white hover:text-[#078ECE] mt-3"
@@ -469,7 +537,7 @@ function Guests(props) {
                 >
                   Upload CSV File
                 </button>
-                {csvData && <p>{csvData}</p>}
+                {/* {csvData && <p>{csvData}</p>} */}
               </div>
             )}
           </div>

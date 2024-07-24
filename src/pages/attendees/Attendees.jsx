@@ -67,6 +67,7 @@ function Attendees() {
         department: dept.department,
       }));
       setDepartments(allDepartments);
+      sessionStorage.setItem('departments', JSON.stringify(departments));
     } catch (error) {
       console.log(
         'Failed to fetch departments',
@@ -89,12 +90,13 @@ function Attendees() {
         role: role.role,
       }));
       setRoles(allRoles);
+      sessionStorage.setItem('roles', JSON.stringify(roles));
     } catch (error) {
       console.log(
         'Failed to fetch roles',
         error.response?.data?.message || error.message
       );
-    }
+    } 
   };
 
   //fetching all estimated attendees
@@ -452,7 +454,6 @@ function Attendees() {
     handleCreateAttendee(values, { resetForm });
     setErrorMessage('');
   };
-
 
   return (
     <div>
