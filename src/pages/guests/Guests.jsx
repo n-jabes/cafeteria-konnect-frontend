@@ -28,7 +28,7 @@ function Guests(props) {
       name: 'John Doe',
       purpose: 'intern',
       status: 'Pending',
-      startDate: '2024-01-01',
+      startingDate: '2024-01-01',
       endDate: '2024-01-10',
     },
     {
@@ -36,7 +36,7 @@ function Guests(props) {
       name: 'Jane Smith',
       purpose: 'Consultant',
       status: 'Approved',
-      startDate: '2024-01-01',
+      startingDate: '2024-01-01',
       endDate: '2024-01-10',
     },
     {
@@ -44,7 +44,7 @@ function Guests(props) {
       name: 'Sam Johnson',
       purpose: 'intern',
       status: 'New',
-      startDate: '2024-01-01',
+      startingDate: '2024-01-01',
       endDate: '2024-01-10',
     },
     {
@@ -52,7 +52,7 @@ function Guests(props) {
       name: 'Imanzi Kenny',
       purpose: 'Consultant',
       status: 'New',
-      startDate: '2024-01-01',
+      startingDate: '2024-01-01',
       endDate: '2024-01-10',
     },
     {
@@ -60,7 +60,7 @@ function Guests(props) {
       name: 'John Doe',
       purpose: 'intern',
       status: 'Pending',
-      startDate: '2024-01-01',
+      startingDate: '2024-01-01',
       endDate: '2024-01-10',
     },
     {
@@ -68,7 +68,7 @@ function Guests(props) {
       name: 'Jane Smith',
       purpose: 'Consultant',
       status: 'Approved',
-      startDate: '2024-01-01',
+      startingDate: '2024-01-01',
       endDate: '2024-01-10',
     },
     {
@@ -76,7 +76,7 @@ function Guests(props) {
       name: 'Sam Johnson',
       purpose: 'intern',
       status: 'Declined',
-      startDate: '2024-01-01',
+      startingDate: '2024-01-01',
       endDate: '2024-01-10',
     },
     {
@@ -84,7 +84,7 @@ function Guests(props) {
       name: 'Bizy Henriette',
       purpose: 'Consultant',
       status: 'New',
-      startDate: '2024-01-01',
+      startingDate: '2024-01-01',
       endDate: '2024-01-10',
     },
     {
@@ -92,7 +92,7 @@ function Guests(props) {
       name: 'John Doe',
       purpose: 'intern',
       status: 'Pending',
-      startDate: '2024-01-01',
+      startingDate: '2024-01-01',
       endDate: '2024-01-10',
     },
     {
@@ -100,7 +100,7 @@ function Guests(props) {
       name: 'Jane Smith',
       purpose: 'Consultant',
       status: 'Approved',
-      startDate: '2024-01-01',
+      startingDate: '2024-01-01',
       endDate: '2024-01-10',
     },
     {
@@ -108,7 +108,7 @@ function Guests(props) {
       name: 'Sam Johnson',
       purpose: 'intern',
       status: 'Declined',
-      startDate: '2024-01-01',
+      startingDate: '2024-01-01',
       endDate: '2024-01-10',
     },
     {
@@ -116,7 +116,7 @@ function Guests(props) {
       name: 'Nshuti Ruranga Jabes',
       purpose: 'Consultant',
       status: 'New',
-      startDate: '2024-01-01',
+      startingDate: '2024-01-01',
       endDate: '2024-01-10',
     },
     {
@@ -124,7 +124,7 @@ function Guests(props) {
       name: 'John Doe',
       purpose: 'intern',
       status: 'Pending',
-      startDate: '2024-01-01',
+      startingDate: '2024-01-01',
       endDate: '2024-01-10',
     },
     {
@@ -132,7 +132,7 @@ function Guests(props) {
       name: 'Jane Smith',
       purpose: 'Consultant',
       status: 'Approved',
-      startDate: '2024-01-01',
+      startingDate: '2024-01-01',
       endDate: '2024-01-10',
     },
     {
@@ -140,7 +140,7 @@ function Guests(props) {
       name: 'Sam Johnson',
       purpose: 'intern',
       status: 'Declined',
-      startDate: '2024-01-01',
+      startingDate: '2024-01-01',
       endDate: '2024-01-10',
     },
     {
@@ -148,7 +148,7 @@ function Guests(props) {
       name: 'Nshuti Ruranga Jabes',
       purpose: 'Consultant',
       status: 'New',
-      startDate: '2024-01-01',
+      startingDate: '2024-01-01',
       endDate: '2024-01-10',
     },
   ];
@@ -177,7 +177,7 @@ function Guests(props) {
       const names = formData.get('name');
       const purpose = formData.get('purpose');
       const email = formData.get('email');
-      const startingDate = formData.get('startDate');
+      const startingDate = formData.get('startingDate');
       const endDate = formData.get('endDate');
 
       // Determine attendanceStatus based on sendToCBM
@@ -454,9 +454,9 @@ function Guests(props) {
                     </label>
                     <input
                       type="date"
-                      id="startDate"
+                      id="startingDate"
                       placeholder="Arrival"
-                      name="startDate"
+                      name="startingDate"
                       className="outline-none text-sm py-2 px-4 border-[1px] border-gray rounded-md"
                       required
                     />

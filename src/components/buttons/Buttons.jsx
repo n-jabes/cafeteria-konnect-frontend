@@ -46,6 +46,7 @@ export function UpdateAttendeeButton({ attendeeDetails }) {
   const [showUpdateForm, setShowUpdateForm] = useState(false);
   const [departments, setDepartments] = useState([]);
   const [roles, setRoles] = useState([]);
+  const [selectedStatus, setSelectedStatus] = useState(attendeeDetails.status);
   const token = sessionStorage.getItem('token');
   const statuses = [
     { id: 1, name: 'active' },
@@ -104,7 +105,7 @@ export function UpdateAttendeeButton({ attendeeDetails }) {
   useEffect(() => {
     getAllRoles();
     getAllDepartments();
-  }, []);
+  }, [showUpdateForm]);
 
   return (
     <div>
@@ -130,7 +131,9 @@ export function UpdateAttendeeButton({ attendeeDetails }) {
                   role: attendeeDetails.role,
                   NID: attendeeDetails.nationalId,
                   department: attendeeDetails.department,
-                  status: attendeeDetails.attendanceStatus,
+                  status: attendeeDetails.status,
+                  onLeaveStartDate: attendeeDetails.onLeaveStartDate || '',
+                  onLeaveEndDate: attendeeDetails.onLeaveEndDate || '',
                 }}
                 onSubmit={(values) => {
                   // Handle form submission logic here (update attendee data)
@@ -227,6 +230,7 @@ export function UpdateAttendeeButton({ attendeeDetails }) {
                       as="select"
                       id="department"
                       name="department"
+                      onChange={(e) => setSelectedStatus(e.target.value)}
                       className="block w-full px-3 py-2 mb-3 text-gray-500 text-xs border focus:border-gray-300 focus:outline-none rounded shadow"
                     >
                       {statuses.map((status) => (
@@ -236,37 +240,40 @@ export function UpdateAttendeeButton({ attendeeDetails }) {
                       ))}
                     </Field>
                   </div>
-                  <div className="flex md:flex-row flex-col gap-3">
-                    <div className="flex flex-col gap-2 md:w-1/2">
-                      <label
-                        htmlFor="startDate"
-                        className="block text-sm font-medium text-gray-700"
-                      >
-                        Start Date
-                      </label>
-                      <Field
-                        type="date"
-                        id="startDate"
-                        name="startDate"
-                        className="block w-full cursor-pointer px-3 py-2 mb-3 text-gray-500 text-xs border  focus:border-gray-300 focus:outline-none rounded shadow-sm overflow-x-none"
-                      ></Field>
-                    </div>
+                  {console.log('selectedStatus: ', attendeeDetails)}
+                  {selectedStatus !== 'active' && (
+                    <div className="flex md:flex-row flex-col gap-3">
+                      <div className="flex flex-col gap-2 md:w-1/2">
+                        <label
+                          htmlFor="startDate"
+                          className="block text-sm font-medium text-gray-700"
+                        >
+                          On Leave Start Date
+                        </label>
+                        <Field
+                          type="date"
+                          id="onLeaveStartDate"
+                          name="onLeaveStartDate"
+                          className="block w-full cursor-pointer px-3 py-2 mb-3 text-gray-500 text-xs border  focus:border-gray-300 focus:outline-none rounded shadow-sm overflow-x-none"
+                        ></Field>
+                      </div>
 
-                    <div className="flex flex-col gap-2 md:w-1/2 w-full">
-                      <label
-                        htmlFor="endDate"
-                        className="block text-sm font-medium text-gray-700"
-                      >
-                        End Date
-                      </label>
-                      <Field
-                        type="date"
-                        id="endDate"
-                        name="endDate"
-                        className="block w-full cursor-pointer px-3 py-2 mb-3 text-gray-500 text-xs border rounded shadow-sm focus:outline-none"
-                      ></Field>
+                      <div className="flex flex-col gap-2 md:w-1/2 w-full">
+                        <label
+                          htmlFor="endDate"
+                          className="block text-sm font-medium text-gray-700"
+                        >
+                          On Leave End Date
+                        </label>
+                        <Field
+                          type="date"
+                          id="onLeaveEndDate"
+                          name="onLeaveEndDate"
+                          className="block w-full cursor-pointer px-3 py-2 mb-3 text-gray-500 text-xs border rounded shadow-sm focus:outline-none"
+                        ></Field>
+                      </div>
                     </div>
-                  </div>
+                  )}
                   <div className="flex flex-col gap-2">
                     <label
                       htmlFor="role"
@@ -305,6 +312,15 @@ export function UpdateAttendeeButton({ attendeeDetails }) {
 
 export function UpdateGuestButton({ guest }) {
   const [showUpdateForm, setShowUpdateForm] = useState(false);
+  const [selectedStatus, setSelectedStatus] = useState(guest.status);
+
+  const statuses = [
+    { id: 1, name: 'Approved' },
+    { id: 2, name: 'On leave' },
+    { id: 3, name: 'New' },
+    { id: 4, name: 'Declined' },
+    { id: 5, name: 'Pending' },
+  ];
 
   return (
     <div>
@@ -355,7 +371,7 @@ export function UpdateGuestButton({ guest }) {
                   <input
                     type="date"
                     name="startDate"
-                    defaultValue={guest.startDate}
+                    defaultValue={guest.startingDate}
                     className="outline-none text-sm py-2 px-4 border-[1px] border-gray rounded-md"
                     required
                   />
@@ -373,6 +389,57 @@ export function UpdateGuestButton({ guest }) {
                   />
                 </div>
               </div>
+              <div className="flex flex-col w-full ">
+                <label htmlFor="status" className="text-xs text-gray">
+                  Status
+                </label>
+                <select
+                  id="status"
+                  name="status"
+                  onChange={(e) => setSelectedStatus(e.target.value)}
+                  className="block w-full px-3 py-2 mb-3 text-gray-500 text-xs border focus:border-gray-300 focus:outline-none rounded shadow"
+                >
+                  {statuses.map((status) => (
+                    <option key={status.id} value={status.name}>
+                      {status.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              {selectedStatus !== 'Approved' && (
+                <div className="flex md:flex-row flex-col gap-3">
+                  <div className="flex flex-col gap-2 md:w-1/2">
+                    <label
+                      htmlFor="onLeaveStartDate"
+                      className="block text-xs font-medium text-gray"
+                    >
+                      On Leave Start Date
+                    </label>
+                    <input
+                      type="date"
+                      id="onLeaveStartDate"
+                      name="onLeaveStartDate"
+                      className="block w-full cursor-pointer px-3 py-2 mb-3 text-gray-500 text-xs border  focus:border-gray-300 focus:outline-none rounded shadow-sm overflow-x-none"
+                    ></input>
+                  </div>
+
+                  <div className="flex flex-col gap-2 md:w-1/2 w-full">
+                    <label
+                      htmlFor="onLeaveEndDate"
+                      className="block text-xs font-medium text-gray"
+                    >
+                      On Leave End Date
+                    </label>
+                    <input
+                      type="date"
+                      id="onLeaveEndDate"
+                      name="onLeaveEndDate"
+                      className="block w-full cursor-pointer px-3 py-2 mb-3 text-gray-500 text-xs border rounded shadow-sm focus:outline-none"
+                    ></input>
+                  </div>
+                </div>
+              )}
+
               <button
                 type="submit"
                 className="btn border-2 border-[#078ECE] bg-[#078ECE] text-md font-semibold text-white py-2 px-4 rounded-md w-full hover:bg-white hover:text-mainBlue mt-3"
