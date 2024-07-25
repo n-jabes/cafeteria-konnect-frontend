@@ -29,6 +29,14 @@ const StatsCard = ({ title, text, style }) => (
   </div>
 );
 
+const StatsSpinner = () => {
+  return (
+    <div className="flex flex-col items-center justify-center h-[10vh] my-[2.5vh]">
+      <div className="animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-mainBlue"></div>
+    </div>
+  );
+};
+
 const initialChartData = [
   { date: '6/1/2024', value: 4500 },
   { date: '6/2/2024', value: 3000 },
@@ -90,9 +98,10 @@ function Statistics(props) {
   const [filteredData, setFilteredData] = useState(initialChartData);
   const [notifications, setNotifications] = useState(initialNotifications);
   const [visibleNotifications, setVisibleNotifications] = useState(4);
-  const [todayValue, setTodayValue] = useState(0);
-  const [weekValue, setWeekValue] = useState(0);
-  const [monthValue, setMonthValue] = useState(0);
+  const [todayValue, setTodayValue] = useState(<StatsSpinner />);
+  const [weekValue, setWeekValue] = useState(<StatsSpinner />);
+  const [monthValue, setMonthValue] = useState(<StatsSpinner />);
+  const [gettingStats, setGettingStats] = useState(false);
   const token = sessionStorage.getItem('token');
 
   const toggleCalendar = () => {
@@ -181,7 +190,7 @@ function Statistics(props) {
   // useEffect(() => {
   //   getAttendaceByPeriod();
   // }, []);
-  
+
   useEffect(() => {
     // Firebase Realtime Database listener for stats
     const statsRef = ref(database, 'attendanceStats');
@@ -200,7 +209,6 @@ function Statistics(props) {
         console.error('Error fetching attendance stats:', error);
       }
     );
-
     return () => unsubscribeStats();
   }, []);
 
@@ -211,7 +219,7 @@ function Statistics(props) {
         className={`flex flex-col lg:flex-row justify-between p-2 h-[75vh] `}
       >
         <div className={`w-full p-4 `}>
-          <div className="flex flex-col md:flex-row justify-between">
+          <div className="w-full flex flex-col md:flex-row justify-between items-end ">
             <StatsCard
               title="Today"
               text={todayValue}
@@ -228,6 +236,7 @@ function Statistics(props) {
               style="bg-[#808080] bg-opacity-2"
             />
           </div>
+
           <div className="border border-current rounded w-full lg:h-[80%] px-4 pt-2 md:block relative">
             <div className="flex justify-between items-center">
               <p>Cafeteria attendees</p>

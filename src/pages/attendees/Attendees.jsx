@@ -41,10 +41,13 @@ function Attendees() {
   const [roles, setRoles] = useState([]);
   const [allAttendees, setAllAttendees] = useState([]);
   const [activeAttendees, setActiveAttendees] = useState(0);
+  const [todayAttendance, setTodayAttendance] = useState(0);
   const [errorMessage, setErrorMessage] = useState('');
   const [creatingAttendee, setCreatingAttendee] = useState(false);
   const [allReceipts, setAllReceipts] = useState([]);
   const [allAttendeesErrorMessage, setAllAttendeesErrorMessage] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+
   const { role } = useAuth();
   const token = sessionStorage.getItem('token');
 
@@ -96,7 +99,7 @@ function Attendees() {
         'Failed to fetch roles',
         error.response?.data?.message || error.message
       );
-    } 
+    }
   };
 
   //fetching all estimated attendees
@@ -173,6 +176,7 @@ function Attendees() {
 
   //fetching all attendees
   const getAllAttendees = async () => {
+    setIsLoading(true);
     try {
       const response = await axios.get(`${API_BASE_URL}/users/all`, {
         headers: {
@@ -205,6 +209,8 @@ function Attendees() {
       setAllAttendeesErrorMessage(
         error.response?.data?.message || error.message
       );
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -455,6 +461,29 @@ function Attendees() {
     setErrorMessage('');
   };
 
+  //fetching attendance by data
+  const getAttendanceByDate = async () => {
+    const date = Date.now();
+    console.log('date: ', date);
+    const [year, month, day] = date.split('-');
+    const formattedDate = `${month}-${day}-${year}`;
+
+    try {
+      const attendanceList = await axios.get(
+        `${API_BASE_URL}/attendance/stats/specific-date/${formattedDate}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      setTodayAttendance(attendanceList.data.data.attendees.length);
+    } catch (error) {
+      console.log(error?.response?.data?.message || error.message);
+    }
+  };
+
   return (
     <div>
       {/* tabs component */}
@@ -682,9 +711,16 @@ function Attendees() {
               </div>
 
               <div className="flex items-center md:flex-row flex-row-reverse md:mt-0 mt-6">
-                <div className="font-bold text-3xl text-mainGray bg-green-200 h-max py-[2px] px-[8px] sm:py-2 sm:px-4 rounded-sm ml-6 mr-4">
-                  {totalEstimatedAttendees}
-                </div>
+                {isLoading ? (
+                  <div className="flex flex-col items-center justify-center h-full mx-4">
+                    <div className="animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-mainBlue"></div>
+                  </div>
+                ) : (
+                  <div className="font-bold text-3xl text-mainGray bg-green-200 h-max py-[2px] px-[8px] sm:py-2 sm:px-4 rounded-sm ml-6 mr-4">
+                    {totalEstimatedAttendees}
+                  </div>
+                )}
+
                 <p className="font-light text-xs text-[#078ECE] w-full md:w-[200px] flex mt-2 mb:mt-[0px] gap-2 items-center">
                   <CgDanger className="text-2xl md:text-6xl" />
                   This is the expected number of attendees the restaurant
@@ -693,46 +729,80 @@ function Attendees() {
               </div>
             </div>
           </div>
-          <div className="overflow-x-auto relative h-[70vh] border border-3 border-gray rounded-md pl-4 py-4">
-            <TableComponent
-              headers={headers}
-              data={activeAttendeesData}
-              title=""
-              showCheckBox={false}
-              showFilter={true}
-            />
-          </div>
+          {isLoading ? (
+            <div className="flex flex-col items-center justify-center h-[40vh] mt-[7.5vh]">
+              <div className="animate-spin rounded-full h-14 w-14 border-t-2 border-b-2 border-mainBlue"></div>
+              <p className="mt-4 text-sm font-light text-gray-400">
+                Hang tight, we're almost done ...
+              </p>
+            </div>
+          ) : (
+            <div className="overflow-x-auto relative h-[70vh] border border-3 border-gray rounded-md pl-4 py-4">
+              <TableComponent
+                headers={headers}
+                data={activeAttendeesData}
+                title=""
+                showCheckBox={false}
+                showFilter={true}
+              />
+            </div>
+          )}
         </div>
       )}
 
       {/* all attendees tab */}
       {tab === 'all attendees' && (
         <div>
-          <div className="overflow-x-auto h-[70vh] border border-3 border-gray rounded-md pl-4 py-4">
-            <TableComponent
-              headers={headers}
-              data={attendeesData}
-              title=""
-              showCheckBox={false}
-              showFilter={true}
-            />
-          </div>
+          {isLoading ? (
+            <div className="flex flex-col items-center justify-center h-[40vh] mt-[7.5vh]">
+              <div className="animate-spin rounded-full h-14 w-14 border-t-2 border-b-2 border-mainBlue"></div>
+              <p className="mt-4 text-sm font-light text-gray-400">
+                Hang tight, we're almost done ...
+              </p>
+            </div>
+          ) : (
+            <div className="overflow-x-auto h-[70vh] border border-3 border-gray rounded-md pl-4 py-4">
+              <TableComponent
+                headers={headers}
+                data={attendeesData}
+                title=""
+                showCheckBox={false}
+                showFilter={true}
+              />
+            </div>
+          )}
         </div>
       )}
 
       {/* Attendence */}
       {tab === 'attendence' && (
         <div className="w-full flex md:flex-row flex-col-reverse gap-6">
-          <div className="md:w-4/5 w-full overflow-x-auto h-[70vh] border border-3 border-gray rounded-md pl-4 py-4">
-            <TableComponent
-              headers={receiptHeaders}
-              data={receiptsToDisplay}
-              showCheckBox={false}
-              showFilter={true}
-            />
-          </div>
+          {isLoading ? (
+            <div className="md:w-4/5 w-full overflow-x-auto h-[40vh] flex flex-col items-center justify-center">
+              <div className="animate-spin rounded-full h-14 w-14 border-t-2 border-b-2 border-mainBlue"></div>
+              <p className="mt-4 text-sm font-light text-gray-400">
+                Hang tight, we're almost done ...
+              </p>
+            </div>
+          ) : (
+            <div className="md:w-4/5 w-full overflow-x-auto h-[70vh] border border-3 border-gray rounded-md pl-4 py-4">
+              <TableComponent
+                headers={receiptHeaders}
+                data={receiptsToDisplay}
+                showCheckBox={false}
+                showFilter={true}
+              />
+            </div>
+          )}
+
           <div className="md:w-1/5 w-full h-max border border-3 border-gray rounded-md py-4 flex flex-col items-center text-gray-600">
-            <h1 className="font-bold text-6xl">46</h1>
+            <h1 className="font-bold text-6xl">
+              {todayAttendance ? (
+                todayAttendance
+              ) : (
+                <div className="animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-mainBlue"></div>
+              )}
+            </h1>
             <p className="text-xs mt-4">people attended today</p>
             <p className="mt-6 text-sm flex flex-col text-center">
               <span className="text-xl text-mainGray font-bold mr-4">16</span>

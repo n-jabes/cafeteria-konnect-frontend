@@ -1,176 +1,71 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import TableComponent from '../../components/table/TableComponent';
 import {
   RestaurantButtons,
   ViewRestaurantInvoiceButton,
   ViewRestaurantReceiptButton,
 } from '../../components/buttons/Buttons';
+import { collection, onSnapshot } from 'firebase/firestore';
+import { firestoreDB } from '../../utils/firebase';
+import axios from 'axios';
+import { API_BASE_URL } from '../../utils/api';
+const token = sessionStorage.getItem('token');
 
 function Restaurants(props) {
-  const allAttendees = [
-    {
-      id: 1,
-      name: 'Nshuti Ruranga Jabes',
-      role: 'intern',
-      department: 'FMIS',
-    },
-    {
-      id: 2,
-      name: 'Jane Smith',
-      role: 'Consultant',
-      department: 'Budget',
-    },
-    {
-      id: 3,
-      name: 'Sam Johnson',
-      role: 'intern',
-      department: 'Human Resource',
-    },
-    {
-      id: 4,
-      name: 'Nshuti Ruranga Jabes',
-      role: 'intern',
-      department: 'FMIS',
-    },
-    {
-      id: 5,
-      name: 'Jane Smith',
-      role: 'Consultant',
-      department: 'Budget',
-    },
-    {
-      id: 6,
-      name: 'Sam Johnson',
-      role: 'intern',
-      department: 'Human Resource',
-    },
-    {
-      id: 7,
-      name: 'Nshuti Ruranga Jabes',
-      role: 'intern',
-      department: 'FMIS',
-    },
-    {
-      id: 8,
-      name: 'Jane Smith',
-      role: 'Consultant',
-      department: 'Budget',
-    },
-    {
-      id: 9,
-      name: 'Sam Johnson',
-      role: 'intern',
-      department: 'Human Resource',
-    },
-  ];
-
-  const allReceipts = [
-    {
-      id: 20240602,
-      date: '2024-06-18',
-      attendees: '30',
-    },
-    {
-      id: 20240602,
-      date: '2024-06-18',
-      attendees: '30',
-    },
-    {
-      id: 20240602,
-      date: '2024-06-18',
-      attendees: '30',
-    },
-
-    {
-      id: 20240603,
-      date: '2024-06-18',
-      attendees: '30',
-    },
-    {
-      id: 20240603,
-      date: '2024-06-18',
-      attendees: '30',
-    },
-    {
-      id: 20240603,
-      date: '2024-06-18',
-      attendees: '30',
-    },
-    {
-      id: 20240603,
-      date: '2024-06-18',
-      attendees: '30',
-    },
-    {
-      id: 20240603,
-      date: '2024-06-18',
-      attendees: '30',
-    },
-    {
-      id: 20240603,
-      date: '2024-06-18',
-      attendees: '30',
-    },
-    {
-      id: 20240603,
-      date: '2024-06-18',
-      attendees: '30',
-    },
-    {
-      id: 20240603,
-      date: '2024-06-18',
-      attendees: '30',
-    },
-    {
-      id: 20240603,
-      date: '2024-06-18',
-      attendees: '30',
-    },
-  ];
-
-  const allInvoices = [
-    {
-      id: 20240602,
-      month: 'January',
-      receipts: '22',
-    },
-    {
-      id: 20240602,
-      month: 'February',
-      receipts: '24',
-    },
-    {
-      id: 20240602,
-      month: 'March',
-      receipts: '25',
-    },
-    {
-      id: 20240602,
-      month: 'April',
-      receipts: '25',
-    },
-  ];
+  const [allInvoices, setAllInvoices] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const invoiceHeaders = ['Receipt Id', 'Date', 'Number of attendees'];
 
   const headers = ['Invoice Id', 'Month', 'Number of Receipts', 'Actions'];
 
-  const invoiceReceipts = allReceipts.map((receipt) => [
-    receipt.id,
-    receipt.date,
-    receipt.attendees,
-  ]);
-
   const invoicesToDisplay = allInvoices.map((invoice) => [
-    invoice.id,
+    invoice.invoiceId,
     invoice.month,
-    invoice.receipts,
+    invoice.totalReceipts,
     <ViewRestaurantInvoiceButton
       invoice={invoice}
       invoiceHeaders={invoiceHeaders}
-      invoiceData={invoiceReceipts}
     />,
   ]);
+
+  const getAllInvoices = async () => {
+    setIsLoading(true);
+    console.log('isLoading: ')
+    try {
+      const response = await axios.get(`${API_BASE_URL}/invoices/all`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      // console.log('Invoices: ', response)
+      setAllInvoices(response.data.data);
+    } catch (error) {
+      console.log('Error fetching invoices...', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getAllInvoices();
+
+    // Create a reference to the 'invoices' collection
+    const invoicesCollectionRef = collection(firestoreDB, 'invoices');
+
+    // Set up the real-time listener
+    const unsubscribe = onSnapshot(
+      invoicesCollectionRef,
+      (snapshot) => {
+        // When Firestore updates, trigger a refresh from the API
+        getAllInvoices();
+      },
+      (error) => {
+        console.error('Error listening to Firestore: ', error);
+      }
+    );
+
+    // Cleanup function
+    return () => unsubscribe();
+  }, []);
 
   return (
     <div>
@@ -194,13 +89,22 @@ function Restaurants(props) {
           </h2>
         </div>
       </div>
-      <div className="w-full border-2 border-gray-200 rounded-md h-[70vh]">
-        <TableComponent
-          headers={headers}
-          data={invoicesToDisplay}
-          showCheckBox={false}
-        />
-      </div>
+      {isLoading ? (
+        <div className="flex flex-col items-center justify-center h-[40vh] mt-[7.5vh]">
+          <div className="animate-spin rounded-full h-14 w-14 border-t-2 border-b-2 border-mainBlue"></div>
+          <p className="mt-4 text-sm font-light text-gray-400">
+            Hang tight, we're almost done ...
+          </p>
+        </div>
+      ) : (
+        <div className="w-full border-2 border-gray-200 rounded-md h-[70vh]">
+          <TableComponent
+            headers={headers}
+            data={invoicesToDisplay}
+            showCheckBox={false}
+          />
+        </div>
+      )}
     </div>
   );
 }

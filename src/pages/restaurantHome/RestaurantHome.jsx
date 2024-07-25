@@ -36,29 +36,13 @@ const EstimatedAttendeesCard = ({ text, style, time }) => (
   </div>
 );
 
-// const allAttendance = [
-//   {
-//     id: 20240602,
-//     name: 'Nshuti Ruranga Jabes',
-//     department: 'Consultant',
-//     date: '2024-06-04',
-//     email: 'nshuti@gmail.com',
-//   },
-//   {
-//     id: 20240602,
-//     name: 'Ineza Kajuga',
-//     department: 'intern',
-//     date: '2024-06-04',
-//     email: 'jabes@gmail.com',
-//   },
-//   {
-//     id: 20240602,
-//     name: 'Marie Honnette',
-//     department: 'intern',
-//     date: '2024-06-04',
-//     email: 'honnette@gmail.com',
-//   },
-// ];
+const StatsSpinner = () => {
+  return (
+    <div className="flex flex-col items-center justify-center h-[10vh] my-[2.5vh]">
+      <div className="animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-mainBlue"></div>
+    </div>
+  );
+};
 
 const validationSchema = Yup.object().shape({
   names: Yup.string()
@@ -86,9 +70,9 @@ function RestaurantHome(props) {
   const [gettingStats, setGettingStats] = useState(false);
   const [dateError, setDateError] = useState('');
   const { decryptData, secretKey } = useAuth();
-  const [todayValue, setTodayValue] = useState(0);
-  const [weekValue, setWeekValue] = useState(0);
-  const [monthValue, setMonthValue] = useState(0);
+  const [todayValue, setTodayValue] = useState(<StatsSpinner />);
+  const [weekValue, setWeekValue] = useState(<StatsSpinner />);
+  const [monthValue, setMonthValue] = useState(<StatsSpinner />);
   const token = sessionStorage.getItem('token');
 
   const getFormattedDate = (date) => {
@@ -210,7 +194,6 @@ function RestaurantHome(props) {
   }, []);
 
   useEffect(() => {
-    setGettingStats(true);
     // Firebase Realtime Database listener for stats
     const statsRef = ref(database, 'attendanceStats');
     const unsubscribeStats = onValue(
@@ -228,7 +211,6 @@ function RestaurantHome(props) {
         console.error('Error fetching attendance stats:', error);
       }
     );
-    setGettingStats(false);
 
     return () => unsubscribeStats();
   }, []);
@@ -398,41 +380,17 @@ function RestaurantHome(props) {
         <div className="w-full flex flex-col md:flex-row justify-between items-end ">
           <StatsCard
             title="Today"
-            text={
-              gettingStats ? (
-                <div className="flex flex-col items-center justify-center h-[10vh] my-[2.5vh]">
-                  <div className="animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-mainBlue"></div>
-                </div>
-              ) : (
-                todayValue
-              )
-            }
+            text={todayValue}
             style="bg-[#008000] bg-opacity-2"
           />
           <StatsCard
             title="This week"
-            text={
-              gettingStats ? (
-                <div className="flex flex-col items-center justify-center h-[10vh] my-[2.5vh]">
-                  <div className="animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-mainBlue"></div>
-                </div>
-              ) : (
-                weekValue
-              )
-            }
+            text={weekValue}
             style="bg-[#4069B0] bg-opacity-2"
           />
           <StatsCard
             title="This month"
-            text={
-              gettingStats ? (
-                <div className="flex flex-col items-center justify-center h-[10vh] my-[2.5vh]">
-                  <div className="animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-mainBlue"></div>
-                </div>
-              ) : (
-                monthValue
-              )
-            }
+            text={monthValue}
             style="bg-[#808080] bg-opacity-2"
           />
         </div>
