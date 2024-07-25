@@ -11,6 +11,7 @@ const Header = ({ toggleSidebar, headerTitle }) => {
   const [viewProfile, setViewProfile] = useState(false);
   const [viewEditForm, setViewEditForm] = useState(true);
   const [user, setUser] = useState(JSON.parse(sessionStorage.getItem('user')));
+  const [isLoading, setIsLoading] = useState(false);
   const token = sessionStorage.getItem('token');
 
   const handleHideProfile = () => {
@@ -20,12 +21,13 @@ const Header = ({ toggleSidebar, headerTitle }) => {
 
   const getUserProfile = async () => {
     // console.log('token: ',token)
+    setIsLoading(true);
     try {
       const response = await axios.get(`${API_BASE_URL}/users/profile`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      console.log('Fetched Succesfully: ', response);
+      // console.log('Fetched Succesfully: ', response);
       setUser(response.data.data);
       sessionStorage.setItem('User', JSON.stringify(response.data.data));
     } catch (error) {
@@ -34,6 +36,8 @@ const Header = ({ toggleSidebar, headerTitle }) => {
         'Failed to get user details: ',
         error?.response?.data?.message || error.message
       );
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -59,18 +63,24 @@ const Header = ({ toggleSidebar, headerTitle }) => {
         <div>
           <ViewNotification />
         </div>
-        <div className="flex gap-4" onClick={handleHideProfile}>
+        <div className="flex items-center gap-4" onClick={handleHideProfile}>
           <img
             src="/profile.jpg"
             alt="Profile"
             className="h-10 w-10 rounded-full"
           />
-          <div className="text-left cursor-pointer hidden md:block">
-            <p className="text-gray-600 text-sm sm:text-md font-medium">
-              {user?.names || ''}
-            </p>
-            <p className="text-xs text-gray-400">Human Resource Manager</p>
-          </div>
+          {isLoading ? (
+            <div className="flex flex-col items-center justify-center h-full">
+              <div className="animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-mainBlue"></div>
+            </div>
+          ) : (
+            <div className="text-left cursor-pointer hidden md:block">
+              <p className="text-gray-600 text-sm sm:text-md font-medium">
+                {user?.names || ''}
+              </p>
+              <p className="text-xs text-gray-400">Human Resource Manager</p>
+            </div>
+          )}
         </div>
       </div>
       {viewProfile && (

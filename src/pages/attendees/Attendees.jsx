@@ -266,7 +266,7 @@ function Attendees() {
   useEffect(() => {
     getAllReceipts();
 
-    // Create a reference to the 'users' collection
+    // Create a reference to the 'receipts' collection
     const usersCollectionRef = collection(firestoreDB, 'receipts');
 
     // Set up the real-time listener

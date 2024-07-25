@@ -81,6 +81,9 @@ function RestaurantHome(props) {
   const [estimatedAttendees, setEstimatedAttendees] = useState();
   const [dateOfEstimatedAttendees, setDateOfEstimatedAttendees] = useState();
   const [errorMessage, setErrorMessage] = useState('');
+  const [gettingEstimatedAttendees, setGettingEstimatedAttendees] =
+    useState(false);
+  const [gettingStats, setGettingStats] = useState(false);
   const [dateError, setDateError] = useState('');
   const { decryptData, secretKey } = useAuth();
   const [todayValue, setTodayValue] = useState(0);
@@ -169,7 +172,7 @@ function RestaurantHome(props) {
         nationalId: attendee.nationalId || '',
       }));
 
-      console.log('all users:', allUsers);
+      // console.log('all users:', allUsers);
       setAllAttendees(allUsers);
     } catch (error) {
       console.log(
@@ -207,6 +210,7 @@ function RestaurantHome(props) {
   }, []);
 
   useEffect(() => {
+    setGettingStats(true);
     // Firebase Realtime Database listener for stats
     const statsRef = ref(database, 'attendanceStats');
     const unsubscribeStats = onValue(
@@ -224,6 +228,7 @@ function RestaurantHome(props) {
         console.error('Error fetching attendance stats:', error);
       }
     );
+    setGettingStats(false);
 
     return () => unsubscribeStats();
   }, []);
@@ -344,6 +349,7 @@ function RestaurantHome(props) {
 
   //fetching all estimated attendees
   const getEstimatedAttendees = async () => {
+    setGettingEstimatedAttendees(true);
     try {
       const response = await axios.get(
         `${API_BASE_URL}/users/estimatedAttendees`,
@@ -366,6 +372,8 @@ function RestaurantHome(props) {
         'Failed to fetch roles',
         error.response?.data?.message || error.message
       );
+    } finally {
+      setGettingEstimatedAttendees(false);
     }
   };
 
@@ -390,17 +398,41 @@ function RestaurantHome(props) {
         <div className="w-full flex flex-col md:flex-row justify-between items-end ">
           <StatsCard
             title="Today"
-            text={todayValue}
+            text={
+              gettingStats ? (
+                <div className="flex flex-col items-center justify-center h-[10vh] my-[2.5vh]">
+                  <div className="animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-mainBlue"></div>
+                </div>
+              ) : (
+                todayValue
+              )
+            }
             style="bg-[#008000] bg-opacity-2"
           />
           <StatsCard
             title="This week"
-            text={weekValue}
+            text={
+              gettingStats ? (
+                <div className="flex flex-col items-center justify-center h-[10vh] my-[2.5vh]">
+                  <div className="animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-mainBlue"></div>
+                </div>
+              ) : (
+                weekValue
+              )
+            }
             style="bg-[#4069B0] bg-opacity-2"
           />
           <StatsCard
             title="This month"
-            text={monthValue}
+            text={
+              gettingStats ? (
+                <div className="flex flex-col items-center justify-center h-[10vh] my-[2.5vh]">
+                  <div className="animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-mainBlue"></div>
+                </div>
+              ) : (
+                monthValue
+              )
+            }
             style="bg-[#808080] bg-opacity-2"
           />
         </div>
@@ -564,11 +596,21 @@ function RestaurantHome(props) {
           <p className="text-gray-400 font-medium text-sm">
             Estimated attendees
           </p>
-          <EstimatedAttendeesCard
-            text={estimatedAttendees}
-            time={dateOfEstimatedAttendees}
-            style="bg-[#008000] bg-opacity-2 "
-          />
+
+          {gettingEstimatedAttendees ? (
+            <EstimatedAttendeesCard
+              text={estimatedAttendees}
+              time={dateOfEstimatedAttendees}
+              style="bg-[#008000] bg-opacity-2 "
+            />
+          ) : (
+            <div className="flex flex-col items-center justify-center h-[10vh] my-[2.5vh]">
+              <div className="animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-mainBlue"></div>
+              <p className="mt-4 text-sm font-light text-gray-400">
+                Getting count ...
+              </p>
+            </div>
+          )}
         </div>
       </div>
     </div>

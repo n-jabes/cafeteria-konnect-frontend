@@ -12,8 +12,10 @@ const token = sessionStorage.getItem('token');
 
 function RestaurantReceipts(props) {
   const [allReceipts, setAllReceipts] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const getAllReceipts = async () => {
+    setIsLoading(true);
     try {
       const response = await axios.get(`${API_BASE_URL}/receipts/all`, {
         headers: { Authorization: `Bearer ${token}` },
@@ -33,30 +35,32 @@ function RestaurantReceipts(props) {
       //   theme: 'light',
       //   transition: Bounce,
       // });
+    } finally {
+      setIsLoading(false);
     }
   };
 
-   // Fetch the roles and departments when the component mounts
-   useEffect(() => {
-      getAllReceipts();
+  // Fetch the roles and departments when the component mounts
+  useEffect(() => {
+    getAllReceipts();
 
-      // Create a reference to the 'users' collection
-      const usersCollectionRef = collection(firestoreDB, 'receipts');
+    // Create a reference to the 'receipts' collection
+    const usersCollectionRef = collection(firestoreDB, 'receipts');
 
-      // Set up the real-time listener
-      const unsubscribe = onSnapshot(
-        usersCollectionRef,
-        (snapshot) => {
-          // When Firestore updates, trigger a refresh from the API
-          getAllReceipts();
-        },
-        (error) => {
-          console.error('Error listening to Firestore: ', error);
-        }
-      );
+    // Set up the real-time listener
+    const unsubscribe = onSnapshot(
+      usersCollectionRef,
+      (snapshot) => {
+        // When Firestore updates, trigger a refresh from the API
+        getAllReceipts();
+      },
+      (error) => {
+        console.error('Error listening to Firestore: ', error);
+      }
+    );
 
-      // Cleanup function
-      return () => unsubscribe();
+    // Cleanup function
+    return () => unsubscribe();
   }, []);
 
   const receiptHeaders = ['Id', 'Names', 'Department', 'isScanned'];
@@ -77,7 +81,7 @@ function RestaurantReceipts(props) {
   return (
     <div>
       <div>
-        <div className="flex flex-col md:flex-row gap-3 md:gap-0 lg:w-[60vw] w-full md:justify-between md:items-center mb-3">
+        <div className="flex flex-col md:flex-row gap-3 md:gap-0 lg:w-[40vw] w-full md:w-[60vw] md:justify-between md:items-center mb-3">
           <div className="md:w-1/3 text-lg text-gray-500 font-semibold">
             <span className="text-sm mr-4">Select month: </span>
             <div className="border-[1px] px-4 py-2 w-max">
@@ -101,19 +105,25 @@ function RestaurantReceipts(props) {
             <span className="text-lg mr-4">Total receipts: </span>
             {receiptsToDisplay.length}
           </h2>
-          <h2 className="flex items-center text-mainGray text-3xl px-4 py-4 font-semibold border-[1px] border-gray-200 w-max">
-            <span className="text-sm mr-4">Total attendence: </span>
-            7890
-          </h2>
         </div>
       </div>
-      <div className="w-full border-2 border-gray-200 rounded-md h-[70vh]">
-        <TableComponent
-          headers={headers}
-          data={receiptsToDisplay}
-          showCheckBox={false}
-        />
-      </div>
+
+      {isLoading ? (
+        <div className="flex flex-col items-center justify-center h-[40vh] mt-[7.5vh]">
+          <div className="animate-spin rounded-full h-14 w-14 border-t-2 border-b-2 border-mainBlue"></div>
+          <p className="mt-4 text-sm font-light text-gray-400">
+            Hang tight, we're almost done ...
+          </p>
+        </div>
+      ) : (
+        <div className="w-full border-2 border-gray-200 rounded-md h-[70vh]">
+          <TableComponent
+            headers={headers}
+            data={receiptsToDisplay}
+            showCheckBox={false}
+          />
+        </div>
+      )}
     </div>
   );
 }

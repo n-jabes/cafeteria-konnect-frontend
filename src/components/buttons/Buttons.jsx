@@ -1244,6 +1244,7 @@ export function ViewRestaurantReceiptButton({
 }) {
   const [viewReceipt, setViewReceipt] = useState(false);
   const [receiptAttendees, setReceiptAttendees] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
   const receiptRef = useRef();
 
   const getReceiptsAttendees = async (receiptId) => {
@@ -1258,7 +1259,7 @@ export function ViewRestaurantReceiptButton({
     } catch (error) {
       console.log(
         'Failed to receipt attendees',
-        error.response.data.message || error.message
+        error?.response?.data?.message || error.message
       );
       // setErrorMessage(error.response.data.message);
       // toast.error('Failed to Fetch Stats' + error.response.data.message, {
@@ -1306,12 +1307,22 @@ export function ViewRestaurantReceiptButton({
                   {receiptAttendees.length}
                 </h2>
               </div>
-              <div className="w-full border-2 border-gray-200 rounded-md h-[60vh]">
-                <TableComponent
-                  headers={receiptHeaders}
-                  data={receiptAttendeesData}
-                />
-              </div>
+
+              {isLoading ? (
+                <div className="flex flex-col items-center justify-center h-[40vh] mt-[7.5vh]">
+                  <div className="animate-spin rounded-full h-14 w-14 border-t-2 border-b-2 border-mainBlue"></div>
+                  <p className="mt-4 text-sm font-light text-gray-400">
+                    Hang tight, we're almost done ...
+                  </p>
+                </div>
+              ) : (
+                <div className="w-full border-2 border-gray-200 rounded-md h-[60vh]">
+                  <TableComponent
+                    headers={receiptHeaders}
+                    data={receiptAttendeesData}
+                  />
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -1324,13 +1335,15 @@ export function ViewRestaurantReceiptButton({
   );
 }
 
-export function ViewRestaurantInvoiceButton({
-  invoiceData,
-  invoice,
-  invoiceHeaders,
-}) {
+export function ViewRestaurantInvoiceButton({ invoice, invoiceHeaders }) {
   const [viewInvoice, setViewInvoice] = useState(false);
   const invoiceRef = useRef();
+
+  const invoiceReceipts = invoice.receipts.map((receipt) => [
+    receipt.receiptId,
+    receipt.createdAt,
+    receipt.numberOfAttendees,
+  ]);
 
   return (
     <div>
@@ -1351,17 +1364,17 @@ export function ViewRestaurantInvoiceButton({
                 </h2>
                 <h2 className="flex items-center text-mainGray text-3xl px-4 py-4 font-semibold border-[1px] border-gray-200 w-max">
                   <span className="text-sm mr-4">Total receipts: </span>
-                  {invoiceData.length}
+                  {invoice.totalReceipts}
                 </h2>
                 <h2 className="flex items-center text-mainGray text-3xl px-4 py-4 font-semibold border-[1px] border-gray-200 w-max">
                   <span className="text-sm mr-4">Total attendence: </span>
-                  7890
+                  {invoice.totalAttendees}
                 </h2>
               </div>
               <div className="w-full border-2 border-gray-200 rounded-md h-[60vh]">
                 <TableComponent
                   headers={invoiceHeaders}
-                  data={invoiceData}
+                  data={invoiceReceipts}
                   showFilter={false}
                 />
               </div>
