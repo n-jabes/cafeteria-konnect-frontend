@@ -283,14 +283,14 @@ function Attendees() {
         headers: { Authorization: `Bearer ${token}` },
       });
       setAllReceipts(response.data.data);
-      console.log('receipts: ', response.data.data);
+      // console.log('receipts: ', response.data.data);
       //find today's receipt
       const todayReceipt = allReceipts.find(
         (receipt) => receipt.createdAt === formattedDate
       );
-      console.log('todayReceipt: ', todayReceipt);
+      // console.log('todayReceipt: ', todayReceipt);
       setTodayAttendance(todayReceipt.numberOfAttendees);
-      console.log('attendance today: ', todayReceipt.numberOfAttendees);
+      // console.log('attendance today: ', todayReceipt.numberOfAttendees);
 
       setManuallyAddedAttendeesCount(
         todayReceipt.attendees.filter((attendee) => attendee.isScanned === 'No')
@@ -514,7 +514,7 @@ function Attendees() {
                 >
                   x
                 </button>
-                <h1 className="w-[70%] sm:h-[2rem] h-max capitalize text-[#078ECE] font-semibold text-xl mb-4">
+                <h1 className="w-[70%] sm:h-[2rem] h-max capitalize text-mainBlue font-semibold text-xl mb-4">
                   Add New attendee
                 </h1>
 
@@ -626,7 +626,7 @@ function Attendees() {
                     )}
                     <button
                       type="submit"
-                      className={`w-full px-2 text-sm py-3 my-3 cursor-pointer text-white font-semibold bg-[#078ECE]`}
+                      className={`w-full px-2 text-sm py-3 my-3 cursor-pointer text-white font-semibold bg-mainBlue`}
                     >
                       submit
                     </button>
@@ -640,9 +640,9 @@ function Attendees() {
         {/* tabs */}
         <div className="h-full md:flex md:align-center md:justify-between w-full md:w-max">
           <button
-            className={`h-[%100] py-3 px-4 border-b-4 mr-8 hover:border-b-[#078ECE] hover:text-[#078ECE] ${
+            className={`h-[%100] py-3 px-4 border-b-4 mr-8 hover:border-b-mainBlue hover:text-mainBlue ${
               tab === 'active attendees'
-                ? 'border-b-mainBlue border-b-[#078ECE] text-[#078ECE]'
+                ? 'border-b-mainBlue border-b-mainBlue text-mainBlue'
                 : 'text-mainGray'
             }`}
             onClick={() => setTab('active attendees')}
@@ -651,9 +651,9 @@ function Attendees() {
           </button>
 
           <button
-            className={`h-[%100] py-3 px-4 border-b-[3px] mr-8 hover:border-b-[#078ECE] hover:text-[#078ECE] ${
+            className={`h-[%100] py-3 px-4 border-b-[3px] mr-8 hover:border-b-mainBlue hover:text-mainBlue ${
               tab === 'all attendees'
-                ? 'border-b-mainBlue border-b-[#078ECE] text-[#078ECE]'
+                ? 'border-b-mainBlue border-b-mainBlue text-mainBlue'
                 : 'text-mainGray'
             }`}
             onClick={() => setTab('all attendees')}
@@ -662,9 +662,9 @@ function Attendees() {
           </button>
 
           <button
-            className={`h-[%100] py-3 px-4 border-b-4 hover:border-b-[#078ECE] hover:text-[#078ECE] ${
+            className={`h-[%100] py-3 px-4 border-b-4 hover:border-b-mainBlue hover:text-mainBlue ${
               tab === 'attendence'
-                ? 'border-b-mainBlue border-b-[#078ECE] text-[#078ECE]'
+                ? 'border-b-mainBlue border-b-mainBlue text-mainBlue'
                 : 'text-mainGray'
             }`}
             onClick={() => setTab('attendence')}
@@ -738,7 +738,7 @@ function Attendees() {
                   </div>
                 )}
 
-                <p className="font-light text-xs text-[#078ECE] w-full md:w-[200px] flex mt-2 mb:mt-[0px] gap-2 items-center">
+                <p className="font-light text-xs text-mainBlue w-full md:w-[200px] flex mt-2 mb:mt-[0px] gap-2 items-center">
                   <CgDanger className="text-2xl md:text-6xl" />
                   This is the expected number of attendees the restaurant
                   manager will see!
@@ -813,23 +813,23 @@ function Attendees() {
           )}
 
           <div className="md:w-1/5 w-full h-max border border-3 border-gray rounded-md py-4 flex flex-col items-center text-gray-600">
-            {todayAttendance ? (
-              <h1 className="font-bold text-6xl">{todayAttendance}</h1>
-            ) : (
+            {todayAttendance === '' ? (
               <div className="flex items-center w-full justify-center h-max">
                 <div className="animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-mainBlue"></div>
               </div>
+            ) : (
+              <h1 className="font-bold text-6xl">{todayAttendance}</h1>
             )}
             <p className="text-xs mt-4">people attended today</p>
             <p className="mt-6 text-sm flex flex-col text-center">
-              {todayAttendance ? (
-                <span className="text-xl text-mainGray font-bold mr-4">
-                  {manuallyAddedAttendeesCount}
-                </span>
-              ) : (
+              {todayAttendance === '' ? (
                 <div className="flex items-center w-full justify-center h-max">
                   <div className="animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-mainBlue"></div>
                 </div>
+              ) : (
+                <span className="text-xl text-mainGray font-bold mr-4">
+                  {manuallyAddedAttendeesCount}
+                </span>
               )}
               were added manually
             </p>

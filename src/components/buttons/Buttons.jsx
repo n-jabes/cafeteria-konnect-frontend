@@ -304,7 +304,7 @@ export function UpdateAttendeeButton({ attendeeDetails }) {
                   </div>
                   <button
                     type="submit"
-                    className="btn border-2 border-[#078ECE] bg-[#078ECE] text-md font-semibold text-white py-2 px-4 rounded-md w-full hover:bg-white hover:text-mainBlue mt-3"
+                    className="btn border-2 border-mainBlue bg-mainBlue text-md font-semibold text-white py-2 px-4 rounded-md w-full hover:bg-white hover:text-mainBlue mt-3"
                   >
                     Update Guest
                   </button>
@@ -474,7 +474,7 @@ export function UpdateGuestButton({ guest }) {
 
               <button
                 type="submit"
-                className="btn border-2 border-[#078ECE] bg-[#078ECE] text-md font-semibold text-white py-2 px-4 rounded-md w-full hover:bg-white hover:text-mainBlue mt-3"
+                className="btn border-2 border-mainBlue bg-mainBlue text-md font-semibold text-white py-2 px-4 rounded-md w-full hover:bg-white hover:text-mainBlue mt-3"
               >
                 Update Guest
               </button>
@@ -852,7 +852,7 @@ export function AttendeeQrCodeButton({ attendeeDetails }) {
               )}
               <div className="my-2 flex w-[80%] md:w-[60%] flex-col md:flex-row items-start md:items-center md:justify-between gap-4 md:gap-8 mx-auto">
                 <button
-                  className="text-white flex items-center py-2 px-4 gap-2 border-[1px] border-[#078ECE] bg-[#078ECE] hover:bg-white hover:text-[#078ECE]"
+                  className="text-white flex items-center py-2 px-4 gap-2 border-[1px] border-mainBlue bg-mainBlue hover:bg-white hover:text-mainBlue"
                   onClick={handleDownload}
                 >
                   <FaDownload /> Download
@@ -873,14 +873,14 @@ export function AttendeeQrCodeButton({ attendeeDetails }) {
         </div>
       )}
       {/* <button
-        className="text-xs text-[#078ECE] mx-2 cursor-pointer py-1 px-[4px] hover:bg-gray-400  rounded-md border-[1px] border-green-200 hover:bg-[#078ECE] hover:text-white"
+        className="text-xs text-mainBlue mx-2 cursor-pointer py-1 px-[4px] hover:bg-gray-400  rounded-md border-[1px] border-green-200 hover:bg-mainBlue hover:text-white"
         onClick={() => setShowViewCode(true)}
       >
         Qr Code
       </button> */}
 
       <button
-        className="text-lg text-gray-500 mx-2 cursor-pointer  rounded-md hover:text-[#078ECE] "
+        className="text-lg text-gray-500 mx-2 cursor-pointer  rounded-md hover:text-mainBlue "
         onClick={() => setShowViewCode(true)}
       >
         <BsQrCode />
@@ -1599,7 +1599,7 @@ export function AddAttendeeManually({ token, emailToAddManually }) {
   return (
     <div>
       <button
-        className="btn btn-primary text-white text-sm float-right bg-[#078ECE] border-2 rounded-md border-[1px] py-2 px-3 hover:bg-white hover:text-[#078ECE] hover:border-[1px] hover:border-[#078ECE]"
+        className="btn btn-primary text-white text-sm float-right bg-mainBlue border-2 rounded-md border-[1px] py-2 px-3 hover:bg-white hover:text-mainBlue hover:border-[1px] hover:border-mainBlue"
         onClick={() => handleAddManually()}
       >
         + Add

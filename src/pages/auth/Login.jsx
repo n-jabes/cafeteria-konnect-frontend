@@ -107,7 +107,7 @@ const Login = () => {
                 className={`w-full px-2 text-sm py-3 m-3 font-semibold ${
                   isSubmitting
                     ? 'bg-gray-400 text-white cursor-not-allowed'
-                    : 'bg-[#078ECE] text-white'
+                    : 'bg-mainBlue text-white'
                 } transition-all duration-300 ease-in-out`}
                 disabled={isSubmitting}
               >
