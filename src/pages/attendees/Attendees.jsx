@@ -20,6 +20,7 @@ import { MdDangerous } from 'react-icons/md';
 import { ref, onValue } from 'firebase/database';
 import { database, firestoreDB } from '../../utils/firebase';
 import { collection, getFirestore, onSnapshot } from 'firebase/firestore';
+import { moment } from 'moment-timezone';
 
 const validationSchema = Yup.object().shape({
   names: Yup.string()
@@ -47,6 +48,8 @@ function Attendees() {
   const [allReceipts, setAllReceipts] = useState([]);
   const [allAttendeesErrorMessage, setAllAttendeesErrorMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [manuallyAddedAttendeesCount, setManuallyAddedAttendeesCount] =
+    useState(false);
 
   const { role } = useAuth();
   const token = sessionStorage.getItem('token');
@@ -226,7 +229,7 @@ function Attendees() {
           onLeaveStartDate: guest?.onLeaveStartDate || '',
         }));
 
-      console.log('guests: ', guests);
+      // console.log('guests: ', guests);
       sessionStorage.setItem('allGuests', JSON.stringify(guests));
     } catch (error) {
       console.log(
@@ -268,25 +271,34 @@ function Attendees() {
     ]);
 
   const getAllReceipts = async () => {
+    const date = new Date();
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based, so add 1
+    const day = String(date.getDate()).padStart(2, '0');
+
+    const formattedDate = `${month}-${day}-${year}`;
+
     try {
       const response = await axios.get(`${API_BASE_URL}/receipts/all`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setAllReceipts(response.data.data);
+      console.log('receipts: ', response.data.data);
+      //find today's receipt
+      const todayReceipt = allReceipts.find(
+        (receipt) => receipt.createdAt === formattedDate
+      );
+      console.log('todayReceipt: ', todayReceipt);
+      setTodayAttendance(todayReceipt.numberOfAttendees);
+      console.log('attendance today: ', todayReceipt.numberOfAttendees);
+
+      setManuallyAddedAttendeesCount(
+        todayReceipt.attendees.filter((attendee) => attendee.isScanned === 'No')
+          .length
+      );
+      console.log('manually added today: ', manuallyAddedAttendeesCount);
     } catch (error) {
       console.log('Failed to fetch stats', error.response || error.message);
-      // setErrorMessage(error.response.data.message);
-      // toast.error('Failed to Fetch Stats' + error.response.data.message, {
-      //   position: 'top-right',
-      //   autoClose: 1000,
-      //   hideProgressBar: false,
-      //   closeOnClick: true,
-      //   pauseOnHover: true,
-      //   draggable: true,
-      //   progress: undefined,
-      //   theme: 'light',
-      //   transition: Bounce,
-      // });
     }
   };
 
@@ -487,33 +499,6 @@ function Attendees() {
     handleCreateAttendee(values, { resetForm });
     setErrorMessage('');
   };
-
-  //fetching attendance by data
-  const getAttendanceByDate = async () => {
-    const date = new Date();
-    console.log('date: ', date);
-    const [year, month, day] = date.split('-');
-    const formattedDate = `${month}-${day}-${year}`;
-
-    try {
-      const attendanceList = await axios.get(
-        `${API_BASE_URL}/attendance/stats/specific-date/${formattedDate}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      setTodayAttendance(attendanceList.data.data.attendees.length);
-    } catch (error) {
-      console.log(error?.response?.data?.message || error.message);
-    }
-  };
-
-  useEffect(() => {
-    getAttendanceByDate();
-  }, []);
 
   return (
     <div>
@@ -828,16 +813,24 @@ function Attendees() {
           )}
 
           <div className="md:w-1/5 w-full h-max border border-3 border-gray rounded-md py-4 flex flex-col items-center text-gray-600">
-            <h1 className="font-bold text-6xl">
-              {todayAttendance ? (
-                todayAttendance
-              ) : (
+            {todayAttendance ? (
+              <h1 className="font-bold text-6xl">{todayAttendance}</h1>
+            ) : (
+              <div className="flex items-center w-full justify-center h-max">
                 <div className="animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-mainBlue"></div>
-              )}
-            </h1>
+              </div>
+            )}
             <p className="text-xs mt-4">people attended today</p>
             <p className="mt-6 text-sm flex flex-col text-center">
-              <span className="text-xl text-mainGray font-bold mr-4">16</span>
+              {todayAttendance ? (
+                <span className="text-xl text-mainGray font-bold mr-4">
+                  {manuallyAddedAttendeesCount}
+                </span>
+              ) : (
+                <div className="flex items-center w-full justify-center h-max">
+                  <div className="animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-mainBlue"></div>
+                </div>
+              )}
               were added manually
             </p>
           </div>

@@ -556,18 +556,18 @@ function RestaurantHome(props) {
           </p>
 
           {gettingEstimatedAttendees ? (
-            <EstimatedAttendeesCard
-              text={estimatedAttendees}
-              time={dateOfEstimatedAttendees}
-              style="bg-[#008000] bg-opacity-2 "
-            />
-          ) : (
             <div className="flex flex-col items-center justify-center h-[10vh] my-[2.5vh]">
               <div className="animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-mainBlue"></div>
               <p className="mt-4 text-sm font-light text-gray-400">
                 Getting count ...
               </p>
             </div>
+          ) : (
+            <EstimatedAttendeesCard
+              text={estimatedAttendees}
+              time={dateOfEstimatedAttendees}
+              style="bg-[#008000] bg-opacity-2 "
+            />
           )}
         </div>
       </div>
