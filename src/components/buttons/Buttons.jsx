@@ -49,9 +49,9 @@ export function UpdateAttendeeButton({ attendeeDetails }) {
   const [selectedStatus, setSelectedStatus] = useState(attendeeDetails.status);
   const token = sessionStorage.getItem('token');
   const statuses = [
-    { id: 1, name: 'active' },
-    { id: 2, name: 'on leave' },
-    { id: 3, name: 'on pause' },
+    { id: 1, value: 'active', name: 'Active' },
+    { id: 2, value: 'on leave', name: 'On Leave' },
+    { id: 3, value: 'on pause', name: 'On Pause' },
   ];
   //fetching all departments
   const getAllDepartments = async () => {
@@ -111,7 +111,7 @@ export function UpdateAttendeeButton({ attendeeDetails }) {
     <div>
       {showUpdateForm && (
         <div className="fixed top-0 left-0  bg-bgBlue h-screen w-screen overflow-y-auto z-40 overflow-x-auto flex items-center justify-center">
-          <div className="relative bg-white w-[90%] md:left-[7%] lg:w-[40%] md:w-[58%] sm:w-[75%] h-max px-[3.5%] py-[3%] rounded-md overflow-y-auto">
+          <div className="relative bg-white w-[90%] lg:w-[40%] md:w-[58%] sm:w-[75%] max-h-[90vh] h-max px-[3.5%] py-[3%] rounded-md overflow-y-auto">
             <button
               className="close border-2 border-mainRed rounded-md px-2 text-mainRed absolute right-4 top-4"
               onClick={() => setShowUpdateForm(false)}
@@ -234,7 +234,7 @@ export function UpdateAttendeeButton({ attendeeDetails }) {
                       className="block w-full px-3 py-2 mb-3 text-gray-500 text-xs border focus:border-gray-300 focus:outline-none rounded shadow"
                     >
                       {statuses.map((status) => (
-                        <option key={status.id} value={status.name}>
+                        <option key={status.id} value={status.value}>
                           {status.name}
                         </option>
                       ))}
@@ -288,6 +288,20 @@ export function UpdateAttendeeButton({ attendeeDetails }) {
                       className="w-full text-xs border focus:border-gray-300 focus:outline-none px-2 py-3 "
                     />
                   </div>
+                  <div className="flex flex-col gap-2">
+                    <label
+                      htmlFor="password"
+                      className="block text-sm font-medium text-gray-700"
+                    >
+                      Password
+                    </label>
+                    <Field
+                      name="password"
+                      type="password"
+                      placeholder="********"
+                      className="w-full text-xs border focus:border-gray-300 focus:outline-none px-2 py-3 "
+                    />
+                  </div>
                   <button
                     type="submit"
                     className="btn border-2 border-[#078ECE] bg-[#078ECE] text-md font-semibold text-white py-2 px-4 rounded-md w-full hover:bg-white hover:text-mainBlue mt-3"
@@ -315,18 +329,18 @@ export function UpdateGuestButton({ guest }) {
   const [selectedStatus, setSelectedStatus] = useState(guest.status);
 
   const statuses = [
-    { id: 1, name: 'Approved' },
-    { id: 2, name: 'On Leave' },
-    { id: 3, name: 'New' },
-    { id: 4, name: 'Declined' },
-    { id: 5, name: 'Pending' },
+    { id: 1, name: 'Approved', value: 'approved' },
+    { id: 2, name: 'On Leave', value: 'on leave' },
+    { id: 3, name: 'New', value: 'new' },
+    { id: 4, name: 'Declined', value: 'decline' },
+    { id: 5, name: 'Pending', value: 'pending' },
   ];
 
   return (
     <div>
       {showUpdateForm && (
         <div className="fixed top-0 left-0 bg-bgBlue z-[40] h-screen w-screen overflow-y-auto overflow-x-auto flex items-center justify-center">
-          <div className="relative bg-white w-[90%] lg:w-[45%] h-max px-[3.5%] py-[4%] rounded-md">
+          <div className="relative bg-white w-[90%] lg:w-[45%] max-h-[90vh] overflow-y-auto h-max px-[3.5%] py-[4%] rounded-md">
             <button
               className="close border-2 border-mainRed rounded-md px-2 text-mainRed absolute right-4 top-4"
               onClick={() => setShowUpdateForm(false)}
@@ -414,13 +428,13 @@ export function UpdateGuestButton({ guest }) {
                   className="block w-full px-3 py-2 mb-3 text-gray-500 text-xs border focus:border-gray-300 focus:outline-none rounded shadow"
                 >
                   {statuses.map((status) => (
-                    <option key={status.id} value={status.name}>
+                    <option key={status.id} value={status.value}>
                       {status.name}
                     </option>
                   ))}
                 </select>
               </div>
-              {selectedStatus === 'On Leave' ? (
+              {selectedStatus === 'on leave' ? (
                 <div className="flex md:flex-row flex-col gap-3">
                   <div className="flex flex-col gap-2 md:w-1/2">
                     <label
@@ -454,7 +468,9 @@ export function UpdateGuestButton({ guest }) {
                     ></input>
                   </div>
                 </div>
-              ) : (<></>)}
+              ) : (
+                <></>
+              )}
 
               <button
                 type="submit"

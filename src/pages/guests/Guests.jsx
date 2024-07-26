@@ -18,7 +18,9 @@ function Guests(props) {
   const [uploadFormat, setUploadFormat] = useState('form');
   const [sendToCBM, setSendToCBM] = useState('no');
   const [csvData, setCsvData] = useState([]);
-  const [allGuests, setallGuests] = useState(JSON.parse(sessionStorage.getItem('allGuests')) || []);
+  const [allGuests, setallGuests] = useState(
+    JSON.parse(sessionStorage.getItem('allGuests')) || []
+  );
   const token = sessionStorage.getItem('token');
   const roles = JSON.parse(sessionStorage.getItem('roles'));
   const departments = JSON.parse(sessionStorage.getItem('departments'));
@@ -37,7 +39,7 @@ function Guests(props) {
   // filter the all guests array to find the newly created guests and send them to the CBM
   const sendToCBMHeaders = ['Id', 'Name', 'Purpose'];
   const sendToCBMData = allGuests
-    .filter((guest) => guest.status === 'New')
+    .filter((guest) => guest.status === 'new')
     .map((guest) => [guest.id, guest.name, guest.purpose]);
 
   const handleSubmitCreateGuest = async (event) => {
@@ -200,38 +202,6 @@ function Guests(props) {
             >
               x
             </button>
-            {/* <h1 className="text-mainBlue font-semibold text-xl">
-              Send All Guests To CBM
-            </h1>
-            <p className="text-sm text-mainGray">
-              Role: <span className="text-mainBlue">Guest</span>
-            </p>
-            <div className="h-[75vh] md:h-[60vh] mt-2 flex flex-col-reverse md:flex-row md:items-center md:justify-center">
-              <div className="overflow-x-auto w-full md:w-8/12  md:h-[100%] border border-3 border-gray my-2 rounded-md pt-2 pl-2">
-                <TableComponent
-                  title=""
-                  headers={sendToCBMHeaders}
-                  data={sendToCBMData}
-                  showCheckBox={false}
-                />
-              </div>
-              <div className="w-full md:w-4/12 md:h-[60vh] md:pl-4 ">
-                <div className="w-full flex md:flex-col items-center gap-2 justify-between text-center md:h-full ">
-                  <div className="border border-3 w-full border-gray p-4 rounded-md text-sm">
-                    <p>TOTAL NUMBER OF ALL NEW GUESTS</p>
-                    <p className="mt-4 flex flex-col items-center">
-                      <span className="font-bold text-4xl md:text-8xl text-gray-400 flex flex-col md:flex-row">
-                        16
-                      </span>
-                      Guests
-                    </p>
-                  </div>
-                  <button className="my-4 w-full h-full md:h-max text-white bg-mainGreen border-2 border-mainGreen rounded-md py-2 hover:bg-white hover:text-mainGreen">
-                    Send All Guest To CBM
-                  </button>
-                </div>
-              </div>
-            </div> */}
 
             <EmailTemplate headers={sendToCBMHeaders} guests={sendToCBMData} />
           </div>
