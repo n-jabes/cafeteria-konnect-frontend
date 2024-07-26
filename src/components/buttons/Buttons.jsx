@@ -316,7 +316,7 @@ export function UpdateGuestButton({ guest }) {
 
   const statuses = [
     { id: 1, name: 'Approved' },
-    { id: 2, name: 'On leave' },
+    { id: 2, name: 'On Leave' },
     { id: 3, name: 'New' },
     { id: 4, name: 'Declined' },
     { id: 5, name: 'Pending' },
@@ -359,6 +359,20 @@ export function UpdateGuestButton({ guest }) {
                   placeholder="Enter guest purpose: eg. consultant"
                   name="purpose"
                   defaultValue={guest.purpose}
+                  className="outline-none text-sm py-2 px-4 border-[1px] border-gray rounded-md"
+                  required
+                />
+              </div>
+              <div className="flex flex-col mb-2">
+                <label htmlFor="email" className="text-xs text-gray">
+                  Email
+                </label>
+                <input
+                  type="text"
+                  id="email"
+                  placeholder="guest@gmail.com"
+                  name="email"
+                  defaultValue={guest.email}
                   className="outline-none text-sm py-2 px-4 border-[1px] border-gray rounded-md"
                   required
                 />
@@ -406,7 +420,7 @@ export function UpdateGuestButton({ guest }) {
                   ))}
                 </select>
               </div>
-              {selectedStatus !== 'Approved' && (
+              {selectedStatus === 'On Leave' ? (
                 <div className="flex md:flex-row flex-col gap-3">
                   <div className="flex flex-col gap-2 md:w-1/2">
                     <label
@@ -419,6 +433,7 @@ export function UpdateGuestButton({ guest }) {
                       type="date"
                       id="onLeaveStartDate"
                       name="onLeaveStartDate"
+                      defaultValue={guest.onLeaveStartDate}
                       className="block w-full cursor-pointer px-3 py-2 mb-3 text-gray-500 text-xs border  focus:border-gray-300 focus:outline-none rounded shadow-sm overflow-x-none"
                     ></input>
                   </div>
@@ -434,11 +449,12 @@ export function UpdateGuestButton({ guest }) {
                       type="date"
                       id="onLeaveEndDate"
                       name="onLeaveEndDate"
+                      defaultValue={guest.onLeaveEndDate}
                       className="block w-full cursor-pointer px-3 py-2 mb-3 text-gray-500 text-xs border rounded shadow-sm focus:outline-none"
                     ></input>
                   </div>
                 </div>
-              )}
+              ) : (<></>)}
 
               <button
                 type="submit"

@@ -18,140 +18,12 @@ function Guests(props) {
   const [uploadFormat, setUploadFormat] = useState('form');
   const [sendToCBM, setSendToCBM] = useState('no');
   const [csvData, setCsvData] = useState([]);
+  const [allGuests, setallGuests] = useState(JSON.parse(sessionStorage.getItem('allGuests')) || []);
   const token = sessionStorage.getItem('token');
   const roles = JSON.parse(sessionStorage.getItem('roles'));
   const departments = JSON.parse(sessionStorage.getItem('departments'));
 
-  const allGuests = [
-    {
-      id: 1,
-      name: 'John Doe',
-      purpose: 'intern',
-      status: 'Pending',
-      startingDate: '2024-01-01',
-      endDate: '2024-01-10',
-    },
-    {
-      id: 2,
-      name: 'Jane Smith',
-      purpose: 'Consultant',
-      status: 'Approved',
-      startingDate: '2024-01-01',
-      endDate: '2024-01-10',
-    },
-    {
-      id: 3,
-      name: 'Sam Johnson',
-      purpose: 'intern',
-      status: 'New',
-      startingDate: '2024-01-01',
-      endDate: '2024-01-10',
-    },
-    {
-      id: 4,
-      name: 'Imanzi Kenny',
-      purpose: 'Consultant',
-      status: 'New',
-      startingDate: '2024-01-01',
-      endDate: '2024-01-10',
-    },
-    {
-      id: 1,
-      name: 'John Doe',
-      purpose: 'intern',
-      status: 'Pending',
-      startingDate: '2024-01-01',
-      endDate: '2024-01-10',
-    },
-    {
-      id: 2,
-      name: 'Jane Smith',
-      purpose: 'Consultant',
-      status: 'Approved',
-      startingDate: '2024-01-01',
-      endDate: '2024-01-10',
-    },
-    {
-      id: 3,
-      name: 'Sam Johnson',
-      purpose: 'intern',
-      status: 'Declined',
-      startingDate: '2024-01-01',
-      endDate: '2024-01-10',
-    },
-    {
-      id: 4,
-      name: 'Bizy Henriette',
-      purpose: 'Consultant',
-      status: 'New',
-      startingDate: '2024-01-01',
-      endDate: '2024-01-10',
-    },
-    {
-      id: 1,
-      name: 'John Doe',
-      purpose: 'intern',
-      status: 'Pending',
-      startingDate: '2024-01-01',
-      endDate: '2024-01-10',
-    },
-    {
-      id: 2,
-      name: 'Jane Smith',
-      purpose: 'Consultant',
-      status: 'Approved',
-      startingDate: '2024-01-01',
-      endDate: '2024-01-10',
-    },
-    {
-      id: 3,
-      name: 'Sam Johnson',
-      purpose: 'intern',
-      status: 'Declined',
-      startingDate: '2024-01-01',
-      endDate: '2024-01-10',
-    },
-    {
-      id: 4,
-      name: 'Nshuti Ruranga Jabes',
-      purpose: 'Consultant',
-      status: 'New',
-      startingDate: '2024-01-01',
-      endDate: '2024-01-10',
-    },
-    {
-      id: 1,
-      name: 'John Doe',
-      purpose: 'intern',
-      status: 'Pending',
-      startingDate: '2024-01-01',
-      endDate: '2024-01-10',
-    },
-    {
-      id: 2,
-      name: 'Jane Smith',
-      purpose: 'Consultant',
-      status: 'Approved',
-      startingDate: '2024-01-01',
-      endDate: '2024-01-10',
-    },
-    {
-      id: 3,
-      name: 'Sam Johnson',
-      purpose: 'intern',
-      status: 'Declined',
-      startingDate: '2024-01-01',
-      endDate: '2024-01-10',
-    },
-    {
-      id: 4,
-      name: 'Nshuti Ruranga Jabes',
-      purpose: 'Consultant',
-      status: 'New',
-      startingDate: '2024-01-01',
-      endDate: '2024-01-10',
-    },
-  ];
+  // console.log('all guests: ', allGuests)
 
   const guestHeaders = ['Id', 'Name', 'Purpose', 'Status', 'Actions'];
   const guestData = allGuests.map((guest) => [
@@ -171,6 +43,7 @@ function Guests(props) {
   const handleSubmitCreateGuest = async (event) => {
     event.preventDefault(); // Prevent default form submission
 
+    // console.log('creating a guest')
     try {
       // Gather form data
       const formData = new FormData(event.target);
@@ -193,7 +66,7 @@ function Guests(props) {
         attendanceStatus,
       };
 
-      console.log('guestData: ', guestData);
+      // console.log('guestData: ', guestData);
 
       // Make API call
       const response = await axios.post(

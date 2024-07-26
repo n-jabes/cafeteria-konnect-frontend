@@ -197,10 +197,37 @@ function Attendees() {
         departmentName: attendee.department?.department || '',
         status: attendee.attendanceStatus || '',
         nationalId: attendee.nationalId || '',
+        onLeaveEndDate: attendee?.onLeaveEndDate || '',
+        onLeaveStartDate: attendee?.onLeaveStartDate || '',
       }));
 
       // console.log('Processed users:', allUsers);
       setAllAttendees(allUsers);
+
+      //filter users with the role of guest and store them in the sessionStorage
+      //in order to display them on the guests page
+      const guests = response.data.data
+        .filter((attendee) => attendee.role?.role === 'GUEST')
+        .map((guest, index) => ({
+          id: index + 1,
+          userId: guest.id || '',
+          name: guest.names || '',
+          email: guest.email || '',
+          roleId: guest.role?.id || '',
+          roleName: guest.role?.role || '',
+          departmentId: guest.department?.id || '',
+          departmentName: guest.department?.department || '',
+          status: guest.attendanceStatus || '',
+          nationalId: guest.nationalId || '',
+          purpose: guest?.purpose || '',
+          startingDate: guest?.startingDate || '',
+          endDate: guest?.endDate || '',
+          onLeaveEndDate: guest?.onLeaveEndDate || '',
+          onLeaveStartDate: guest?.onLeaveStartDate || '',
+        }));
+
+      console.log('guests: ', guests);
+      sessionStorage.setItem('allGuests', JSON.stringify(guests));
     } catch (error) {
       console.log(
         'Failed to fetch all people',
@@ -463,7 +490,7 @@ function Attendees() {
 
   //fetching attendance by data
   const getAttendanceByDate = async () => {
-    const date = Date.now();
+    const date = new Date();
     console.log('date: ', date);
     const [year, month, day] = date.split('-');
     const formattedDate = `${month}-${day}-${year}`;
@@ -483,6 +510,10 @@ function Attendees() {
       console.log(error?.response?.data?.message || error.message);
     }
   };
+
+  useEffect(() => {
+    getAttendanceByDate();
+  }, []);
 
   return (
     <div>
@@ -621,18 +652,6 @@ function Attendees() {
           </div>
         )}
 
-        {allAttendeesErrorMessage && (
-          <div className="error text-red-500 mt-2 relative border-[1px] min-h-[10vh] h-max p-2 flex flex-col md:flex-row gap-2 items-start md:items-center">
-            <button
-              className="close border-[1px] border-mainRed rounded-md px-2 text-mainRed absolute right-2 top-2 text-sm"
-              onClick={() => setAllAttendeesErrorMessage()}
-            >
-              x
-            </button>
-            <MdDangerous className="text-6xl" />
-            <p className="w-[80%] text-sm">{allAttendeesErrorMessage}</p>
-          </div>
-        )}
         {/* tabs */}
         <div className="h-full md:flex md:align-center md:justify-between w-full md:w-max">
           <button
@@ -667,6 +686,19 @@ function Attendees() {
           >
             Attendence
           </button>
+
+          {allAttendeesErrorMessage && (
+            <div className="error text-red-500  relative bg-white border-[1px] w-[10vw] h-max p-2 flex flex-col md:flex-row gap-2 items-start md:items-center">
+              <button
+                className="close border-[1px] border-mainRed rounded-md px-2 text-mainRed absolute right-2 top-2 text-sm"
+                onClick={() => setAllAttendeesErrorMessage()}
+              >
+                x
+              </button>
+              <MdDangerous className="text-4xl" />
+              <p className="w-[70%] text-sm">{allAttendeesErrorMessage}</p>
+            </div>
+          )}
         </div>
 
         <div
