@@ -2,6 +2,9 @@ import React, { useEffect, useRef, useState } from 'react';
 import TableComponent from '../table/TableComponent';
 import attendeesDb from '../../db/attendee';
 import { FaRegEye } from 'react-icons/fa6';
+import shortid from 'shortid'; 
+// import cloudinary from 'cloudinary';
+// import { Cloudinary } from "@cloudinary/url-gen";
 import {
   FaBell,
   FaDownload,
@@ -46,11 +49,12 @@ export function UpdateAttendeeButton({ attendeeDetails }) {
   const [showUpdateForm, setShowUpdateForm] = useState(false);
   const [departments, setDepartments] = useState([]);
   const [roles, setRoles] = useState([]);
+  const [selectedStatus, setSelectedStatus] = useState(attendeeDetails.status);
   const token = sessionStorage.getItem('token');
   const statuses = [
-    { id: 1, name: 'active' },
-    { id: 2, name: 'on leave' },
-    { id: 3, name: 'on pause' },
+    { id: 1, value: 'active', name: 'Active' },
+    { id: 2, value: 'on leave', name: 'On Leave' },
+    { id: 3, value: 'on pause', name: 'On Pause' },
   ];
   //fetching all departments
   const getAllDepartments = async () => {
@@ -104,13 +108,13 @@ export function UpdateAttendeeButton({ attendeeDetails }) {
   useEffect(() => {
     getAllRoles();
     getAllDepartments();
-  }, []);
+  }, [showUpdateForm]);
 
   return (
     <div>
       {showUpdateForm && (
         <div className="fixed top-0 left-0  bg-bgBlue h-screen w-screen overflow-y-auto z-40 overflow-x-auto flex items-center justify-center">
-          <div className="relative bg-white w-[90%] md:left-[7%] lg:w-[40%] md:w-[58%] sm:w-[75%] h-max px-[3.5%] py-[3%] rounded-md overflow-y-auto">
+          <div className="relative bg-white w-[90%] lg:w-[40%] md:w-[58%] sm:w-[75%] max-h-[90vh] h-max px-[3.5%] py-[3%] rounded-md overflow-y-auto">
             <button
               className="close border-2 border-mainRed rounded-md px-2 text-mainRed absolute right-4 top-4"
               onClick={() => setShowUpdateForm(false)}
@@ -130,7 +134,9 @@ export function UpdateAttendeeButton({ attendeeDetails }) {
                   role: attendeeDetails.role,
                   NID: attendeeDetails.nationalId,
                   department: attendeeDetails.department,
-                  status: attendeeDetails.attendanceStatus,
+                  status: attendeeDetails.status,
+                  onLeaveStartDate: attendeeDetails.onLeaveStartDate || '',
+                  onLeaveEndDate: attendeeDetails.onLeaveEndDate || '',
                 }}
                 onSubmit={(values) => {
                   // Handle form submission logic here (update attendee data)
@@ -227,46 +233,50 @@ export function UpdateAttendeeButton({ attendeeDetails }) {
                       as="select"
                       id="department"
                       name="department"
+                      onChange={(e) => setSelectedStatus(e.target.value)}
                       className="block w-full px-3 py-2 mb-3 text-gray-500 text-xs border focus:border-gray-300 focus:outline-none rounded shadow"
                     >
                       {statuses.map((status) => (
-                        <option key={status.id} value={status.name}>
+                        <option key={status.id} value={status.value}>
                           {status.name}
                         </option>
                       ))}
                     </Field>
                   </div>
-                  <div className="flex md:flex-row flex-col gap-3">
-                    <div className="flex flex-col gap-2 md:w-1/2">
-                      <label
-                        htmlFor="startDate"
-                        className="block text-sm font-medium text-gray-700"
-                      >
-                        Start Date
-                      </label>
-                      <Field
-                        type="date"
-                        id="startDate"
-                        name="startDate"
-                        className="block w-full cursor-pointer px-3 py-2 mb-3 text-gray-500 text-xs border  focus:border-gray-300 focus:outline-none rounded shadow-sm overflow-x-none"
-                      ></Field>
-                    </div>
+                  {console.log('selectedStatus: ', attendeeDetails)}
+                  {selectedStatus !== 'active' && (
+                    <div className="flex md:flex-row flex-col gap-3">
+                      <div className="flex flex-col gap-2 md:w-1/2">
+                        <label
+                          htmlFor="startDate"
+                          className="block text-sm font-medium text-gray-700"
+                        >
+                          On Leave Start Date
+                        </label>
+                        <Field
+                          type="date"
+                          id="onLeaveStartDate"
+                          name="onLeaveStartDate"
+                          className="block w-full cursor-pointer px-3 py-2 mb-3 text-gray-500 text-xs border  focus:border-gray-300 focus:outline-none rounded shadow-sm overflow-x-none"
+                        ></Field>
+                      </div>
 
-                    <div className="flex flex-col gap-2 md:w-1/2 w-full">
-                      <label
-                        htmlFor="endDate"
-                        className="block text-sm font-medium text-gray-700"
-                      >
-                        End Date
-                      </label>
-                      <Field
-                        type="date"
-                        id="endDate"
-                        name="endDate"
-                        className="block w-full cursor-pointer px-3 py-2 mb-3 text-gray-500 text-xs border rounded shadow-sm focus:outline-none"
-                      ></Field>
+                      <div className="flex flex-col gap-2 md:w-1/2 w-full">
+                        <label
+                          htmlFor="endDate"
+                          className="block text-sm font-medium text-gray-700"
+                        >
+                          On Leave End Date
+                        </label>
+                        <Field
+                          type="date"
+                          id="onLeaveEndDate"
+                          name="onLeaveEndDate"
+                          className="block w-full cursor-pointer px-3 py-2 mb-3 text-gray-500 text-xs border rounded shadow-sm focus:outline-none"
+                        ></Field>
+                      </div>
                     </div>
-                  </div>
+                  )}
                   <div className="flex flex-col gap-2">
                     <label
                       htmlFor="role"
@@ -281,9 +291,23 @@ export function UpdateAttendeeButton({ attendeeDetails }) {
                       className="w-full text-xs border focus:border-gray-300 focus:outline-none px-2 py-3 "
                     />
                   </div>
+                  <div className="flex flex-col gap-2">
+                    <label
+                      htmlFor="password"
+                      className="block text-sm font-medium text-gray-700"
+                    >
+                      Password
+                    </label>
+                    <Field
+                      name="password"
+                      type="password"
+                      placeholder="********"
+                      className="w-full text-xs border focus:border-gray-300 focus:outline-none px-2 py-3 "
+                    />
+                  </div>
                   <button
                     type="submit"
-                    className="btn border-2 border-[#078ECE] bg-[#078ECE] text-md font-semibold text-white py-2 px-4 rounded-md w-full hover:bg-white hover:text-mainBlue mt-3"
+                    className="btn border-2 border-mainBlue bg-mainBlue text-md font-semibold text-white py-2 px-4 rounded-md w-full hover:bg-white hover:text-mainBlue mt-3"
                   >
                     Update Guest
                   </button>
@@ -305,12 +329,21 @@ export function UpdateAttendeeButton({ attendeeDetails }) {
 
 export function UpdateGuestButton({ guest }) {
   const [showUpdateForm, setShowUpdateForm] = useState(false);
+  const [selectedStatus, setSelectedStatus] = useState(guest.status);
+
+  const statuses = [
+    { id: 1, name: 'Approved', value: 'approved' },
+    { id: 2, name: 'On Leave', value: 'on leave' },
+    { id: 3, name: 'New', value: 'new' },
+    { id: 4, name: 'Declined', value: 'decline' },
+    { id: 5, name: 'Pending', value: 'pending' },
+  ];
 
   return (
     <div>
       {showUpdateForm && (
         <div className="fixed top-0 left-0 bg-bgBlue z-[40] h-screen w-screen overflow-y-auto overflow-x-auto flex items-center justify-center">
-          <div className="relative bg-white w-[90%] lg:w-[45%] h-max px-[3.5%] py-[4%] rounded-md">
+          <div className="relative bg-white w-[90%] lg:w-[45%] max-h-[90vh] overflow-y-auto h-max px-[3.5%] py-[4%] rounded-md">
             <button
               className="close border-2 border-mainRed rounded-md px-2 text-mainRed absolute right-4 top-4"
               onClick={() => setShowUpdateForm(false)}
@@ -347,6 +380,20 @@ export function UpdateGuestButton({ guest }) {
                   required
                 />
               </div>
+              <div className="flex flex-col mb-2">
+                <label htmlFor="email" className="text-xs text-gray">
+                  Email
+                </label>
+                <input
+                  type="text"
+                  id="email"
+                  placeholder="guest@gmail.com"
+                  name="email"
+                  defaultValue={guest.email}
+                  className="outline-none text-sm py-2 px-4 border-[1px] border-gray rounded-md"
+                  required
+                />
+              </div>
               <div className="flex items-center justify-between">
                 <div className="w-[48%] flex flex-col mb-2">
                   <label htmlFor="startDate" className="text-xs text-gray">
@@ -355,7 +402,7 @@ export function UpdateGuestButton({ guest }) {
                   <input
                     type="date"
                     name="startDate"
-                    defaultValue={guest.startDate}
+                    defaultValue={guest.startingDate}
                     className="outline-none text-sm py-2 px-4 border-[1px] border-gray rounded-md"
                     required
                   />
@@ -373,9 +420,64 @@ export function UpdateGuestButton({ guest }) {
                   />
                 </div>
               </div>
+              <div className="flex flex-col w-full ">
+                <label htmlFor="status" className="text-xs text-gray">
+                  Status
+                </label>
+                <select
+                  id="status"
+                  name="status"
+                  onChange={(e) => setSelectedStatus(e.target.value)}
+                  className="block w-full px-3 py-2 mb-3 text-gray-500 text-xs border focus:border-gray-300 focus:outline-none rounded shadow"
+                >
+                  {statuses.map((status) => (
+                    <option key={status.id} value={status.value}>
+                      {status.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              {selectedStatus === 'on leave' ? (
+                <div className="flex md:flex-row flex-col gap-3">
+                  <div className="flex flex-col gap-2 md:w-1/2">
+                    <label
+                      htmlFor="onLeaveStartDate"
+                      className="block text-xs font-medium text-gray"
+                    >
+                      On Leave Start Date
+                    </label>
+                    <input
+                      type="date"
+                      id="onLeaveStartDate"
+                      name="onLeaveStartDate"
+                      defaultValue={guest.onLeaveStartDate}
+                      className="block w-full cursor-pointer px-3 py-2 mb-3 text-gray-500 text-xs border  focus:border-gray-300 focus:outline-none rounded shadow-sm overflow-x-none"
+                    ></input>
+                  </div>
+
+                  <div className="flex flex-col gap-2 md:w-1/2 w-full">
+                    <label
+                      htmlFor="onLeaveEndDate"
+                      className="block text-xs font-medium text-gray"
+                    >
+                      On Leave End Date
+                    </label>
+                    <input
+                      type="date"
+                      id="onLeaveEndDate"
+                      name="onLeaveEndDate"
+                      defaultValue={guest.onLeaveEndDate}
+                      className="block w-full cursor-pointer px-3 py-2 mb-3 text-gray-500 text-xs border rounded shadow-sm focus:outline-none"
+                    ></input>
+                  </div>
+                </div>
+              ) : (
+                <></>
+              )}
+
               <button
                 type="submit"
-                className="btn border-2 border-[#078ECE] bg-[#078ECE] text-md font-semibold text-white py-2 px-4 rounded-md w-full hover:bg-white hover:text-mainBlue mt-3"
+                className="btn border-2 border-mainBlue bg-mainBlue text-md font-semibold text-white py-2 px-4 rounded-md w-full hover:bg-white hover:text-mainBlue mt-3"
               >
                 Update Guest
               </button>
@@ -696,13 +798,68 @@ export function AttendeeQrCodeButton({ attendeeDetails }) {
     document.body.removeChild(link);
   };
 
-  // const handleShareViaWhatsApp = () => {
-  //   console.log('via whatsapp');
-  // };
+  // Configure Cloudinary
+// const cloudinary = new Cloudinary({
+//   cloud: {
+//     cloudName: 'dkcj4ded8'
+//   }
+// });
 
-  const handleShareViaWhatsApp = () => {
-    console.log('sharing via whatsapp');
+const handleShareViaWhatsApp = async () => {
+  console.log('Sharing via WhatsApp');
+
+  // Generate a unique identifier for this QR code using shortid
+  const uniqueIdentifier = shortid.generate();
+  
+  // Prepare the data to be encoded in the QR code
+  const qrCodeData = {
+    userId: `${attendeeDetails.userId}`,
+    userEmail: `${attendeeDetails.email}`,
+    qrCodeId: `${uniqueIdentifier}`,
   };
+
+  try {
+    // Generate the QR code as a data URL
+    const qrCodeDataUrl = await QRCode.toDataURL(JSON.stringify(qrCodeData));
+
+    // Create a message with the attendee's name and the QR code data URL
+    const message = `QR Code for ${attendeeDetails.name}: ${qrCodeDataUrl}`;
+
+    // Encode the message for the URL
+    const encodedMessage = encodeURIComponent(message);
+
+    // Construct the WhatsApp share URL
+    const whatsappUrl = `https://wa.me/?text=${encodedMessage}`;
+
+    // Open WhatsApp with the pre-filled message
+    window.open(whatsappUrl, '_blank');
+
+    toast.success('QR Code shared successfully', {
+      position: 'top-right',
+      autoClose: 1000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: 'light',
+      transition: Bounce,
+    });
+  } catch (error) {
+    console.error('Failed to generate or share QR code', error);
+    toast.error('Failed to generate or share QR code', {
+      position: 'top-right',
+      autoClose: 1000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: 'light',
+      transition: Bounce,
+    });
+  }
+};
 
   return (
     <div>
@@ -753,7 +910,7 @@ export function AttendeeQrCodeButton({ attendeeDetails }) {
               )}
               <div className="my-2 flex w-[80%] md:w-[60%] flex-col md:flex-row items-start md:items-center md:justify-between gap-4 md:gap-8 mx-auto">
                 <button
-                  className="text-white flex items-center py-2 px-4 gap-2 border-[1px] border-[#078ECE] bg-[#078ECE] hover:bg-white hover:text-[#078ECE]"
+                  className="text-white flex items-center py-2 px-4 gap-2 border-[1px] border-mainBlue bg-mainBlue hover:bg-white hover:text-mainBlue"
                   onClick={handleDownload}
                 >
                   <FaDownload /> Download
@@ -774,14 +931,14 @@ export function AttendeeQrCodeButton({ attendeeDetails }) {
         </div>
       )}
       {/* <button
-        className="text-xs text-[#078ECE] mx-2 cursor-pointer py-1 px-[4px] hover:bg-gray-400  rounded-md border-[1px] border-green-200 hover:bg-[#078ECE] hover:text-white"
+        className="text-xs text-mainBlue mx-2 cursor-pointer py-1 px-[4px] hover:bg-gray-400  rounded-md border-[1px] border-green-200 hover:bg-mainBlue hover:text-white"
         onClick={() => setShowViewCode(true)}
       >
         Qr Code
       </button> */}
 
       <button
-        className="text-lg text-gray-500 mx-2 cursor-pointer  rounded-md hover:text-[#078ECE] "
+        className="text-lg text-gray-500 mx-2 cursor-pointer  rounded-md hover:text-mainBlue "
         onClick={() => setShowViewCode(true)}
       >
         <BsQrCode />
@@ -1177,6 +1334,7 @@ export function ViewRestaurantReceiptButton({
 }) {
   const [viewReceipt, setViewReceipt] = useState(false);
   const [receiptAttendees, setReceiptAttendees] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
   const receiptRef = useRef();
 
   const getReceiptsAttendees = async (receiptId) => {
@@ -1191,7 +1349,7 @@ export function ViewRestaurantReceiptButton({
     } catch (error) {
       console.log(
         'Failed to receipt attendees',
-        error.response.data.message || error.message
+        error?.response?.data?.message || error.message
       );
       // setErrorMessage(error.response.data.message);
       // toast.error('Failed to Fetch Stats' + error.response.data.message, {
@@ -1239,12 +1397,22 @@ export function ViewRestaurantReceiptButton({
                   {receiptAttendees.length}
                 </h2>
               </div>
-              <div className="w-full border-2 border-gray-200 rounded-md h-[60vh]">
-                <TableComponent
-                  headers={receiptHeaders}
-                  data={receiptAttendeesData}
-                />
-              </div>
+
+              {isLoading ? (
+                <div className="flex flex-col items-center justify-center h-[40vh] mt-[7.5vh]">
+                  <div className="animate-spin rounded-full h-14 w-14 border-t-2 border-b-2 border-mainBlue"></div>
+                  <p className="mt-4 text-sm font-light text-gray-400">
+                    Hang tight, we're almost done ...
+                  </p>
+                </div>
+              ) : (
+                <div className="w-full border-2 border-gray-200 rounded-md h-[60vh]">
+                  <TableComponent
+                    headers={receiptHeaders}
+                    data={receiptAttendeesData}
+                  />
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -1257,13 +1425,15 @@ export function ViewRestaurantReceiptButton({
   );
 }
 
-export function ViewRestaurantInvoiceButton({
-  invoiceData,
-  invoice,
-  invoiceHeaders,
-}) {
+export function ViewRestaurantInvoiceButton({ invoice, invoiceHeaders }) {
   const [viewInvoice, setViewInvoice] = useState(false);
   const invoiceRef = useRef();
+
+  const invoiceReceipts = invoice.receipts.map((receipt) => [
+    receipt.receiptId,
+    receipt.createdAt,
+    receipt.numberOfAttendees,
+  ]);
 
   return (
     <div>
@@ -1284,17 +1454,17 @@ export function ViewRestaurantInvoiceButton({
                 </h2>
                 <h2 className="flex items-center text-mainGray text-3xl px-4 py-4 font-semibold border-[1px] border-gray-200 w-max">
                   <span className="text-sm mr-4">Total receipts: </span>
-                  {invoiceData.length}
+                  {invoice.totalReceipts}
                 </h2>
                 <h2 className="flex items-center text-mainGray text-3xl px-4 py-4 font-semibold border-[1px] border-gray-200 w-max">
                   <span className="text-sm mr-4">Total attendence: </span>
-                  7890
+                  {invoice.totalAttendees}
                 </h2>
               </div>
               <div className="w-full border-2 border-gray-200 rounded-md h-[60vh]">
                 <TableComponent
                   headers={invoiceHeaders}
-                  data={invoiceData}
+                  data={invoiceReceipts}
                   showFilter={false}
                 />
               </div>
@@ -1487,7 +1657,7 @@ export function AddAttendeeManually({ token, emailToAddManually }) {
   return (
     <div>
       <button
-        className="btn btn-primary text-white text-sm float-right bg-[#078ECE] border-2 rounded-md border-[1px] py-2 px-3 hover:bg-white hover:text-[#078ECE] hover:border-[1px] hover:border-[#078ECE]"
+        className="btn btn-primary text-white text-sm float-right bg-mainBlue border-2 rounded-md border-[1px] py-2 px-3 hover:bg-white hover:text-mainBlue hover:border-[1px] hover:border-mainBlue"
         onClick={() => handleAddManually()}
       >
         + Add
