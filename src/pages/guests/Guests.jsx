@@ -14,6 +14,8 @@ import Papa from 'papaparse';
 
 function Guests(props) {
   const [showForm, setShowForm] = useState(false);
+  const [creatingGuest, setCreatingGuest] = useState(false);
+  const [creatingGuests, setCreatingGuests] = useState(false);
   const [sendGuestsToCBM, setSendGuestsToCBM] = useState(false);
   const [uploadFormat, setUploadFormat] = useState('form');
   const [sendToCBM, setSendToCBM] = useState('no');
@@ -44,6 +46,7 @@ function Guests(props) {
 
   const handleSubmitCreateGuest = async (event) => {
     event.preventDefault(); // Prevent default form submission
+    setCreatingGuest(true);
 
     // console.log('creating a guest')
     try {
@@ -111,11 +114,14 @@ function Guests(props) {
         theme: 'light',
         transition: Bounce,
       });
+    } finally {
+      setCreatingGuest(false);
     }
   };
 
   const handleCreateGuestsFromBatch = async () => {
-    console.log('Csv Data: ', csvData);
+    // console.log('Csv Data: ', csvData);
+    setCreatingGuests(true);
 
     const batchData = csvData
       .filter((data) => data.names != null && data.email != null)
@@ -137,19 +143,11 @@ function Guests(props) {
 
     console.log('batch data: ', batchData);
 
-    try {
-      const response = await axios.post(
-        `${API_BASE_URL}/users/register-batch`,
-        { users: batchData },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-
-      console.log('Response: ', response);
-      toast.success(response.message || 'Batch added successfully', {
+    if (batchData.length <= 0) {
+      console.log('file is empty');
+      toast.error('Empty File', {
         position: 'top-right',
-        autoClose: 2000,
+        autoClose: 3000,
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: true,
@@ -158,15 +156,22 @@ function Guests(props) {
         theme: 'light',
         transition: Bounce,
       });
-    } catch (error) {
-      console.error('Error creating batch:', error);
-      toast.error(
-        error.response?.data?.message ||
-          error.response?.data?.error ||
-          error.message,
-        {
+
+      setCreatingGuests(false);
+    } else {
+      try {
+        const response = await axios.post(
+          `${API_BASE_URL}/users/register-batch`,
+          { users: batchData },
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+
+        console.log('Response: ', response);
+        toast.success(response.message || 'Batch added successfully', {
           position: 'top-right',
-          autoClose: 3000,
+          autoClose: 2000,
           hideProgressBar: false,
           closeOnClick: true,
           pauseOnHover: true,
@@ -174,8 +179,28 @@ function Guests(props) {
           progress: undefined,
           theme: 'light',
           transition: Bounce,
-        }
-      );
+        });
+      } catch (error) {
+        console.error('Error creating batch:', error);
+        toast.error(
+          error.response?.data?.message ||
+            error.response?.data?.error ||
+            error.message,
+          {
+            position: 'top-right',
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: 'light',
+            transition: Bounce,
+          }
+        );
+      } finally {
+        setCreatingGuests(false);
+      }
     }
   };
 
@@ -348,9 +373,14 @@ function Guests(props) {
 
                 <button
                   type="submit"
-                  className="btn border-2 border-mainBlue bg-mainBlue font-semibold text-white py-2 px-4 rounded-md w-full hover:bg-white hover:text-mainBlue mt-3"
+                  className={`btn border-2 font-semibold text-white py-2 px-4 rounded-md w-full  mt-3 ${
+                    creatingGuest
+                      ? 'cursor-not-allowed bg-gray-400'
+                      : 'cursor-pointer border-mainBlue bg-mainBlue hover:bg-white hover:text-mainBlue'
+                  }`}
+                  disabled={creatingGuest}
                 >
-                  Create Guest
+                  {creatingGuest ? 'Loading...' : 'Create Guest'}
                 </button>
               </form>
             )}
@@ -364,6 +394,7 @@ function Guests(props) {
                     accept=".csv"
                     className="py-4"
                     onChange={handleReadFromCsv}
+                    required
                   />
                   <a
                     href="https://docs.google.com/spreadsheets/d/1h4FuZrxelBbpRAPgv9i3uIpMJDKfoOc0xc1-Hzl0kyo/edit?usp=sharing"
@@ -375,10 +406,16 @@ function Guests(props) {
                   </a>
                 </div>
                 <button
-                  className="btn border-2 border-{#078ECE} bg-mainBlue font-semibold text-white py-2 px-4 rounded-md w-full hover:bg-white hover:text-mainBlue mt-3"
+                  type="submit"
+                  className={`btn border-2 font-semibold text-white py-2 px-4 rounded-md w-full  mt-3 ${
+                    creatingGuests
+                      ? 'cursor-not-allowed bg-gray-400'
+                      : 'cursor-pointer border-mainBlue bg-mainBlue hover:bg-white hover:text-mainBlue'
+                  }`}
+                  disabled={creatingGuests}
                   onClick={handleCreateGuestsFromBatch}
                 >
-                  Upload CSV File
+                  {creatingGuests ? 'Loading...' : 'Upload CSV File'}
                 </button>
                 {/* {csvData && <p>{csvData}</p>} */}
               </div>

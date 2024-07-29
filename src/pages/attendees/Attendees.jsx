@@ -423,6 +423,7 @@ function Attendees() {
 
   // Function to create a new attendee
   const handleCreateAttendee = async (values, { resetForm }) => {
+    setCreatingAttendee(true)
     // Concatenate first name and last name
     const fullName = values.names;
 
@@ -492,6 +493,8 @@ function Attendees() {
         theme: 'light',
         transition: Bounce,
       });
+    }finally{
+      setCreatingAttendee(false)
     }
   };
 
@@ -626,9 +629,9 @@ function Attendees() {
                     )}
                     <button
                       type="submit"
-                      className={`w-full px-2 text-sm py-3 my-3 cursor-pointer text-white font-semibold bg-mainBlue`}
+                      className={`w-full px-2 text-sm py-3 my-3  text-white font-semibold ${creatingAttendee? 'cursor-not-allowed bg-gray-400' : 'cursor-pointer bg-mainBlue'}`} disabled={creatingAttendee}
                     >
-                      submit
+                     {creatingAttendee? 'Loading...' :'submit'}
                     </button>
                   </Form>
                 </Formik>

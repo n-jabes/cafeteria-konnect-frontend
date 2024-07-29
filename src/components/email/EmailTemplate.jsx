@@ -10,6 +10,7 @@ function EmailTemplate({ headers, guests }) {
   const [senderEmail, setSenderEmail] = useState('honnettemarie12@gmail.com');
   const [receiverName, setReceiverName] = useState('Nshuti Jabes');
   const [receiverEmail, setReceiverEmail] = useState('ihozomarie12@gmail.com');
+  const [sendingToCBM, setSendingToCBM] = useState(false);
   const [message, setMessage] = useState(
     'Hello, this is the list of new guests'
   );
@@ -154,7 +155,12 @@ function EmailTemplate({ headers, guests }) {
 
         <input
           type="submit"
-          className="py-2 px-4 bg-[#078ECE] border-[1px] border-[#078ECE] w-full md:w-1/4 cursor-pointer text-white rounded-[3px] hover:text-[#078ECE] hover:bg-white"
+          className={`py-2 px-4 w-full md:w-1/4 text-white rounded-[3px]   ${
+            isLoading
+              ? 'cursor-not-allowed bg-gray-400'
+              : 'bg-mainBlue border-[1px] border-mainBlue hover:bg-white hover:text-mainBlue cursor-pointer'
+          }`}
+          disabled={isLoading}
           value={isLoading ? 'Sending...' : 'Send'}
         />
       </form>

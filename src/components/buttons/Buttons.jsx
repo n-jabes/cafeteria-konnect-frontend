@@ -1557,7 +1557,17 @@ export function Status({ status }) {
 }
 
 export function AddAttendeeManually({ token, emailToAddManually }) {
+  const StatsSpinner = () => {
+    return (
+      <div className="flex flex-col items-center justify-center">
+        <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-mainBlue"></div>
+      </div>
+    );
+  };
+
+  const [addingAttendee, setAddingAttendee] = useState(false);
   const handleAddManually = async () => {
+    setAddingAttendee(true);
     try {
       const response = await axios.post(
         `${API_BASE_URL}/attendance/record/manual/${emailToAddManually}`,
@@ -1593,16 +1603,23 @@ export function AddAttendeeManually({ token, emailToAddManually }) {
         theme: 'light',
         transition: Bounce,
       });
+    } finally {
+      setAddingAttendee(false);
     }
   };
 
   return (
     <div>
       <button
-        className="btn btn-primary text-white text-sm float-right bg-mainBlue border-2 rounded-md border-[1px] py-2 px-3 hover:bg-white hover:text-mainBlue hover:border-[1px] hover:border-mainBlue"
+        className={`btn btn-primary text-white text-sm float-right  border-2 rounded-md border-[1px] py-2 px-3  hover:border-[1px]  ${
+          addingAttendee
+            ? 'cursor-not-allowed bg-gray-300'
+            : 'bg-mainBlue hover:bg-white hover:text-mainBlue hover:border-mainBlue'
+        }`}
+        disabled={addingAttendee}
         onClick={() => handleAddManually()}
       >
-        + Add
+        {addingAttendee ? <StatsSpinner /> : '+ Add'}
       </button>
     </div>
   );
