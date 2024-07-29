@@ -22,7 +22,7 @@ function RestaurantReceipts(props) {
       });
       setAllReceipts(response.data.data);
     } catch (error) {
-      console.log('Failed to fetch stats', error.response || error.message);
+      console.log('Failed to fetch stats', error?.response?.data || error.message);
       // setErrorMessage(error.response.data.message);
       // toast.error('Failed to Fetch Stats' + error.response.data.message, {
       //   position: 'top-right',

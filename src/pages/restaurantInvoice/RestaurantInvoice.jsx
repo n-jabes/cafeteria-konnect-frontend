@@ -44,7 +44,7 @@ function RestaurantInvoice(props) {
       // console.log('Invoices: ', response)
       setAllInvoices(response.data.data);
     } catch (error) {
-      console.log('Error fetching invoices...');
+      console.log('Error fetching invoices...', error);
     } finally {
       setIsLoading(false);
     }

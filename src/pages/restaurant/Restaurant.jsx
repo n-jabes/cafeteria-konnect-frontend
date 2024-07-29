@@ -31,7 +31,7 @@ function Restaurants(props) {
 
   const getAllInvoices = async () => {
     setIsLoading(true);
-    console.log('isLoading: ')
+    // console.log('isLoading: ')
     try {
       const response = await axios.get(`${API_BASE_URL}/invoices/all`, {
         headers: { Authorization: `Bearer ${token}` },

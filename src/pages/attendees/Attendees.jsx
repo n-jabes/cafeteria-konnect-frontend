@@ -48,6 +48,7 @@ function Attendees() {
   const [allReceipts, setAllReceipts] = useState([]);
   const [allAttendeesErrorMessage, setAllAttendeesErrorMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isFetchingTodayReceipt, setIsFetchingTodayReceipt] = useState(false);
   const [manuallyAddedAttendeesCount, setManuallyAddedAttendeesCount] =
     useState(false);
 
@@ -277,15 +278,16 @@ function Attendees() {
     const day = String(date.getDate()).padStart(2, '0');
 
     const formattedDate = `${month}-${day}-${year}`;
+    setIsFetchingTodayReceipt(true);
 
     try {
       const response = await axios.get(`${API_BASE_URL}/receipts/all`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setAllReceipts(response.data.data);
-      // console.log('receipts: ', response.data.data);
+
       //find today's receipt
-      const todayReceipt = allReceipts.find(
+      const todayReceipt = response.data.data.find(
         (receipt) => receipt.createdAt === formattedDate
       );
       // console.log('todayReceipt: ', todayReceipt);
@@ -298,7 +300,9 @@ function Attendees() {
       );
       console.log('manually added today: ', manuallyAddedAttendeesCount);
     } catch (error) {
-      console.log('Failed to fetch stats', error.response || error.message);
+      console.log('Failed to fetch stats', error?.response || error.message);
+    } finally {
+      setIsFetchingTodayReceipt(false);
     }
   };
 
@@ -423,7 +427,7 @@ function Attendees() {
 
   // Function to create a new attendee
   const handleCreateAttendee = async (values, { resetForm }) => {
-    setCreatingAttendee(true)
+    setCreatingAttendee(true);
     // Concatenate first name and last name
     const fullName = values.names;
 
@@ -493,8 +497,8 @@ function Attendees() {
         theme: 'light',
         transition: Bounce,
       });
-    }finally{
-      setCreatingAttendee(false)
+    } finally {
+      setCreatingAttendee(false);
     }
   };
 
@@ -629,9 +633,14 @@ function Attendees() {
                     )}
                     <button
                       type="submit"
-                      className={`w-full px-2 text-sm py-3 my-3  text-white font-semibold ${creatingAttendee? 'cursor-not-allowed bg-gray-400' : 'cursor-pointer bg-mainBlue'}`} disabled={creatingAttendee}
+                      className={`w-full px-2 text-sm py-3 my-3  text-white font-semibold ${
+                        creatingAttendee
+                          ? 'cursor-not-allowed bg-gray-400'
+                          : 'cursor-pointer bg-mainBlue'
+                      }`}
+                      disabled={creatingAttendee}
                     >
-                     {creatingAttendee? 'Loading...' :'submit'}
+                      {creatingAttendee ? 'Loading...' : 'submit'}
                     </button>
                   </Form>
                 </Formik>
@@ -816,7 +825,7 @@ function Attendees() {
           )}
 
           <div className="md:w-1/5 w-full h-max border border-3 border-gray rounded-md py-4 flex flex-col items-center text-gray-600">
-            {todayAttendance === '' ? (
+            {isFetchingTodayReceipt ? (
               <div className="flex items-center w-full justify-center h-max">
                 <div className="animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-mainBlue"></div>
               </div>
@@ -825,7 +834,7 @@ function Attendees() {
             )}
             <p className="text-xs mt-4">people attended today</p>
             <p className="mt-6 text-sm flex flex-col text-center">
-              {todayAttendance === '' ? (
+              {isFetchingTodayReceipt ? (
                 <div className="flex items-center w-full justify-center h-max">
                   <div className="animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-mainBlue"></div>
                 </div>
