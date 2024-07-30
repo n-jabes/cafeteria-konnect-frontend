@@ -13,7 +13,7 @@ import InvoiceTable from '../table/InvoiceTable';
 import { IoPrint } from 'react-icons/io5';
 import { GoTrash } from 'react-icons/go';
 import ReactToPrint from 'react-to-print';
-import { Formik, Form, Field } from 'formik';
+import { Formik, Form, Field, useFormikContext } from 'formik';
 import * as Yup from 'yup';
 import { BsQrCode } from 'react-icons/bs';
 import QRCode from 'qrcode';
@@ -44,14 +44,13 @@ export function SendAllNewGuestsToCBMButton() {
 
 export function UpdateAttendeeButton({ attendeeDetails }) {
   const [showUpdateForm, setShowUpdateForm] = useState(false);
+  const [updatingAttendee, setUpdatingAttendee] = useState(false);
   const [departments, setDepartments] = useState([]);
   const [roles, setRoles] = useState([]);
-  const [selectedStatus, setSelectedStatus] = useState(attendeeDetails.status);
   const token = sessionStorage.getItem('token');
   const statuses = [
-    { id: 1, value: 'active', name: 'Active' },
-    { id: 2, value: 'on leave', name: 'On Leave' },
-    { id: 3, value: 'on pause', name: 'On Pause' },
+    { id: 1, value: 'active', status: 'Active' },
+    { id: 2, value: 'on leave', status: 'On Leave' },
   ];
   //fetching all departments
   const getAllDepartments = async () => {
@@ -97,8 +96,86 @@ export function UpdateAttendeeButton({ attendeeDetails }) {
     }
   };
 
-  const handleUpdate = () => {
-    console.log('Updating');
+  const handleUpdateAttendee = async (values, { resetForm }) => {
+    setUpdatingAttendee(true);
+
+    // console.log('values: ', values);
+
+    const selectedRole = roles.filter((role) => role.role === values.role)[0];
+    const selectedDepartment = departments.filter(
+      (dept) => dept.department === values.department
+    )[0];
+
+    const roleId = selectedRole ? String(selectedRole.id) : null;
+    const departmentId = selectedDepartment
+      ? String(selectedDepartment.id)
+      : null;
+
+    let attendeeData = {
+      names: values.names,
+      email: values.email,
+      nationalId: values.nationalId,
+      roleId: roleId,
+      departmentId: departmentId,
+      password: '123456',
+      attendanceStatus: values.status,
+    };
+
+    if (values.status === 'on leave') {
+      attendeeData = {
+        ...attendeeData,
+        onLeaveStartDate: values.onLeaveStartDate,
+        onLeaveEndDate: values.onLeaveEndDate,
+      };
+    }
+
+    // console.log('user to update: ', attendeeDetails.userId);
+    console.log('attendee data: ', attendeeData);
+    // console.log('token', token)
+
+    try {
+      const response = await axios.put(
+        `${API_BASE_URL}/users/update/${attendeeDetails.userId}`,
+        attendeeData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      console.log('response: ', response);
+      toast.success('Attendee update successfully', {
+        position: 'top-right',
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'light',
+        transition: Bounce,
+      });
+    } catch (error) {
+      console.log(error);
+      console.log(
+        'Failed to update attendee',
+        error?.response?.data?.message || error.message
+      );
+      toast.error(error?.response?.data?.message || error?.message, {
+        position: 'top-right',
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'light',
+        transition: Bounce,
+      });
+    } finally {
+      setUpdatingAttendee(false);
+    }
   };
 
   // Fetch the roles and departments when the component mounts
@@ -106,6 +183,46 @@ export function UpdateAttendeeButton({ attendeeDetails }) {
     getAllRoles();
     getAllDepartments();
   }, [showUpdateForm]);
+
+  const ConditionalFields = () => {
+    const { values } = useFormikContext();
+
+    return (
+      values.status === 'on leave' && (
+        <div className="flex md:flex-row flex-col gap-3">
+          <div className="flex flex-col gap-2 md:w-1/2">
+            <label
+              htmlFor="onLeaveStartDate"
+              className="block text-sm font-medium text-gray-700"
+            >
+              On Leave Start Date
+            </label>
+            <Field
+              type="date"
+              id="onLeaveStartDate"
+              name="onLeaveStartDate"
+              className="block w-full cursor-pointer px-3 py-2 mb-3 text-gray-500 text-xs border  focus:border-gray-300 focus:outline-none rounded shadow-sm overflow-x-none"
+            />
+          </div>
+
+          <div className="flex flex-col gap-2 md:w-1/2 w-full">
+            <label
+              htmlFor="onLeaveEndDate"
+              className="block text-sm font-medium text-gray-700"
+            >
+              On Leave End Date
+            </label>
+            <Field
+              type="date"
+              id="onLeaveEndDate"
+              name="onLeaveEndDate"
+              className="block w-full cursor-pointer px-3 py-2 mb-3 text-gray-500 text-xs border rounded shadow-sm focus:outline-none"
+            />
+          </div>
+        </div>
+      )
+    );
+  };
 
   return (
     <div>
@@ -128,18 +245,14 @@ export function UpdateAttendeeButton({ attendeeDetails }) {
                 initialValues={{
                   names: attendeeDetails.name,
                   email: attendeeDetails.email,
-                  role: attendeeDetails.role,
-                  NID: attendeeDetails.nationalId,
-                  department: attendeeDetails.department,
+                  role: attendeeDetails.roleName,
+                  nationalId: attendeeDetails.nationalId,
+                  department: attendeeDetails.departmentName,
                   status: attendeeDetails.status,
                   onLeaveStartDate: attendeeDetails.onLeaveStartDate || '',
                   onLeaveEndDate: attendeeDetails.onLeaveEndDate || '',
                 }}
-                onSubmit={(values) => {
-                  // Handle form submission logic here (update attendee data)
-                  alert(JSON.stringify(values, null, 2));
-                  handleUpdate;
-                }}
+                onSubmit={handleUpdateAttendee}
               >
                 <Form className="flex flex-col w-full lg:h-max h-max md:h-max justify-center gap-[0.4rem]">
                   <div className="flex flex-col gap-2">
@@ -221,68 +334,70 @@ export function UpdateAttendeeButton({ attendeeDetails }) {
                       </Field>
                     </div>
                   </div>
-
-                  <div className="flex flex-col w-full ">
-                    <label htmlFor="status" className="text-xs text-gray">
-                      Status
-                    </label>
-                    <Field
-                      as="select"
-                      id="department"
-                      name="department"
-                      onChange={(e) => setSelectedStatus(e.target.value)}
-                      className="block w-full px-3 py-2 mb-3 text-gray-500 text-xs border focus:border-gray-300 focus:outline-none rounded shadow"
-                    >
-                      {statuses.map((status) => (
-                        <option key={status.id} value={status.value}>
-                          {status.name}
-                        </option>
-                      ))}
-                    </Field>
-                  </div>
-                  {console.log('selectedStatus: ', attendeeDetails)}
-                  {selectedStatus !== 'active' && (
-                    <div className="flex md:flex-row flex-col gap-3">
-                      <div className="flex flex-col gap-2 md:w-1/2">
-                        <label
-                          htmlFor="startDate"
-                          className="block text-sm font-medium text-gray-700"
-                        >
-                          On Leave Start Date
-                        </label>
-                        <Field
-                          type="date"
-                          id="onLeaveStartDate"
-                          name="onLeaveStartDate"
-                          className="block w-full cursor-pointer px-3 py-2 mb-3 text-gray-500 text-xs border  focus:border-gray-300 focus:outline-none rounded shadow-sm overflow-x-none"
-                        ></Field>
-                      </div>
-
-                      <div className="flex flex-col gap-2 md:w-1/2 w-full">
-                        <label
-                          htmlFor="endDate"
-                          className="block text-sm font-medium text-gray-700"
-                        >
-                          On Leave End Date
-                        </label>
-                        <Field
-                          type="date"
-                          id="onLeaveEndDate"
-                          name="onLeaveEndDate"
-                          className="block w-full cursor-pointer px-3 py-2 mb-3 text-gray-500 text-xs border rounded shadow-sm focus:outline-none"
-                        ></Field>
-                      </div>
+                  <div>
+                    <div className="flex flex-col gap-2 md:w-1/2 w-full">
+                      <label
+                        htmlFor="status"
+                        className="block text-sm font-medium text-gray-700"
+                      >
+                        Status
+                      </label>
+                      <Field
+                        as="select"
+                        id="status"
+                        name="status"
+                        className="block w-full px-3 py-2 mb-3 text-gray-500 text-xs border rounded shadow-sm focus:outline-none"
+                      >
+                        {statuses.map((status) => (
+                          <option key={status.id} value={status.value}>
+                            {status.status}
+                          </option>
+                        ))}
+                      </Field>
                     </div>
-                  )}
+                  </div>
+                  {/* <div className="flex md:flex-row flex-col gap-3">
+                    <div className="flex flex-col gap-2 md:w-1/2">
+                      <label
+                        htmlFor="startDate"
+                        className="block text-sm font-medium text-gray-700"
+                      >
+                        On Leave Start Date
+                      </label>
+                      <Field
+                        type="date"
+                        id="onLeaveStartDate"
+                        name="onLeaveStartDate"
+                        className="block w-full cursor-pointer px-3 py-2 mb-3 text-gray-500 text-xs border  focus:border-gray-300 focus:outline-none rounded shadow-sm overflow-x-none"
+                      ></Field>
+                    </div>
+
+                    <div className="flex flex-col gap-2 md:w-1/2 w-full">
+                      <label
+                        htmlFor="endDate"
+                        className="block text-sm font-medium text-gray-700"
+                      >
+                        On Leave End Date
+                      </label>
+                      <Field
+                        type="date"
+                        id="onLeaveEndDate"
+                        name="onLeaveEndDate"
+                        className="block w-full cursor-pointer px-3 py-2 mb-3 text-gray-500 text-xs border rounded shadow-sm focus:outline-none"
+                      ></Field>
+                    </div>
+                  </div> */}
+
+                  <ConditionalFields />
                   <div className="flex flex-col gap-2">
                     <label
-                      htmlFor="role"
+                      htmlFor="nationalId"
                       className="block text-sm font-medium text-gray-700"
                     >
                       National Id
                     </label>
                     <Field
-                      name="NID"
+                      name="nationalId"
                       type="text"
                       placeholder="Enter your National Id"
                       className="w-full text-xs border focus:border-gray-300 focus:outline-none px-2 py-3 "
@@ -304,9 +419,14 @@ export function UpdateAttendeeButton({ attendeeDetails }) {
                   </div>
                   <button
                     type="submit"
-                    className="btn border-2 border-mainBlue bg-mainBlue text-md font-semibold text-white py-2 px-4 rounded-md w-full hover:bg-white hover:text-mainBlue mt-3"
+                    className={`btn border-2 text-md font-semibold text-white py-2 px-4 rounded-md w-full  mt-3 ${
+                      updatingAttendee
+                        ? 'cursor-not-allowed bg-gray-400'
+                        : 'border-mainBlue bg-mainBlue hover:bg-white hover:text-mainBlue cursor-pointer bg-mainBlue'
+                    }`}
+                    disabled={updatingAttendee}
                   >
-                    Update Guest
+                    {updatingAttendee ? 'Updating...' : 'Update Attendee'}
                   </button>
                 </Form>
               </Formik>
@@ -326,20 +446,156 @@ export function UpdateAttendeeButton({ attendeeDetails }) {
 
 export function UpdateGuestButton({ guest }) {
   const [showUpdateForm, setShowUpdateForm] = useState(false);
-  const [selectedStatus, setSelectedStatus] = useState(guest.status);
-
-  const statuses = [
+  const [updatingGuest, setUpdatingGuest] = useState(false);
+  const [departments, setDepartments] = useState([]);
+  const [roles, setRoles] = useState([]);
+  const [statuses] = useState([
     { id: 1, name: 'Approved', value: 'approved' },
     { id: 2, name: 'On Leave', value: 'on leave' },
     { id: 3, name: 'New', value: 'new' },
     { id: 4, name: 'Declined', value: 'decline' },
     { id: 5, name: 'Pending', value: 'pending' },
-  ];
+  ]);
+  const token = sessionStorage.getItem('token');
+
+  // console.log('guest: ', guest);
+
+  // Fetching all roles
+  const getAllRoles = async () => {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/roles/all`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const allRoles = response.data.data.map((role) => ({
+        id: role.id,
+        role: role.role,
+      }));
+      setRoles(allRoles);
+    } catch (error) {
+      console.log(
+        'Failed to fetch roles',
+        error.response?.data?.message || error.message
+      );
+    }
+  };
+
+  // Handle guest update
+  const handleUpdateGuest = async (values, { resetForm }) => {
+    setUpdatingGuest(true);
+
+    const selectedRole = roles.find((role) => role.role === 'GUEST');
+
+    console.log(selectedRole);
+    const roleId = selectedRole ? String(selectedRole.id) : null;
+
+    const guestData = {
+      names: values.name,
+      email: values.email,
+      purpose: values.purpose,
+      startingDate: values.startDate,
+      endDate: values.endDate,
+      attendanceStatus: values.status,
+      roleId: roleId,
+    };
+
+    if (values.status === 'on leave') {
+      guestData.onLeaveStartDate = values.onLeaveStartDate;
+      guestData.onLeaveEndDate = values.onLeaveEndDate;
+    }
+
+    console.log('guestData', guestData);
+
+    try {
+      const response = await axios.put(
+        `${API_BASE_URL}/users/update-guest/${guest.userId}`,
+        guestData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log('response: ', response);
+      toast.success('Guest updated successfully', {
+        position: 'top-right',
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'light',
+        transition: Bounce,
+      });
+      resetForm();
+    } catch (error) {
+      console.log('error: ', error);
+      toast.error(error.response?.data?.message || error.message, {
+        position: 'top-right',
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'light',
+        transition: Bounce,
+      });
+    } finally {
+      setUpdatingGuest(false);
+    }
+  };
+
+  // Conditional fields based on status
+  const ConditionalFields = () => {
+    const { values } = useFormikContext();
+
+    return (
+      values.status === 'on leave' && (
+        <div className="flex md:flex-row flex-col gap-3">
+          <div className="flex flex-col gap-2 md:w-1/2">
+            <label
+              htmlFor="onLeaveStartDate"
+              className="block text-sm font-medium text-gray-700"
+            >
+              On Leave Start Date
+            </label>
+            <Field
+              type="date"
+              id="onLeaveStartDate"
+              name="onLeaveStartDate"
+              className="block w-full cursor-pointer px-3 py-2 mb-3 text-gray-500 text-xs border focus:border-gray-300 focus:outline-none rounded shadow-sm"
+            />
+          </div>
+          <div className="flex flex-col gap-2 md:w-1/2">
+            <label
+              htmlFor="onLeaveEndDate"
+              className="block text-sm font-medium text-gray-700"
+            >
+              On Leave End Date
+            </label>
+            <Field
+              type="date"
+              id="onLeaveEndDate"
+              name="onLeaveEndDate"
+              className="block w-full cursor-pointer px-3 py-2 mb-3 text-gray-500 text-xs border focus:border-gray-300 focus:outline-none rounded shadow-sm"
+            />
+          </div>
+        </div>
+      )
+    );
+  };
+
+  useEffect(() => {
+    getAllRoles();
+  }, []);
 
   return (
     <div>
       {showUpdateForm && (
-        <div className="fixed top-0 left-0 bg-bgBlue z-[40] h-screen w-screen overflow-y-auto overflow-x-auto flex items-center justify-center">
+        <div className="fixed top-0 left-0 bg-bgBlue z-[40] h-screen w-screen overflow-y-auto flex items-center justify-center">
           <div className="relative bg-white w-[90%] lg:w-[45%] max-h-[90vh] overflow-y-auto h-max px-[3.5%] py-[4%] rounded-md">
             <button
               className="close border-2 border-mainRed rounded-md px-2 text-mainRed absolute right-4 top-4"
@@ -350,140 +606,121 @@ export function UpdateGuestButton({ guest }) {
             <h1 className="text-mainBlue font-semibold text-md md:text-xl">
               Update Guest: <span className="text-gray-400">{guest.id}</span>
             </h1>
-            <form action="#" className="w-full">
-              <div className="flex flex-col mb-2">
-                <label htmlFor="name" className="text-xs text-gray">
-                  Name:
-                </label>
-                <input
-                  type="text"
-                  placeholder="Enter guest full name"
-                  name="name"
-                  defaultValue={guest.name}
-                  className="outline-none text-sm py-2 px-4 border-[1px] border-gray rounded-md"
-                  required
-                />
-              </div>
-              <div className="flex flex-col mb-2">
-                <label htmlFor="purpose" className="text-xs text-gray">
-                  Purpose
-                </label>
-                <input
-                  type="text"
-                  placeholder="Enter guest purpose: eg. consultant"
-                  name="purpose"
-                  defaultValue={guest.purpose}
-                  className="outline-none text-sm py-2 px-4 border-[1px] border-gray rounded-md"
-                  required
-                />
-              </div>
-              <div className="flex flex-col mb-2">
-                <label htmlFor="email" className="text-xs text-gray">
-                  Email
-                </label>
-                <input
-                  type="text"
-                  id="email"
-                  placeholder="guest@gmail.com"
-                  name="email"
-                  defaultValue={guest.email}
-                  className="outline-none text-sm py-2 px-4 border-[1px] border-gray rounded-md"
-                  required
-                />
-              </div>
-              <div className="flex items-center justify-between">
-                <div className="w-[48%] flex flex-col mb-2">
-                  <label htmlFor="startDate" className="text-xs text-gray">
-                    Starting date
+            <Formik
+              initialValues={{
+                name: guest.name || '',
+                purpose: guest.purpose || '',
+                email: guest.email || '',
+                startDate: guest.startingDate || '',
+                endDate: guest.endDate || '',
+                status: guest.status || '',
+                onLeaveStartDate: guest.onLeaveStartDate || '',
+                onLeaveEndDate: guest.onLeaveEndDate || '',
+                role: guest.roleName || '',
+                department: guest.departmentName || '',
+              }}
+              onSubmit={handleUpdateGuest}
+            >
+              <Form className="w-full">
+                <div className="flex flex-col mb-2">
+                  <label htmlFor="name" className="text-xs text-gray-600">
+                    Name:
                   </label>
-                  <input
-                    type="date"
-                    name="startDate"
-                    defaultValue={guest.startingDate}
+                  <Field
+                    type="text"
+                    id="name"
+                    name="name"
+                    placeholder="Enter guest full name"
                     className="outline-none text-sm py-2 px-4 border-[1px] border-gray rounded-md"
-                    required
                   />
                 </div>
-                <div className="w-[48%] flex flex-col mb-2">
-                  <label htmlFor="endDate" className="text-xs text-gray">
-                    End date
+                <div className="flex flex-col mb-2">
+                  <label htmlFor="purpose" className="text-xs text-gray-600">
+                    Purpose
                   </label>
-                  <input
-                    type="date"
-                    name="endDate"
-                    defaultValue={guest.endDate}
+                  <Field
+                    type="text"
+                    id="purpose"
+                    name="purpose"
+                    placeholder="Enter guest purpose: eg. consultant"
                     className="outline-none text-sm py-2 px-4 border-[1px] border-gray rounded-md"
-                    required
                   />
                 </div>
-              </div>
-              <div className="flex flex-col w-full ">
-                <label htmlFor="status" className="text-xs text-gray">
-                  Status
-                </label>
-                <select
-                  id="status"
-                  name="status"
-                  onChange={(e) => setSelectedStatus(e.target.value)}
-                  className="block w-full px-3 py-2 mb-3 text-gray-500 text-xs border focus:border-gray-300 focus:outline-none rounded shadow"
+                <div className="flex flex-col mb-2">
+                  <label htmlFor="email" className="text-xs text-gray-600">
+                    Email
+                  </label>
+                  <Field
+                    type="email"
+                    id="email"
+                    name="email"
+                    placeholder="guest@gmail.com"
+                    className="outline-none text-sm py-2 px-4 border-[1px] border-gray rounded-md"
+                  />
+                </div>
+                <div className="flex items-center justify-between mb-2">
+                  <div className="w-[48%] flex flex-col">
+                    <label
+                      htmlFor="startDate"
+                      className="text-xs text-gray-600"
+                    >
+                      Starting date
+                    </label>
+                    <Field
+                      type="date"
+                      id="startDate"
+                      name="startDate"
+                      className="outline-none text-sm py-2 px-4 border-[1px] border-gray rounded-md"
+                    />
+                  </div>
+                  <div className="w-[48%] flex flex-col">
+                    <label htmlFor="endDate" className="text-xs text-gray-600">
+                      End date
+                    </label>
+                    <Field
+                      type="date"
+                      id="endDate"
+                      name="endDate"
+                      className="outline-none text-sm py-2 px-4 border-[1px] border-gray rounded-md"
+                    />
+                  </div>
+                </div>
+                <div className="flex flex-col mb-2">
+                  <label htmlFor="status" className="text-xs text-gray-600">
+                    Status
+                  </label>
+                  <Field
+                    as="select"
+                    id="status"
+                    name="status"
+                    className="block w-full px-3 py-2 mb-3 text-gray-500 text-xs border focus:border-gray-300 focus:outline-none rounded shadow"
+                  >
+                    {statuses.map((status) => (
+                      <option key={status.id} value={status.value}>
+                        {status.name}
+                      </option>
+                    ))}
+                  </Field>
+                </div>
+                <ConditionalFields />
+                <button
+                  type="submit"
+                  className={`btn border-2 text-md font-semibold text-white py-2 px-4 rounded-md w-full mt-3 ${
+                    updatingGuest
+                      ? 'cursor-not-allowed bg-gray-400'
+                      : 'border-mainBlue bg-mainBlue hover:bg-white hover:text-mainBlue cursor-pointer bg-mainBlue'
+                  }`}
+                  disabled={updatingGuest}
                 >
-                  {statuses.map((status) => (
-                    <option key={status.id} value={status.value}>
-                      {status.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              {selectedStatus === 'on leave' ? (
-                <div className="flex md:flex-row flex-col gap-3">
-                  <div className="flex flex-col gap-2 md:w-1/2">
-                    <label
-                      htmlFor="onLeaveStartDate"
-                      className="block text-xs font-medium text-gray"
-                    >
-                      On Leave Start Date
-                    </label>
-                    <input
-                      type="date"
-                      id="onLeaveStartDate"
-                      name="onLeaveStartDate"
-                      defaultValue={guest.onLeaveStartDate}
-                      className="block w-full cursor-pointer px-3 py-2 mb-3 text-gray-500 text-xs border  focus:border-gray-300 focus:outline-none rounded shadow-sm overflow-x-none"
-                    ></input>
-                  </div>
-
-                  <div className="flex flex-col gap-2 md:w-1/2 w-full">
-                    <label
-                      htmlFor="onLeaveEndDate"
-                      className="block text-xs font-medium text-gray"
-                    >
-                      On Leave End Date
-                    </label>
-                    <input
-                      type="date"
-                      id="onLeaveEndDate"
-                      name="onLeaveEndDate"
-                      defaultValue={guest.onLeaveEndDate}
-                      className="block w-full cursor-pointer px-3 py-2 mb-3 text-gray-500 text-xs border rounded shadow-sm focus:outline-none"
-                    ></input>
-                  </div>
-                </div>
-              ) : (
-                <></>
-              )}
-
-              <button
-                type="submit"
-                className="btn border-2 border-mainBlue bg-mainBlue text-md font-semibold text-white py-2 px-4 rounded-md w-full hover:bg-white hover:text-mainBlue mt-3"
-              >
-                Update Guest
-              </button>
-            </form>
+                  {updatingGuest ? 'Updating...' : 'Update Guest'}
+                </button>
+              </Form>
+            </Formik>
           </div>
         </div>
       )}
       <button
-        className="btn btn-primary hover:bg-mainBlue hover:text-white  rounded-[8px] py-1 px-[4px] text-mainBlue font-medium text-lg"
+        className="btn btn-primary hover:bg-mainBlue hover:text-white rounded-[8px] py-1 px-[4px] text-mainBlue font-medium text-lg"
         onClick={() => setShowUpdateForm(true)}
       >
         <FaEdit />
@@ -492,10 +729,61 @@ export function UpdateGuestButton({ guest }) {
   );
 }
 
-export function DeleteButton() {
+export function DeleteButton({ attendeeDetails }) {
+  const [deletingUser, setDeletingUser] = useState(false);
+
+  const handleDeleteUser = async () => {
+    setDeletingUser(true);
+    try {
+      const response = await axios.delete(
+        `${API_BASE_URL}/users/delete/${attendeeDetails.userId}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      console.log('response: ', response);
+      toast.success('Attendee deleted successfully', {
+        position: 'top-right',
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'light',
+        transition: Bounce,
+      });
+    } catch (error) {
+      console.log(
+        'Failed to update attendee',
+        error?.response?.data?.message || error.message
+      );
+      toast.error(error?.response?.data?.message || error?.message, {
+        position: 'top-right',
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'light',
+        transition: Bounce,
+      });
+    } finally {
+      setDeletingUser(false);
+    }
+  };
   return (
-    <button className="btn btn-primary hover:bg-darkRed hover:text-white rounded-[8px] py-1 px-[4px]  text-darkRed font-medium text-lg">
-      <GoTrash />
+    <button
+      className="btn btn-primary hover:bg-darkRed hover:text-white rounded-[8px] py-1 px-[4px]  text-darkRed font-medium text-lg"
+      onClick={handleDeleteUser}
+    >
+      {deletingUser ? (
+        <div className="flex items-center w-full justify-center h-max ">
+          <div className="animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-darkRed"></div>
+        </div>
+      ) : (
+        <GoTrash />
+      )}
     </button>
   );
 }
@@ -597,7 +885,7 @@ export function ViewAttendeeButton({ attendeeDetails }) {
                 <span className=" text-mainBlue ">{attendeeDetails.name}</span>
               </h1>
               <p className="text-gray-500 text-[1rem]">
-                Role :{' '}
+                nationalId :{' '}
                 <span className="text-mainBlue font-bold capitalize">
                   {attendeeDetails.role}
                 </span>
@@ -1473,7 +1761,7 @@ export function GuestButtons({ guest }) {
   return (
     <div className="flex gap-2">
       <UpdateGuestButton guest={guest} />
-      <DeleteButton />
+      <DeleteButton attendeeDetails={guest} />
       {/* <SendToCBMButton guest={guest} /> */}
     </div>
   );
@@ -1524,7 +1812,7 @@ export function AttendeeButtons({ attendeeDetails, departments, roles }) {
         departments={departments}
         roles={roles}
       />
-      <DeleteButton />
+      <DeleteButton attendeeDetails={attendeeDetails} />
       <ViewAttendeeButton attendeeDetails={attendeeDetails} />
       <AttendeeQrCodeButton attendeeDetails={attendeeDetails} />
     </div>

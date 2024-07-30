@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import TableComponent from './../../components/table/TableComponent';
 import {
   GuestButtons,
@@ -11,6 +11,8 @@ import { Bounce, toast } from 'react-toastify';
 import { API_BASE_URL } from '../../utils/api';
 import axios from 'axios';
 import Papa from 'papaparse';
+import { firestoreDB } from '../../utils/firebase';
+import { collection, onSnapshot } from 'firebase/firestore';
 
 function Guests(props) {
   const [showForm, setShowForm] = useState(false);
@@ -20,12 +22,58 @@ function Guests(props) {
   const [uploadFormat, setUploadFormat] = useState('form');
   const [sendToCBM, setSendToCBM] = useState('no');
   const [csvData, setCsvData] = useState([]);
-  const [allGuests, setallGuests] = useState(
-    JSON.parse(sessionStorage.getItem('allGuests')) || []
-  );
+  const [allAttendeesErrorMessage, setAllAttendeesErrorMessage] = useState('');
+  const [allGuests, setAllGuests] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
   const token = sessionStorage.getItem('token');
   const roles = JSON.parse(sessionStorage.getItem('roles'));
   const departments = JSON.parse(sessionStorage.getItem('departments'));
+
+  //fetching all attendees
+  const getAllAttendees = async () => {
+    setIsLoading(true);
+    try {
+      const response = await axios.get(`${API_BASE_URL}/users/all`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      //filter users with the role of guest and store them in the sessionStorage
+      //in order to display them on the guests page
+      const guests = response.data.data
+        .filter((attendee) => attendee.role?.role === 'GUEST')
+        .map((guest, index) => ({
+          id: index + 1,
+          userId: guest.id || '',
+          name: guest.names || '',
+          email: guest.email || '',
+          roleId: guest.role?.id || '',
+          roleName: guest.role?.role || '',
+          departmentId: guest.department?.id || '',
+          departmentName: guest.department?.department || '',
+          status: guest.attendanceStatus || '',
+          nationalId: guest.nationalId || '',
+          purpose: guest?.purpose || '',
+          startingDate: guest?.startingDate || '',
+          endDate: guest?.endDate || '',
+          onLeaveEndDate: guest?.onLeaveEndDate || '',
+          onLeaveStartDate: guest?.onLeaveStartDate || '',
+        }));
+
+      setAllGuests(guests);
+    } catch (error) {
+      console.log(
+        'Failed to fetch all people',
+        error.response?.data?.message || error.message
+      );
+      setAllAttendeesErrorMessage(
+        error.response?.data?.message || error.message
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   // console.log('all guests: ', allGuests)
 
@@ -215,6 +263,29 @@ function Guests(props) {
     });
   };
 
+  // Fetch the roles and departments when the component mounts
+  useEffect(() => {
+    getAllAttendees(); // Initial data load from API
+
+    // Create a reference to the 'users' collection
+    const usersCollectionRef = collection(firestoreDB, 'users');
+
+    // Set up the real-time listener
+    const unsubscribe = onSnapshot(
+      usersCollectionRef,
+      (snapshot) => {
+        // When Firestore updates, trigger a refresh from the API
+        getAllAttendees();
+      },
+      (error) => {
+        console.error('Error listening to Firestore: ', error);
+      }
+    );
+
+    // Cleanup function
+    return () => unsubscribe();
+  }, []);
+
   return (
     <div className="">
       <Toast />
@@ -380,7 +451,7 @@ function Guests(props) {
                   }`}
                   disabled={creatingGuest}
                 >
-                  {creatingGuest ? 'Loading...' : 'Create Guest'}
+                  {creatingGuest ? 'Creating...' : 'Create Guest'}
                 </button>
               </form>
             )}
@@ -432,14 +503,24 @@ function Guests(props) {
           <MainButton text={'+ Add Guest(s)'} />
         </div>
       </div>
-      <div className="overflow-x-auto h-[70vh] border border-3 border-gray rounded-md pl-4 py-4">
-        <TableComponent
-          headers={guestHeaders}
-          data={guestData}
-          title="Guests"
-          showCheckBox={true}
-        />
-      </div>
+
+      {isLoading ? (
+        <div className="md:w-4/5 w-full overflow-x-auto h-[40vh] flex flex-col items-center justify-center">
+          <div className="animate-spin rounded-full h-14 w-14 border-t-2 border-b-2 border-mainBlue"></div>
+          <p className="mt-4 text-sm font-light text-gray-400">
+            Hang tight, we're almost done ...
+          </p>
+        </div>
+      ) : (
+        <div className="overflow-x-auto h-[70vh] border border-3 border-gray rounded-md pl-4 py-4">
+          <TableComponent
+            headers={guestHeaders}
+            data={guestData}
+            title="Guests"
+            showCheckBox={true}
+          />
+        </div>
+      )}
     </div>
   );
 }

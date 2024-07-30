@@ -50,7 +50,7 @@ function Attendees() {
   const [isLoading, setIsLoading] = useState(false);
   const [isFetchingTodayReceipt, setIsFetchingTodayReceipt] = useState(false);
   const [manuallyAddedAttendeesCount, setManuallyAddedAttendeesCount] =
-    useState(false);
+    useState(0);
 
   const { role } = useAuth();
   const token = sessionStorage.getItem('token');
@@ -291,14 +291,15 @@ function Attendees() {
         (receipt) => receipt.createdAt === formattedDate
       );
       // console.log('todayReceipt: ', todayReceipt);
-      setTodayAttendance(todayReceipt.numberOfAttendees);
+      setTodayAttendance(todayReceipt?.numberOfAttendees || 0);
       // console.log('attendance today: ', todayReceipt.numberOfAttendees);
 
       setManuallyAddedAttendeesCount(
-        todayReceipt.attendees.filter((attendee) => attendee.isScanned === 'No')
-          .length
+        todayReceipt?.attendees.filter(
+          (attendee) => attendee.isScanned === 'No'
+        ).length || 0
       );
-      console.log('manually added today: ', manuallyAddedAttendeesCount);
+      // console.log('manually added today: ', manuallyAddedAttendeesCount);
     } catch (error) {
       console.log('Failed to fetch stats', error?.response || error.message);
     } finally {
@@ -479,7 +480,6 @@ function Attendees() {
         theme: 'light',
         transition: Bounce,
       });
-      setCreatingAttendee(false);
     } catch (error) {
       console.log(
         'Failed to create attendee',
