@@ -790,88 +790,64 @@ export function DeleteButton({ attendeeDetails }) {
 
 export function ViewAttendeeButton({ attendeeDetails }) {
   const [attendeeLastLunch, setAttendeeLastLunch] = useState([]);
-  const [lastLunchCount, setLastLunchCount] = useState(0); // State for unique count
+  const [filteredLunches, setFilteredLunches] = useState([]);
+  const [lastLunchCount, setLastLunchCount] = useState(0);
 
-  //headers for the table
-  const attendeeHeaders = ['lastlunch'];
+  const handleFetchUserAttendance = async () => {
+    try {
+      const response = await axios.get(
+        `${API_BASE_URL}/attendance/stats/user/${attendeeDetails.userId}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
 
-  //Attendee's data filtered for the table
+      const dates = response.data.data.dates;
+      setAttendeeLastLunch(dates);
+      setFilteredLunches(dates);
+      setLastLunchCount(dates.length);
+
+    } catch (error) {
+      console.log(
+        'Failed to fetch attendee attendance',
+        error?.response?.data?.message || error.message
+      );
+    }
+  };
+
+  const attendeeHeaders = ['Attendance'];
+
   useEffect(() => {
-    const filteredAttendees = attendeesDb.filter(
-      (attendee) => attendee.id === attendeeDetails.id
-    );
-    const formattedData = filteredAttendees.map((attendee) => [
-      attendee.lastLunch,
-    ]);
-    setAttendeeLastLunch(formattedData);
-    setLastLunchCount(countLastLunch(attendeeLastLunch)); // Calculate and store count
-  }, [attendeeDetails.id]);
+    handleFetchUserAttendance();
+  }, []);
 
-  //the count of data in attendeelastlunch
-  function countLastLunch(attendeeLastLunch) {
-    return new Set(attendeeLastLunch.map((item) => item[0])).size;
-  }
-  //form displayed after view button is clicked
   const [showViewForm, setViewButton] = useState(false);
 
-  // formik for finding the information of lunchs an attendee took
-
-  //validation
   const validationSchema = Yup.object({
     startDate: Yup.date().required('Start date is required'),
     finalDate: Yup.date()
       .required('End date is required')
-      .when(
-        'startDate',
-        (startDate, schema) =>
-          startDate &&
-          schema.min(startDate, 'End date must be after start date')
-      ),
+      .when('startDate', (startDate, schema) => startDate && schema.min(startDate, 'End date must be after start date')),
   });
 
-  // To handle the submission
   const handleFilterSubmit = (values, { setSubmitting }) => {
     const { startDate: startDateString, finalDate: finalDateString } = values;
-    const attendeeId = attendeeDetails.id; // Access attendee ID from props
-
-    // Convert startDate and finalDate strings to Date objects
     const startDate = new Date(startDateString);
     const endDate = new Date(finalDateString);
 
-    // Logic to find dates between start and end date (inclusive)
-    const allDates = [];
-    const currentDate = new Date(startDate);
-
-    while (currentDate <= endDate) {
-      const formattedDate = currentDate.toISOString().slice(0, 10); // Format date as YYYY-MM-DD
-      allDates.push(formattedDate);
-      currentDate.setDate(currentDate.getDate() + 1); // Increment date by 1 day
-    }
-
-    // Logic to filter attendee lunches based on the date range
-    const filteredLunches = attendeesDb.filter((lunch) => {
-      const lunchDate = new Date(lunch.lastLunch);
-      return (
-        lunch.id === attendeeId &&
-        lunchDate >= startDate &&
-        lunchDate <= endDate
-      );
+    const filteredDates = attendeeLastLunch.filter(date => {
+      const currentDate = new Date(date);
+      return currentDate >= startDate && currentDate <= endDate;
     });
 
-    // Update the state with filtered lunches
-    const formattedData = filteredLunches.map((attendee) => [
-      attendee.lastLunch,
-    ]);
-    setAttendeeLastLunch(formattedData);
-    setLastLunchCount(countLastLunch(formattedData));
-
+    setFilteredLunches(filteredDates);
+    setLastLunchCount(filteredDates.length);
     setSubmitting(false);
   };
+
   return (
     <div>
       {showViewForm && (
         <div className="fixed top-0 left-0 bg-bgBlue z-[40] h-screen w-screen overflow-y-auto overflow-x-auto flex items-center justify-center">
-          <div className="relative bg-white w-[84%] sm:w-[75%] md:w-[60%] lg:w-[50%]   h-max px-[2.5%] py-[2.5%] rounded-md">
+          <div className="relative bg-white w-[84%] sm:w-[75%] md:w-[60%] lg:w-[50%] h-max px-[2.5%] py-[2.5%] rounded-md">
             <div className="mx-auto flex flex-col h-full gap-4">
               <button
                 className="close border-2 border-mainRed rounded-md px-2 text-mainRed absolute right-4 top-4"
@@ -880,81 +856,64 @@ export function ViewAttendeeButton({ attendeeDetails }) {
                 x
               </button>
 
-              <h1 className=" w-[90%] text-gray-500 font-semibold text-md md:text-[1.1rem]">
-                Employee Details for:{' '}
-                <span className=" text-mainBlue ">{attendeeDetails.name}</span>
+              <h1 className="w-[90%] text-gray-500 font-semibold text-md md:text-[1.1rem]">
+                Employee Details for: <span className="text-mainBlue">{attendeeDetails.name}</span>
               </h1>
               <p className="text-gray-500 text-[1rem]">
-                nationalId :{' '}
-                <span className="text-mainBlue font-bold capitalize">
-                  {attendeeDetails.role}
-                </span>
+                nationalId: <span className="text-mainBlue font-bold capitalize">{attendeeDetails.nationalId}</span>
               </p>
 
               <Formik
-                initialValues={{ startDate: null, finalDate: null }}
+                initialValues={{ startDate: '', finalDate: '' }}
                 validationSchema={validationSchema}
                 onSubmit={handleFilterSubmit}
               >
                 {({ values, handleChange, errors, touched, handleSubmit }) => (
                   <form onSubmit={handleSubmit}>
                     <div className="w-full flex lg:flex-row flex-col gap-2">
-                      <div className="lg:w-[37%] w-full ">
-                        <label
-                          htmlFor="startDate"
-                          className="text-xs text-gray h-3 my-auto pr-1"
-                        >
-                          From :
+                      <div className="lg:w-[37%] w-full">
+                        <label htmlFor="startDate" className="text-xs text-gray h-3 my-auto pr-1">
+                          From:
                         </label>
                         <input
                           type="date"
                           name="startDate"
                           className={`text-xs lg:w-[8rem] w-full h-[2rem] border-[1px] border-gray rounded-[0.15rem] capitalize ${
-                            errors.startDate && touched.startDate
-                              ? 'border-red-500'
-                              : ''
+                            errors.startDate && touched.startDate ? 'border-red-500' : ''
                           }`}
-                          value={values.startDate || ''}
+                          value={values.startDate}
                           onChange={handleChange}
                           required
                         />
                         {errors.startDate && touched.startDate && (
-                          <div className="text-red-500 text-xs">
-                            {errors.startDate}
-                          </div>
+                          <div className="text-red-500 text-xs">{errors.startDate}</div>
                         )}
                       </div>
                       <div className="lg:w-[37%] w-full">
-                        <label
-                          htmlFor="endDate"
-                          className="text-xs text-gray h-3 my-auto pr-1"
-                        >
-                          To :
+                        <label htmlFor="finalDate" className="text-xs text-gray h-3 my-auto pr-1">
+                          To:
                         </label>
                         <input
                           type="date"
                           name="finalDate"
-                          value={values.finalDate || ''}
-                          className={`outline-none text-xs  lg:w-[8rem] w-full h-[2rem] border-[1px] border-gray rounded-[0.15rem] capitalize ${
-                            errors.startDate && touched.startDate
-                              ? 'border-red-500'
-                              : ''
+                          value={values.finalDate}
+                          className={`outline-none text-xs lg:w-[8rem] w-full h-[2rem] border-[1px] border-gray rounded-[0.15rem] capitalize ${
+                            errors.finalDate && touched.finalDate ? 'border-red-500' : ''
                           }`}
                           onChange={handleChange}
                           required
                         />
                         {errors.finalDate && touched.finalDate && (
-                          <div className="text-red-500 text-xs">
-                            {errors.finalDate}
-                          </div>
+                          <div className="text-red-500 text-xs">{errors.finalDate}</div>
                         )}
                       </div>
                       <div className="lg:w-[20%] w-full text-white">
-                        <input
-                          type="Submit"
-                          value="Filter"
+                        <button
+                          type="submit"
                           className="text-sm text-white lg:w-[8rem] w-full h-[2rem] border-[1px] bg-mainBlue rounded-[0.15rem] capitalize hover:cursor-pointer"
-                        />
+                        >
+                          Filter
+                        </button>
                       </div>
                     </div>
                   </form>
@@ -962,16 +921,16 @@ export function ViewAttendeeButton({ attendeeDetails }) {
               </Formik>
 
               <div className="mt-2 flex sm:flex-row flex-col-reverse w-full gap-3">
-                <div className="sm:w-[65%] w-full md  lg:h-[16rem]  md:h-[14rem] border border-3 border-mainBlue rounded-md pt-2 pl-2">
+                <div className="sm:w-[65%] w-full md lg:h-[16rem] md:h-[14rem] border border-3 border-mainBlue rounded-md pt-2 pl-2">
                   <TableComponent
                     title=""
                     headers={attendeeHeaders}
-                    data={attendeeLastLunch}
+                    data={filteredLunches.map(date => [date])}
                     showCheckBox={false}
                   />
                 </div>
-                <div className="sm:w-[34%] w-full md:pl-4 ">
-                  <div className="w-full  flex md:flex-col items-center   text-center  ">
+                <div className="sm:w-[34%] w-full md:pl-4">
+                  <div className="w-full flex md:flex-col items-center text-center">
                     <div className="h-[17.5rem] h-full border border-1 border-mainBlue w-full border-gray rounded-md text-sm">
                       <p className="mt-4 flex flex-col items-center">
                         <span className="font-bold text-4xl md:text-8xl text-gray-400 flex flex-col md:flex-row">
@@ -979,12 +938,7 @@ export function ViewAttendeeButton({ attendeeDetails }) {
                         </span>
                       </p>
                       <div className="flex flex-col gap-3">
-                        {/* <p className="text-black font-bold text-[1rem]">
-                          From
-                        </p>
-                        <p>01/20/2024</p>
-                        <p className="text-black font-bold text-[1rem]">to</p>
-                        <p>04/5/2024</p> */}
+                        {/* Add any additional information here */}
                       </div>
                     </div>
                   </div>
