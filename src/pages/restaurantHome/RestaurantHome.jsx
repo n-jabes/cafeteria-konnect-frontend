@@ -10,7 +10,8 @@ import { useAuth } from '../../context/AuthContext';
 import axios from 'axios';
 import { API_BASE_URL } from '../../utils/api';
 import { ref, onValue } from 'firebase/database';
-import { database } from '../../utils/firebase';
+import { database, firestoreDB } from '../../utils/firebase';
+import { collection, onSnapshot } from 'firebase/firestore';
 
 const StatsCard = ({ title, text, style }) => (
   <div className="p-4 w-full md:w-1/2">
@@ -127,7 +128,7 @@ function RestaurantHome(props) {
 
   const handleSearchChange = (event) => {
     const value = event.target.value;
-    console.log('search value: ', value);
+    // console.log('search value: ', value);
     setSearchInput(value);
     filterEmails(value);
   };
@@ -368,8 +369,20 @@ function RestaurantHome(props) {
       getEstimatedAttendees(); // Fetch updated data from your API
     });
 
+    // Create a reference to the 'users' collection
+    const usersCollectionRef = collection(firestoreDB, 'users');
+    const unsubscribeAllAttendees = onSnapshot(
+      usersCollectionRef,
+      (snapshot) => {
+        getAllAttendees(); // Fetch updated data from your API
+      }
+    );
+
     // Cleanup function
-    return () => unsubscribe();
+    return () => {
+      unsubscribe();
+      unsubscribeAllAttendees();
+    };
   }, []);
 
   return (

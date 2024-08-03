@@ -130,7 +130,7 @@ export function UpdateAttendeeButton({ attendeeDetails }) {
     }
 
     // console.log('user to update: ', attendeeDetails.userId);
-    console.log('attendee data: ', attendeeData);
+    // console.log('attendee data: ', attendeeData);
     // console.log('token', token)
 
     try {
@@ -453,7 +453,7 @@ export function UpdateGuestButton({ guest }) {
     { id: 1, name: 'Approved', value: 'approved' },
     { id: 2, name: 'On Leave', value: 'on leave' },
     { id: 3, name: 'New', value: 'new' },
-    { id: 4, name: 'Declined', value: 'decline' },
+    { id: 4, name: 'Declined', value: 'declined' },
     { id: 5, name: 'Pending', value: 'pending' },
   ]);
   const token = sessionStorage.getItem('token');
@@ -487,7 +487,7 @@ export function UpdateGuestButton({ guest }) {
 
     const selectedRole = roles.find((role) => role.role === 'GUEST');
 
-    console.log(selectedRole);
+    // console.log(selectedRole);
     const roleId = selectedRole ? String(selectedRole.id) : null;
 
     const guestData = {
@@ -505,7 +505,7 @@ export function UpdateGuestButton({ guest }) {
       guestData.onLeaveEndDate = values.onLeaveEndDate;
     }
 
-    console.log('guestData', guestData);
+    // console.log('guestData', guestData);
 
     try {
       const response = await axios.put(
@@ -517,7 +517,7 @@ export function UpdateGuestButton({ guest }) {
           },
         }
       );
-      console.log('response: ', response);
+      // console.log('response: ', response);
       toast.success('Guest updated successfully', {
         position: 'top-right',
         autoClose: 1000,

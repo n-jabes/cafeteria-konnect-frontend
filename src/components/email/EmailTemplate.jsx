@@ -4,12 +4,43 @@ import Toast from './../toast/Toast';
 import { Bounce, toast } from 'react-toastify';
 import TableComponent from '../table/TableComponent';
 import Guests from './../../pages/guests/Guests';
+import Papa from 'papaparse';
+import {
+  getStorage,
+  ref,
+  uploadString,
+  getDownloadURL,
+} from 'firebase/storage';
+import { API_BASE_URL } from '../../utils/api';
+
+const uploadToStorageService = async (csvData) => {
+  const storage = getStorage();
+  const fileName = `guests_${Date.now()}.csv`;
+  const storageRef = ref(storage, fileName);
+
+  await uploadString(storageRef, csvData, 'raw');
+  const downloadURL = await getDownloadURL(storageRef);
+
+  return downloadURL;
+};
+
+const generateCSV = (data) => {
+  return Papa.unparse(data);
+};
+
+const uploadCSV = async (guests) => {
+  const csvData = generateCSV(guests);
+  // Upload csvData to your storage service
+  // Return the URL of the uploaded file
+  const csvUrl = await uploadToStorageService(csvData);
+  return csvUrl;
+};
 
 function EmailTemplate({ headers, guests }) {
   const [senderName, setSenderName] = useState('Marie Honnette');
   const [senderEmail, setSenderEmail] = useState('honnettemarie12@gmail.com');
   const [receiverName, setReceiverName] = useState('Nshuti Jabes');
-  const [receiverEmail, setReceiverEmail] = useState('ihozomarie12@gmail.com');
+  const [receiverEmail, setReceiverEmail] = useState('nshutij7@gmail.com');
   const [sendingToCBM, setSendingToCBM] = useState(false);
   const [message, setMessage] = useState(
     'Hello, this is the list of new guests'
@@ -18,22 +49,36 @@ function EmailTemplate({ headers, guests }) {
   const [showList, setshowList] = useState(false);
   const form = useRef();
 
+  const guestsToShow = guests.map((guest) => [
+    guest.id,
+    guest.name,
+    guest.purpose,
+  ]);
+
+  // console.log('guestsToShow: ', guestsToShow);
+
   const generateGuestListHTML = () => {
     return guests
       .map(
         (guest, index) =>
           `<tr>
-            <td style="border: 1px solid #D1D5DB; padding: 8px; text-align: left;">${guest[0]}</td>
-            <td style="border: 1px solid #D1D5DB; padding: 8px; text-align: left;">${guest[1]}</td>
-            <td style="border: 1px solid #D1D5DB; padding: 8px; text-align: left;">${guest[2]}</td>
+            <td style="border: 1px solid #D1D5DB; padding: 8px; text-align: left;">${guest.id}</td>
+            <td style="border: 1px solid #D1D5DB; padding: 8px; text-align: left;">${guest.name}</td>
+            <td style="border: 1px solid #D1D5DB; padding: 8px; text-align: left;">${guest.purpose}</td>
           </tr>`
       )
       .join('');
   };
 
-  const sendEmail = (e) => {
+  const sendEmail = async (e) => {
     e.preventDefault();
     setIsLoading(true);
+
+    // console.log('new guests: ', guests);
+
+    const csvUrl = await uploadCSV(guests);
+    const guestIds = guests.map((guest) => guest.userId);
+    console.log('guest Ids: ', guestIds);
 
     const templateParams = {
       sender_name: senderName,
@@ -41,8 +86,23 @@ function EmailTemplate({ headers, guests }) {
       receiver_name: receiverName,
       receiver_email: receiverEmail,
       message: message,
+      csv_url: csvUrl,
       guest_list: generateGuestListHTML(),
+      approve_url: `
+${API_BASE_URL}/users/updateStatus-batch/approve?ids=${guestIds.join(',')}`,
+      decline_url: `${API_BASE_URL}/users/updateStatus-batch/decline?ids=${guestIds.join(
+        ','
+      )}`,
     };
+
+    // const templateParams = {
+    //   sender_name: senderName,
+    //   sender_email: senderEmail,
+    //   receiver_name: receiverName,
+    //   receiver_email: receiverEmail,
+    //   message: message,
+    //   guest_list: generateGuestListHTML(),
+    // };
 
     // EmailJS credentials
     const templateId = 'template_euz6s5h';
@@ -84,6 +144,7 @@ function EmailTemplate({ headers, guests }) {
       }
     );
   };
+
   return (
     <div className="h-[70vh] overflow-y-auto pr-4">
       <form ref={form} onSubmit={sendEmail} className="mt-6 md:mt-2">
@@ -183,7 +244,7 @@ function EmailTemplate({ headers, guests }) {
               Hide List
             </h2>
           </div>
-          <TableComponent headers={headers} data={guests} />
+          <TableComponent headers={headers} data={guestsToShow} />
         </div>
       )}
     </div>

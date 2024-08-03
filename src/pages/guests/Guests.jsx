@@ -6,13 +6,13 @@ import {
   SendAllNewGuestsToCBMButton,
 } from '../../components/buttons/Buttons';
 import EmailTemplate from '../../components/email/EmailTemplate';
-import Toast from '../../components/toast/Toast';
-import { Bounce, toast } from 'react-toastify';
 import { API_BASE_URL } from '../../utils/api';
 import axios from 'axios';
 import Papa from 'papaparse';
 import { firestoreDB } from '../../utils/firebase';
 import { collection, onSnapshot } from 'firebase/firestore';
+import { Bounce, toast } from 'react-toastify';
+import Toast from '../../components/toast/Toast';
 
 function Guests(props) {
   const [showForm, setShowForm] = useState(false);
@@ -62,6 +62,7 @@ function Guests(props) {
         }));
 
       setAllGuests(guests);
+      // console.log('all guests: ', guests)
     } catch (error) {
       console.log(
         'Failed to fetch all people',
@@ -88,9 +89,9 @@ function Guests(props) {
 
   // filter the all guests array to find the newly created guests and send them to the CBM
   const sendToCBMHeaders = ['Id', 'Name', 'Purpose'];
-  const sendToCBMData = allGuests
-    .filter((guest) => guest.status === 'new')
-    .map((guest) => [guest.id, guest.name, guest.purpose]);
+  const sendToCBMData = allGuests.filter((guest) => guest.status === 'new');
+
+  // console.log('new guests: ', sendToCBMData)
 
   const handleSubmitCreateGuest = async (event) => {
     event.preventDefault(); // Prevent default form submission
@@ -135,7 +136,7 @@ function Guests(props) {
 
       // Handle successful response
       // console.log('Guest created:', response.data);
-      toast.success(response.message || 'Guest added successfully', {
+      toast.success(response?.data?.message || 'Guest added successfully', {
         position: 'top-right',
         autoClose: 2000,
         hideProgressBar: false,
@@ -151,7 +152,7 @@ function Guests(props) {
       // event.target.reset();
     } catch (error) {
       console.error('Error creating guest:', error);
-      toast.error(error.response?.data?.message || error.message, {
+      toast.error(error?.response?.data?.message || error?.message, {
         position: 'top-right',
         autoClose: 2000,
         hideProgressBar: false,
@@ -217,8 +218,8 @@ function Guests(props) {
         );
 
         console.log('Response: ', response);
-        toast.success(response.message || 'Batch added successfully', {
-          position: 'top-right',
+        toast.success(response?.data?.message || 'Batch added successfully', {
+          position: 'top-center',
           autoClose: 2000,
           hideProgressBar: false,
           closeOnClick: true,
@@ -228,12 +229,13 @@ function Guests(props) {
           theme: 'light',
           transition: Bounce,
         });
+
       } catch (error) {
         console.error('Error creating batch:', error);
         toast.error(
-          error.response?.data?.message ||
-            error.response?.data?.error ||
-            error.message,
+          error?.response?.data?.message ||
+            error?.response?.data?.error ||
+            error?.message,
           {
             position: 'top-right',
             autoClose: 3000,
@@ -288,9 +290,9 @@ function Guests(props) {
 
   return (
     <div className="">
-      <Toast />
       {sendGuestsToCBM && (
         <div className=" fixed top-0 left-0 bg-bgBlue z-[40] h-screen w-screen overflow-y-auto overflow-x-auto flex items-center justify-center">
+         <Toast/>
           <div className=" relative bg-white w-[90%] lg:w-[55%] h-max px-[3.5%] py-[4%] rounded-md">
             <button
               className="close border-2 border-mainRed rounded-md px-2 text-mainRed absolute right-4 top-4"
@@ -306,6 +308,7 @@ function Guests(props) {
 
       {showForm && (
         <div className=" fixed top-0 left-0 bg-bgBlue z-[40] h-screen w-screen overflow-y-auto overflow-x-auto flex items-center justify-center">
+          <Toast/>
           <div className=" relative bg-white w-[90%] lg:w-[45%] h-max px-[3.5%] py-[4%] rounded-md">
             <button
               className="close border-2 border-mainRed rounded-md px-2 text-mainRed absolute right-4 top-4"
