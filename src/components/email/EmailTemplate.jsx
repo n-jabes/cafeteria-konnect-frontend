@@ -91,10 +91,9 @@ function EmailTemplate({ headers, guests }) {
       csv_url: csvUrl,
       guest_list: generateGuestListHTML(),
       approve_url: `${API_BASE_URL}/users/approve-guests-proxy`,
-      decline_url: `${API_BASE_URL}/users/decline-guests`,
+      decline_url: `${API_BASE_URL}/users/decline-guests-proxy`,
       guestIds: guestIds,
     };
-    
 
     // const templateParams = {
     //   sender_name: senderName,
