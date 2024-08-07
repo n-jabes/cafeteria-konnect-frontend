@@ -37,14 +37,14 @@ const StatsSpinner = () => {
   );
 };
 
-const initialChartData = [
-  { date: '6/1/2024', value: 4500 },
-  { date: '6/2/2024', value: 3000 },
-  { date: '6/3/2024', value: 4000 },
-  { date: '6/4/2024', value: 3500 },
-  { date: '6/5/2024', value: 3800 },
-  { date: '6/6/2024', value: 3200 },
-];
+// const initialChartData = [
+//   { date: '6/1/2024', value: 4500 },
+//   { date: '6/2/2024', value: 3000 },
+//   { date: '6/3/2024', value: 4000 },
+//   { date: '6/4/2024', value: 3500 },
+//   { date: '6/5/2024', value: 3800 },
+//   { date: '6/6/2024', value: 3200 },
+// ];
 
 const initialNotifications = [
   {
@@ -95,43 +95,76 @@ function Statistics(props) {
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(null);
-  const [filteredData, setFilteredData] = useState(initialChartData);
+  // const [filteredData, setFilteredData] = useState(initialChartData);
   const [notifications, setNotifications] = useState(initialNotifications);
   const [visibleNotifications, setVisibleNotifications] = useState(4);
   const [todayValue, setTodayValue] = useState(<StatsSpinner />);
   const [weekValue, setWeekValue] = useState(<StatsSpinner />);
   const [monthValue, setMonthValue] = useState(<StatsSpinner />);
-  const [gettingStats, setGettingStats] = useState(false);
+  const [gettingGraphData, setGettingGraphData] = useState(false);
+  const [graphData, setGraphData] = useState([]);
   const token = sessionStorage.getItem('token');
 
   const toggleCalendar = () => {
     setIsCalendarOpen(!isCalendarOpen);
   };
 
-  const generateRandomData = (start, end) => {
-    const data = [];
-    const currentDate = new Date(start);
-    const endDate = new Date(end);
+  // const generateRandomData = (start, end) => {
+  //   const data = [];
+  //   const currentDate = new Date(start);
+  //   const endDate = new Date(end);
 
-    while (currentDate <= endDate) {
-      data.push({
-        date: currentDate.toLocaleDateString(),
-        value: Math.floor(Math.random() * 6000),
-      });
-      currentDate.setDate(currentDate.getDate() + 1);
+  //   while (currentDate <= endDate) {
+  //     data.push({
+  //       date: currentDate.toLocaleDateString(),
+  //       value: Math.floor(Math.random() * 6000),
+  //     });
+  //     currentDate.setDate(currentDate.getDate() + 1);
+  //   }
+  //   return data;
+  // };
+
+  function formatDate(date) {
+    // Ensure the input is a Date object
+    if (!(date instanceof Date)) {
+      throw new Error('Input must be a Date object');
     }
-    return data;
-  };
 
-  const handleDateChange = (dates) => {
+    // Extract month, day, and year
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+    const day = String(date.getDate()).padStart(2, '0');
+    const year = String(date.getFullYear()); // Extract last two digits of year
+
+    // Format date as MM-DD-YY
+    return `${month}-${day}-${year}`;
+  }
+
+  const handleDateChange = async (dates) => {
     const [start, end] = dates;
     setStartDate(start);
     setEndDate(end);
-
+    
     if (start && end) {
-      const generatedData = generateRandomData(start, end);
-      setFilteredData(generatedData);
+      setGettingGraphData(true);
       setIsCalendarOpen(false);
+      const startingDate = formatDate(start);
+      const endingDate = formatDate(end);
+      try {
+        const response = await axios.get(
+          `${API_BASE_URL}/attendance/stats/graph?startDate=${startingDate}&endDate=${endingDate}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setGraphData(response.data.data);
+        // console.log('graph data: ', response.data.data);
+      } catch (error) {
+        console.log('Failed to fetch graph data: ', error);
+      } finally {
+        setGettingGraphData(false);
+      }
     }
   };
 
@@ -212,6 +245,30 @@ function Statistics(props) {
     return () => unsubscribeStats();
   }, []);
 
+  const fetchGraphData = async () => {
+    setGettingGraphData(true);
+    try {
+      const response = await axios.get(
+        `${API_BASE_URL}/attendance/stats/graph`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setGraphData(response.data.data);
+      // console.log('graph data: ', response.data.data);
+    } catch (error) {
+      console.log('Failed to fetch graph data: ', error);
+    } finally {
+      setGettingGraphData(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchGraphData();
+  }, []);
+
   return (
     <div className="w-full sm:h-[80vh] h-auto">
       <p className="font-medium font-extrabold">Cafeteria attendances</p>
@@ -260,7 +317,11 @@ function Statistics(props) {
               </div>
             )}
             <div className="relative h-[90%]">
-              <CafeteriaAttendeesChart data={filteredData} />
+              {gettingGraphData !== 'true' ? (
+                <CafeteriaAttendeesChart data={graphData} />
+              ) : (
+                <StatsSpinner />
+              )}
             </div>
           </div>
         </div>

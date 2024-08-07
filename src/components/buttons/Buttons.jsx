@@ -804,7 +804,6 @@ export function ViewAttendeeButton({ attendeeDetails }) {
       setAttendeeLastLunch(dates);
       setFilteredLunches(dates);
       setLastLunchCount(dates.length);
-
     } catch (error) {
       console.log(
         'Failed to fetch attendee attendance',
@@ -825,7 +824,12 @@ export function ViewAttendeeButton({ attendeeDetails }) {
     startDate: Yup.date().required('Start date is required'),
     finalDate: Yup.date()
       .required('End date is required')
-      .when('startDate', (startDate, schema) => startDate && schema.min(startDate, 'End date must be after start date')),
+      .when(
+        'startDate',
+        (startDate, schema) =>
+          startDate &&
+          schema.min(startDate, 'End date must be after start date')
+      ),
   });
 
   const handleFilterSubmit = (values, { setSubmitting }) => {
@@ -833,7 +837,7 @@ export function ViewAttendeeButton({ attendeeDetails }) {
     const startDate = new Date(startDateString);
     const endDate = new Date(finalDateString);
 
-    const filteredDates = attendeeLastLunch.filter(date => {
+    const filteredDates = attendeeLastLunch.filter((date) => {
       const currentDate = new Date(date);
       return currentDate >= startDate && currentDate <= endDate;
     });
@@ -857,10 +861,14 @@ export function ViewAttendeeButton({ attendeeDetails }) {
               </button>
 
               <h1 className="w-[90%] text-gray-500 font-semibold text-md md:text-[1.1rem]">
-                Employee Details for: <span className="text-mainBlue">{attendeeDetails.name}</span>
+                Employee Details for:{' '}
+                <span className="text-mainBlue">{attendeeDetails.name}</span>
               </h1>
               <p className="text-gray-500 text-[1rem]">
-                nationalId: <span className="text-mainBlue font-bold capitalize">{attendeeDetails.nationalId}</span>
+                nationalId:{' '}
+                <span className="text-mainBlue font-bold capitalize">
+                  {attendeeDetails.nationalId}
+                </span>
               </p>
 
               <Formik
@@ -872,25 +880,35 @@ export function ViewAttendeeButton({ attendeeDetails }) {
                   <form onSubmit={handleSubmit}>
                     <div className="w-full flex lg:flex-row flex-col gap-2">
                       <div className="lg:w-[37%] w-full">
-                        <label htmlFor="startDate" className="text-xs text-gray h-3 my-auto pr-1">
+                        <label
+                          htmlFor="startDate"
+                          className="text-xs text-gray h-3 my-auto pr-1"
+                        >
                           From:
                         </label>
                         <input
                           type="date"
                           name="startDate"
                           className={`text-xs lg:w-[8rem] w-full h-[2rem] border-[1px] border-gray rounded-[0.15rem] capitalize ${
-                            errors.startDate && touched.startDate ? 'border-red-500' : ''
+                            errors.startDate && touched.startDate
+                              ? 'border-red-500'
+                              : ''
                           }`}
                           value={values.startDate}
                           onChange={handleChange}
                           required
                         />
                         {errors.startDate && touched.startDate && (
-                          <div className="text-red-500 text-xs">{errors.startDate}</div>
+                          <div className="text-red-500 text-xs">
+                            {errors.startDate}
+                          </div>
                         )}
                       </div>
                       <div className="lg:w-[37%] w-full">
-                        <label htmlFor="finalDate" className="text-xs text-gray h-3 my-auto pr-1">
+                        <label
+                          htmlFor="finalDate"
+                          className="text-xs text-gray h-3 my-auto pr-1"
+                        >
                           To:
                         </label>
                         <input
@@ -898,13 +916,17 @@ export function ViewAttendeeButton({ attendeeDetails }) {
                           name="finalDate"
                           value={values.finalDate}
                           className={`outline-none text-xs lg:w-[8rem] w-full h-[2rem] border-[1px] border-gray rounded-[0.15rem] capitalize ${
-                            errors.finalDate && touched.finalDate ? 'border-red-500' : ''
+                            errors.finalDate && touched.finalDate
+                              ? 'border-red-500'
+                              : ''
                           }`}
                           onChange={handleChange}
                           required
                         />
                         {errors.finalDate && touched.finalDate && (
-                          <div className="text-red-500 text-xs">{errors.finalDate}</div>
+                          <div className="text-red-500 text-xs">
+                            {errors.finalDate}
+                          </div>
                         )}
                       </div>
                       <div className="lg:w-[20%] w-full text-white">
@@ -925,7 +947,7 @@ export function ViewAttendeeButton({ attendeeDetails }) {
                   <TableComponent
                     title=""
                     headers={attendeeHeaders}
-                    data={filteredLunches.map(date => [date])}
+                    data={filteredLunches.map((date) => [date])}
                     showCheckBox={false}
                   />
                 </div>

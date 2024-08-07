@@ -1,12 +1,31 @@
 import React from 'react';
 import { Line } from 'react-chartjs-2';
-import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, Filler } from 'chart.js';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+  Filler,
+} from 'chart.js';
 
-ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, Filler);
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+  Filler
+);
 
 const CafeteriaAttendeesChart = ({ data }) => {
-  const labels = data.map(entry => entry.date);
-  const attendees = data.map(entry => entry.value);
+  const labels = data.map((entry) => entry.date);
+  const attendees = data.map((entry) => entry.count);
 
   const chartData = {
     labels: labels,
@@ -24,7 +43,7 @@ const CafeteriaAttendeesChart = ({ data }) => {
 
   const options = {
     responsive: true,
-    maintainAspectRatio: false, 
+    maintainAspectRatio: false,
     scales: {
       x: {
         title: {
@@ -34,7 +53,7 @@ const CafeteriaAttendeesChart = ({ data }) => {
       },
       y: {
         beginAtZero: true,
-        max: 6000,
+        // max: 10,
         title: {
           display: true,
           text: 'Attendees',

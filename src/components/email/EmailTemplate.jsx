@@ -77,7 +77,9 @@ function EmailTemplate({ headers, guests }) {
     // console.log('new guests: ', guests);
 
     const csvUrl = await uploadCSV(guests);
-    const guestIds = guests.map((guest) => guest.userId);
+    // const guestIds = guests.map((guest) => guest.userId);
+    const guestIds = guests.map((guest) => guest.userId).join(',');
+
     console.log('guest Ids: ', guestIds);
 
     const templateParams = {
@@ -88,12 +90,11 @@ function EmailTemplate({ headers, guests }) {
       message: message,
       csv_url: csvUrl,
       guest_list: generateGuestListHTML(),
-      approve_url: `
-${API_BASE_URL}/users/updateStatus-batch/approve?ids=${guestIds.join(',')}`,
-      decline_url: `${API_BASE_URL}/users/updateStatus-batch/decline?ids=${guestIds.join(
-        ','
-      )}`,
+      approve_url: `${API_BASE_URL}/users/approve-guests-proxy`,
+      decline_url: `${API_BASE_URL}/users/decline-guests`,
+      guestIds: guestIds,
     };
+    
 
     // const templateParams = {
     //   sender_name: senderName,
