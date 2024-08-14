@@ -9,7 +9,7 @@ import axios from 'axios';
 const Header = ({ toggleSidebar, headerTitle }) => {
   const [viewNotification, setViewNotificattion] = useState(false);
   const [viewProfile, setViewProfile] = useState(false);
-  const [viewEditForm, setViewEditForm] = useState(true);
+  const [viewEditForm, setViewEditForm] = useState(false);
   const [user, setUser] = useState(JSON.parse(sessionStorage.getItem('user')));
   const [isLoading, setIsLoading] = useState(false);
   const token = sessionStorage.getItem('token');
@@ -87,7 +87,7 @@ const Header = ({ toggleSidebar, headerTitle }) => {
         <div className="w-[90vw] sm:w-[75vw] md:w-[55vw] lg:w-[25vw] h-max py-4 px-4 bg-white absolute right-[2.5rem] top-[12.5vh] flex flex-col items-center z-[5] shadow-xl rounded-md">
           <div className="w-full flex items-center justify-between mb-2">
             <button
-              className="w-max flex items-start py-2 px-4 bg-transparent border-[1px] border-blue-200 rounded-[5px] text-xs text-blue-400 hover:bg-blue-500 hover:text-white"
+              className="w-max flex items-start py-2 px-4 bg-transparent border-[1px] border-mainBlue rounded-[5px] text-xs text-mainBlue hover:bg-mainBlue hover:text-white"
               onClick={() => setViewEditForm(!viewEditForm)}
             >
               <span className="">{viewEditForm ? 'Back' : 'Edit'}</span>
@@ -134,7 +134,7 @@ const Header = ({ toggleSidebar, headerTitle }) => {
                 />
                 <button
                   type="submit"
-                  className="w-full text-center py-2 bg-blue-500 border-[2px] border-blue-500 rounded-md text-white font-medium hover:text-blue-500 hover:bg-white mt-3 mb-2"
+                  className="w-full text-center py-2 bg-mainBlue border-[1px] border-mainBlue rounded-md text-white font-medium hover:text-mainBlue hover:bg-white mt-3 mb-2"
                 >
                   Update
                 </button>

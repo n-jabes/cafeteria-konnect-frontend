@@ -43,7 +43,7 @@ function EmailTemplate({ headers, guests }) {
   const [receiverEmail, setReceiverEmail] = useState('nshutij7@gmail.com');
   const [sendingToCBM, setSendingToCBM] = useState(false);
   const [message, setMessage] = useState(
-    'Hello, this is the list of new guests'
+    'Hello CBM, Tomorrow we are expecting a guest and I wanted to ask for permission to host them at the cafeteria'
   );
   const [isLoading, setIsLoading] = useState(false);
   const [showList, setshowList] = useState(false);
