@@ -1121,16 +1121,18 @@ export function AttendeeQrCodeButton({ attendeeDetails }) {
                 >
                   <FaDownload /> Download
                 </button>
-                <div
+
+                {/* share on whatsapp button  */}
+
+                {/* <div
                   className="text-white flex items-center py-2 px-4 gap-2 border-[1px] border-green-500 bg-green-500 hover:text-green-500 hover:bg-white"
                   onClick={handleShareViaWhatsApp}
                 >
-                  {/* <FaWhatsapp /> Share via Whatsapp */}
                   <WhatsappShareButton className="flex items-center gap-2">
                     <FaWhatsapp />
                     Share via Whatsapp
                   </WhatsappShareButton>
-                </div>
+                </div> */}
               </div>
             </div>
           </div>

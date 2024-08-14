@@ -4,18 +4,6 @@ import { getDatabase } from 'firebase/database';
 import { getFirestore } from 'firebase/firestore';
 
 // cafeteria-konnect-prod
-const firebaseConfig = {
-  apiKey: "AIzaSyCOqio-eoV78lEhwsy24mFMxAFFQ3FYHU8",
-  authDomain: "cafeteria-konnect-prod.firebaseapp.com",
-  databaseURL: "https://cafeteria-konnect-prod-default-rtdb.firebaseio.com",
-  projectId: "cafeteria-konnect-prod",
-  storageBucket: "cafeteria-konnect-prod.appspot.com",
-  messagingSenderId: "1043139937955",
-  appId: "1:1043139937955:web:ff570e14ab8b0168672116",
-  measurementId: "G-VQK9PQS9R4"
-};
-
-// cafeteria-konnect-dev
 // const firebaseConfig = {
 //   apiKey: "AIzaSyCOqio-eoV78lEhwsy24mFMxAFFQ3FYHU8",
 //   authDomain: "cafeteria-konnect-prod.firebaseapp.com",
@@ -23,10 +11,22 @@ const firebaseConfig = {
 //   projectId: "cafeteria-konnect-prod",
 //   storageBucket: "cafeteria-konnect-prod.appspot.com",
 //   messagingSenderId: "1043139937955",
-//   appId: "1:1043139937955:web:9b4c82b5ae9d6a40672116",
-//   measurementId: "G-XCXRX002SB"
+//   appId: "1:1043139937955:web:ff570e14ab8b0168672116",
+//   measurementId: "G-VQK9PQS9R4"
 // };
 
+// cafeteria-konnect-dev
+const firebaseConfig = {
+  apiKey: 'AIzaSyAfjScljO14xfiv2gFulLkUN7gyPJOHiFQ',
+  authDomain: 'cafeteria-konnect-dev.firebaseapp.com',
+  databaseURL:
+    'https://cafeteria-konnect-dev-default-rtdb.asia-southeast1.firebasedatabase.app',
+  projectId: 'cafeteria-konnect-dev',
+  storageBucket: 'cafeteria-konnect-dev.appspot.com',
+  messagingSenderId: '1026857195520',
+  appId: '1:1026857195520:web:371687540ab545eb6ba0e5',
+  measurementId: 'G-GBMNNVFZZV',
+};
 
 // cafeteriaKonnect
 // const firebaseConfig = {
