@@ -143,7 +143,7 @@ function Statistics(props) {
     const [start, end] = dates;
     setStartDate(start);
     setEndDate(end);
-    
+
     if (start && end) {
       setGettingGraphData(true);
       setIsCalendarOpen(false);
@@ -158,6 +158,7 @@ function Statistics(props) {
             },
           }
         );
+
         setGraphData(response.data.data);
         // console.log('graph data: ', response.data.data);
       } catch (error) {
@@ -257,7 +258,7 @@ function Statistics(props) {
         }
       );
       setGraphData(response.data.data);
-      // console.log('graph data: ', response.data.data);
+      console.log('graph data: ', response.data.data);
     } catch (error) {
       console.log('Failed to fetch graph data: ', error);
     } finally {

@@ -37,10 +37,10 @@ const uploadCSV = async (guests) => {
 };
 
 function EmailTemplate({ headers, guests }) {
-  const [senderName, setSenderName] = useState('Marie Honnette');
-  const [senderEmail, setSenderEmail] = useState('honnettemarie12@gmail.com');
-  const [receiverName, setReceiverName] = useState('Nshuti Jabes');
-  const [receiverEmail, setReceiverEmail] = useState('nshutij7@gmail.com');
+  const [senderName, setSenderName] = useState('Nshuti Jabes');
+  const [senderEmail, setSenderEmail] = useState('nshutij7@gmail.com');
+  const [receiverName, setReceiverName] = useState('Marie Honette');
+  const [receiverEmail, setReceiverEmail] = useState('ihozomarie12@gmail.com');
   const [sendingToCBM, setSendingToCBM] = useState(false);
   const [message, setMessage] = useState(
     'Hello CBM, Tomorrow we are expecting a guest and I wanted to ask for permission to host them at the cafeteria'
