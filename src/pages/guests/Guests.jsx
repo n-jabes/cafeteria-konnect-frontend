@@ -26,8 +26,10 @@ function Guests(props) {
   const [allGuests, setAllGuests] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const token = sessionStorage.getItem('token');
-  const roles = JSON.parse(sessionStorage.getItem('roles'));
-  const departments = JSON.parse(sessionStorage.getItem('departments'));
+  // const roles = JSON.parse(sessionStorage.getItem('roles'));
+  // const departments = JSON.parse(sessionStorage.getItem('departments'));
+  const [departments, setDepartments] = useState([]);
+  const [roles, setRoles] = useState([]);
 
   //fetching all attendees
   const getAllAttendees = async () => {
@@ -120,7 +122,7 @@ function Guests(props) {
         attendanceStatus,
       };
 
-      // console.log('guestData: ', guestData);
+      console.log('guestData: ', guestData);
 
       // Make API call
       const response = await axios.post(
@@ -169,8 +171,10 @@ function Guests(props) {
   };
 
   const handleCreateGuestsFromBatch = async () => {
-    // console.log('Csv Data: ', csvData);
     setCreatingGuests(true);
+    // console.log('roles:', roles);
+    // console.log('departments:', departments);
+    // console.log('Csv Data: ', csvData);
 
     const batchData = csvData
       .filter((data) => data.names != null && data.email != null)
@@ -180,6 +184,10 @@ function Guests(props) {
         )[0];
         const role = roles.filter((role) => role.role === filteredData.role)[0];
 
+        // const attendanceStatus = filteredData.sendToCBM === 'Yes' ? 'new' : 'approved';
+
+        console.log('sendToCBM', filteredData.sendToCBM)
+
         return {
           names: String(filteredData.names),
           email: String(filteredData.email),
@@ -187,6 +195,8 @@ function Guests(props) {
           departmentId: department ? String(department.id) : null,
           roleId: role ? String(role.id) : null,
           password: String(filteredData.password) || null,
+          purpose: String(filteredData.purpose),
+          attendanceStatus: String(filteredData.sendToCBM === 'Yes' ? 'new' : 'approved') ,
         };
       });
 
@@ -229,7 +239,6 @@ function Guests(props) {
           theme: 'light',
           transition: Bounce,
         });
-
       } catch (error) {
         console.error('Error creating batch:', error);
         toast.error(
@@ -265,7 +274,55 @@ function Guests(props) {
     });
   };
 
+  //fetching all departments
+  const getAllDepartments = async () => {
+    try {
+      const response = await axios.get(API_BASE_URL + '/departments/all', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const allDepartments = response.data.data.map((dept) => ({
+        id: dept.id,
+        department: dept.department,
+      }));
+      setDepartments(allDepartments);
+    } catch (error) {
+      console.log(
+        'Failed to fetch departments',
+        error.response?.data?.message || error.message
+      );
+    }
+  };
+
+  //fetching all roles
+  const getAllRoles = async () => {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/roles/all`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const allRoles = response.data.data.map((role) => ({
+        id: role.id,
+        role: role.role,
+      }));
+      setRoles(allRoles);
+    } catch (error) {
+      console.log(
+        'Failed to fetch roles',
+        error.response?.data?.message || error.message
+      );
+    }
+  };
+
   // Fetch the roles and departments when the component mounts
+  useEffect(() => {
+    getAllDepartments();
+    getAllRoles();
+  }, []);
   useEffect(() => {
     getAllAttendees(); // Initial data load from API
 
@@ -292,7 +349,7 @@ function Guests(props) {
     <div className="">
       {sendGuestsToCBM && (
         <div className=" fixed top-0 left-0 bg-bgBlue z-[40] h-screen w-screen overflow-y-auto overflow-x-auto flex items-center justify-center">
-         <Toast/>
+          <Toast />
           <div className=" relative bg-white w-[90%] lg:w-[55%] h-max px-[3.5%] py-[4%] rounded-md">
             <button
               className="close border-2 border-mainRed rounded-md px-2 text-mainRed absolute right-4 top-4"
@@ -308,7 +365,7 @@ function Guests(props) {
 
       {showForm && (
         <div className=" fixed top-0 left-0 bg-bgBlue z-[40] h-screen w-screen overflow-y-auto overflow-x-auto flex items-center justify-center">
-          <Toast/>
+          <Toast />
           <div className=" relative bg-white w-[90%] lg:w-[45%] h-max px-[3.5%] py-[4%] rounded-md">
             <button
               className="close border-2 border-mainRed rounded-md px-2 text-mainRed absolute right-4 top-4"
