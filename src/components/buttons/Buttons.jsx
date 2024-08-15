@@ -98,6 +98,21 @@ export function UpdateAttendeeButton({ attendeeDetails }) {
 
   const handleUpdateAttendee = async (values, { resetForm }) => {
     setUpdatingAttendee(true);
+    const [defaultDate, setDefaultDate] = useState('');
+
+    useEffect(() => {
+      // Get today's date
+      const today = new Date();
+  
+      // Format the date as yyyy-mm-dd
+      const year = today.getFullYear();
+      const month = String(today.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+      const day = String(today.getDate()).padStart(2, '0');
+      const formattedDate = `${year}-${month}-${day}`;
+  
+      // Set the default value
+      setDefaultDate(formattedDate);
+    }, []);
 
     // console.log('values: ', values);
 
@@ -457,6 +472,21 @@ export function UpdateGuestButton({ guest }) {
     { id: 5, name: 'Pending', value: 'pending' },
   ]);
   const token = sessionStorage.getItem('token');
+  const [defaultDate, setDefaultDate] = useState('');
+
+  useEffect(() => {
+    // Get today's date
+    const today = new Date();
+
+    // Format the date as yyyy-mm-dd
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+    const day = String(today.getDate()).padStart(2, '0');
+    const formattedDate = `${year}-${month}-${day}`;
+
+    // Set the default value
+    setDefaultDate(formattedDate);
+  }, []);
 
   // console.log('guest: ', guest);
 
@@ -670,6 +700,7 @@ export function UpdateGuestButton({ guest }) {
                       type="date"
                       id="startDate"
                       name="startDate"
+                      defaultValue={defaultDate}
                       className="outline-none text-sm py-2 px-4 border-[1px] border-gray rounded-md"
                     />
                   </div>

@@ -505,6 +505,7 @@ function Guests(props) {
                       id="endDate"
                       placeholder="Departure"
                       name="endDate"
+                      defaultValue={defaultDate}
                       className="outline-none text-sm py-2 px-4 border-[1px] border-gray rounded-md"
                       required
                     />
