@@ -12,6 +12,7 @@ const Header = ({ toggleSidebar, headerTitle }) => {
   const [viewEditForm, setViewEditForm] = useState(false);
   const [user, setUser] = useState(JSON.parse(sessionStorage.getItem('user')));
   const [isLoading, setIsLoading] = useState(false);
+  const [role, setRole] = useState(sessionStorage.getItem('role'));
   const token = sessionStorage.getItem('token');
 
   const handleHideProfile = () => {
@@ -45,6 +46,10 @@ const Header = ({ toggleSidebar, headerTitle }) => {
     getUserProfile();
   }, [token]);
 
+  useEffect(() => {
+    setRole(sessionStorage.getItem('role'));
+  }, []);
+
   return (
     <header className="bg-white shadow-md p-4 relative flex w-[100vw] md:w-full justify-between items-center">
       <div className="flex items-center">
@@ -65,9 +70,13 @@ const Header = ({ toggleSidebar, headerTitle }) => {
         </div>
         <div className="flex items-center gap-4" onClick={handleHideProfile}>
           <img
-            src="/profile.jpg"
+            src={
+              role === 'HR' ? '/Coat_of_arms.png' : '/Bourbon_Coffee_Logo.png'
+            }
             alt="Profile"
-            className="h-10 w-10 rounded-full"
+            className={`h-10 w-10 rounded-full ${
+              role === 'RESTAURANT' && 'border-[1px] border-gray-300 p-[2px]'
+            }`}
           />
           {isLoading ? (
             <div className="flex flex-col items-center justify-center h-full">
@@ -78,7 +87,7 @@ const Header = ({ toggleSidebar, headerTitle }) => {
               <p className="text-gray-600 text-sm sm:text-md font-medium">
                 {user?.names || ''}
               </p>
-              <p className="text-xs text-gray-400">Human Resource Manager</p>
+              <p className="text-xs text-gray-400">{role}</p>
             </div>
           )}
         </div>

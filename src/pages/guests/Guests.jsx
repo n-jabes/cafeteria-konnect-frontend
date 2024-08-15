@@ -30,6 +30,21 @@ function Guests(props) {
   // const departments = JSON.parse(sessionStorage.getItem('departments'));
   const [departments, setDepartments] = useState([]);
   const [roles, setRoles] = useState([]);
+  const [defaultDate, setDefaultDate] = useState('');
+
+  useEffect(() => {
+    // Get today's date
+    const today = new Date();
+
+    // Format the date as yyyy-mm-dd
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+    const day = String(today.getDate()).padStart(2, '0');
+    const formattedDate = `${year}-${month}-${day}`;
+
+    // Set the default value
+    setDefaultDate(formattedDate);
+  }, []);
 
   //fetching all attendees
   const getAllAttendees = async () => {
@@ -109,6 +124,24 @@ function Guests(props) {
       const startingDate = formData.get('startingDate');
       const endDate = formData.get('endDate');
 
+
+      // Check if endDate is greater than startingDate
+      if (new Date(startingDate) >= new Date(endDate)) {
+        toast.error('End date must be greater than the starting date.', {
+          position: 'top-right',
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: 'light',
+          transition: Bounce,
+        });
+        setCreatingGuest(false);
+        return;
+      }
+
       // Determine attendanceStatus based on sendToCBM
       const attendanceStatus = sendToCBM === 'yes' ? 'new' : 'approved';
 
@@ -186,7 +219,7 @@ function Guests(props) {
 
         // const attendanceStatus = filteredData.sendToCBM === 'Yes' ? 'new' : 'approved';
 
-        console.log('sendToCBM', filteredData.sendToCBM)
+        console.log('sendToCBM', filteredData.sendToCBM);
 
         return {
           names: String(filteredData.names),
@@ -196,7 +229,9 @@ function Guests(props) {
           roleId: role ? String(role.id) : null,
           password: String(filteredData.password) || null,
           purpose: String(filteredData.purpose),
-          attendanceStatus: String(filteredData.sendToCBM === 'Yes' ? 'new' : 'approved') ,
+          attendanceStatus: String(
+            filteredData.sendToCBM === 'Yes' ? 'new' : 'approved'
+          ),
         };
       });
 
@@ -456,6 +491,7 @@ function Guests(props) {
                       id="startingDate"
                       placeholder="Arrival"
                       name="startingDate"
+                      defaultValue={defaultDate}
                       className="outline-none text-sm py-2 px-4 border-[1px] border-gray rounded-md"
                       required
                     />

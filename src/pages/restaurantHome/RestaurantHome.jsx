@@ -244,7 +244,7 @@ function RestaurantHome(props) {
 
       if (isValidScanObject(scannedObject)) {
         let response;
-        console.log("uniqueIdentifier: ", scannedObject.qrCodeId)
+        // console.log("uniqueIdentifier: ", scannedObject.qrCodeId)
 
         try {
           response = await axios.post(
