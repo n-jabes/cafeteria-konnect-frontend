@@ -9,11 +9,12 @@ import { collection, onSnapshot } from 'firebase/firestore';
 import { firestoreDB } from '../../utils/firebase';
 import axios from 'axios';
 import { API_BASE_URL } from '../../utils/api';
-const token = sessionStorage.getItem('token');
+// const token = sessionStorage.getItem('token');
 
 function Restaurants(props) {
   const [allInvoices, setAllInvoices] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [token, setToken] = useState(sessionStorage.getItem('token'));
 
   const invoiceHeaders = ['Receipt Id', 'Date', 'Number of attendees'];
 
@@ -32,11 +33,11 @@ function Restaurants(props) {
   const getAllInvoices = async () => {
     setIsLoading(true);
     // console.log('isLoading: ')
+    // console.log('token: ', token)
     try {
       const response = await axios.get(`${API_BASE_URL}/invoices/all`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      // console.log('Invoices: ', response)
       setAllInvoices(response.data.data);
     } catch (error) {
       console.log('Error fetching invoices...', error);
@@ -47,6 +48,7 @@ function Restaurants(props) {
 
   useEffect(() => {
     getAllInvoices();
+    setToken(sessionStorage.getItem('token'))
 
     // Create a reference to the 'invoices' collection
     const invoicesCollectionRef = collection(firestoreDB, 'invoices');

@@ -8,21 +8,23 @@ import axios from 'axios';
 import { API_BASE_URL } from '../../utils/api';
 import { collection, onSnapshot } from 'firebase/firestore';
 import { firestoreDB } from '../../utils/firebase';
-const token = sessionStorage.getItem('token');
+// const token = sessionStorage.getItem('token');
 
 function RestaurantReceipts(props) {
   const [allReceipts, setAllReceipts] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [token, setToken] = useState(sessionStorage.getItem('token'))
 
   const getAllReceipts = async () => {
     setIsLoading(true);
+    // console.log('token: ', token)
     try {
       const response = await axios.get(`${API_BASE_URL}/receipts/all`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setAllReceipts(response.data.data);
     } catch (error) {
-      console.log('Failed to fetch stats', error?.response?.data || error.message);
+      console.log('Failed to fetch receipts', error?.response?.data || error.message);
       // setErrorMessage(error.response.data.message);
       // toast.error('Failed to Fetch Stats' + error.response.data.message, {
       //   position: 'top-right',
@@ -42,6 +44,7 @@ function RestaurantReceipts(props) {
 
   // Fetch the roles and departments when the component mounts
   useEffect(() => {
+    setToken(sessionStorage.getItem('token'))
     getAllReceipts();
 
     // Create a reference to the 'receipts' collection

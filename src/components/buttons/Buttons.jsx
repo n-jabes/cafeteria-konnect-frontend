@@ -1544,9 +1544,11 @@ export function ViewRestaurantReceiptButton({
   const [receiptAttendees, setReceiptAttendees] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const receiptRef = useRef();
+  const [token, setToken] = useState(sessionStorage.getItem('token'));
 
   const getReceiptsAttendees = async (receiptId) => {
     try {
+      setIsLoading(true);
       const response = await axios.get(
         `${API_BASE_URL}/receipts/getAttendees/by-receiptId/${receiptId}`,
         {
@@ -1556,7 +1558,7 @@ export function ViewRestaurantReceiptButton({
       setReceiptAttendees(response.data.data);
     } catch (error) {
       console.log(
-        'Failed to receipt attendees',
+        'Failed to fetch receipt attendees',
         error?.response?.data?.message || error.message
       );
       // setErrorMessage(error.response.data.message);
@@ -1571,11 +1573,15 @@ export function ViewRestaurantReceiptButton({
       //   theme: 'light',
       //   transition: Bounce,
       // });
+    } finally {
+      setIsLoading(false);
     }
   };
 
   // console.log('receiptId: ', receiptData.receiptId)
-  getReceiptsAttendees(receiptData.receiptId);
+  useEffect(()=>{
+    getReceiptsAttendees(receiptData.receiptId);
+  },[])
 
   const receiptAttendeesData = receiptAttendees.map((attendee, index) => [
     ++index,
@@ -1614,7 +1620,7 @@ export function ViewRestaurantReceiptButton({
                   </p>
                 </div>
               ) : (
-                <div className="w-full border-2 border-gray-200 rounded-md h-[60vh]">
+                <div className="overflow-x-auto relative h-[70vh] border border-3 border-gray rounded-md pl-4 py-4">
                   <TableComponent
                     headers={receiptHeaders}
                     data={receiptAttendeesData}

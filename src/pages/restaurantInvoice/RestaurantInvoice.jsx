@@ -13,13 +13,14 @@ import { MdDangerous } from 'react-icons/md';
 import { database, firestoreDB } from '../../utils/firebase';
 import { onValue, ref } from 'firebase/database';
 import { collection, onSnapshot } from 'firebase/firestore';
-const token = sessionStorage.getItem('token');
+// const token = sessionStorage.getItem('token');
 
 function RestaurantInvoice(props) {
   const [allInvoices, setAllInvoices] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isGeneratingInvoice, setIsGeneratingInvoice] = useState(false);
   const [invoiceErrorMessage, setInvoiceErrorMessage] = useState('');
+  const [token, setToken] = useState(sessionStorage.getItem('token'));
 
   const invoiceHeaders = ['Receipt Id', 'Date', 'Number of attendees'];
 
@@ -37,14 +38,18 @@ function RestaurantInvoice(props) {
 
   const getAllInvoices = async () => {
     setIsLoading(true);
+    // console.log('token: ', token);
+
     try {
       const response = await axios.get(`${API_BASE_URL}/invoices/all`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      // console.log('Invoices: ', response)
       setAllInvoices(response.data.data);
     } catch (error) {
-      console.log('Error fetching invoices...', error);
+      console.log(
+        'Error fetching invoices...',
+        error?.responsw?.data?.message || error?.message
+      );
     } finally {
       setIsLoading(false);
     }
@@ -69,6 +74,7 @@ function RestaurantInvoice(props) {
 
   useEffect(() => {
     getAllInvoices();
+    setToken(sessionStorage.getItem('token'));
 
     // Create a reference to the 'invoices' collection
     const invoicesCollectionRef = collection(firestoreDB, 'invoices');

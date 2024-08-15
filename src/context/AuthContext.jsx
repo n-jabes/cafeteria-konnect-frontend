@@ -35,7 +35,7 @@ export const AuthProvider = ({ children }) => {
     sessionStorage.setItem('userId', decodedToken.id);
     sessionStorage.setItem('role', decodedToken.role);
     sessionStorage.setItem('isAuthenticated', true);
-    sessionStorage.setItem('token', token);
+    // sessionStorage.setItem('token', token);
     setRole(decodedToken.role);
     setToken(sessionStorage.getItem('token'));
     setIsAuthenticated(true);

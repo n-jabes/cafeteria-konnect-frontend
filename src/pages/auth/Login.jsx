@@ -36,6 +36,8 @@ const Login = () => {
       });
 
       const token = response.data.data.access_token;
+      sessionStorage.setItem('token', token);
+
       login(token);
 
       setError(null);
