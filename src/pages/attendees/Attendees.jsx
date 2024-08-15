@@ -387,6 +387,7 @@ function Attendees() {
         (snapshot) => {
           // When Firestore updates, trigger a refresh from the API
           getAllAttendees();
+          getEstimatedAttendees();
         },
         (error) => {
           console.error('Error listening to Firestore: ', error);
