@@ -731,6 +731,7 @@ export function UpdateGuestButton({ guest }) {
 
 export function DeleteButton({ attendeeDetails }) {
   const [deletingUser, setDeletingUser] = useState(false);
+  const [token, setToken] = useState(sessionStorage.getItem('token'));
 
   const handleDeleteUser = async () => {
     setDeletingUser(true);
@@ -772,6 +773,7 @@ export function DeleteButton({ attendeeDetails }) {
       setDeletingUser(false);
     }
   };
+
   return (
     <button
       className="btn btn-primary hover:bg-darkRed hover:text-white rounded-[8px] py-1 px-[4px]  text-darkRed font-medium text-lg"
