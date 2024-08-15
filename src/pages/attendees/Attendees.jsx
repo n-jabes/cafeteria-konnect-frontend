@@ -92,7 +92,7 @@ function Attendees() {
         },
       });
 
-      const allRoles = response.data.data.map((role) => ({
+      const allRoles = response.data.data.filter((role)=> role.role !== "GUEST").map((role) => ({
         id: role.id,
         role: role.role,
       }));

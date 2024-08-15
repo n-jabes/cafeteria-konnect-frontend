@@ -244,6 +244,8 @@ function RestaurantHome(props) {
 
       if (isValidScanObject(scannedObject)) {
         let response;
+        console.log("uniqueIdentifier: ", scannedObject.qrCodeId)
+
         try {
           response = await axios.post(
             `${API_BASE_URL}/attendance/record`,
@@ -264,6 +266,7 @@ function RestaurantHome(props) {
                 uniqueIdentifier: scannedObject.qrCodeId,
               },
             ]);
+
             toast.success('Successfully scanned and validated', {
               position: 'top-right',
               autoClose: 1000,
