@@ -116,7 +116,7 @@ function RestaurantHome(props) {
   const attendanceData = allAttendance.map((attendance, index) => [
     ++index,
     attendance.names,
-    attendance.department.department,
+    attendance?.department?.department,
   ]);
 
   const filterEmails = (input) => {
