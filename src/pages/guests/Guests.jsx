@@ -120,10 +120,10 @@ function Guests(props) {
       const formData = new FormData(event.target);
       const names = formData.get('name');
       const purpose = formData.get('purpose');
+      const nationalId = formData.get('nationalId');
       const email = formData.get('email');
       const startingDate = formData.get('startingDate');
       const endDate = formData.get('endDate');
-
 
       // Check if endDate is greater than startingDate
       if (new Date(startingDate) >= new Date(endDate)) {
@@ -150,6 +150,7 @@ function Guests(props) {
         names,
         email,
         purpose,
+        nationalId,
         startingDate,
         endDate,
         attendanceStatus,
@@ -477,6 +478,22 @@ function Guests(props) {
                     placeholder="Enter guest purpose: e.g. consultant"
                     name="purpose"
                     className="outline-none text-sm py-2 px-4 border-[1px] border-gray rounded-md"
+                    required
+                  />
+                </div>
+
+                <div className="flex flex-col mb-2">
+                  <label htmlFor="nationalId" className="text-xs text-gray">
+                    National ID
+                  </label>
+                  <input
+                    type="number"
+                    id="nationalId"
+                    placeholder="Enter guest national Id"
+                    name="nationalId"
+                    className="outline-none text-sm py-2 px-4 border-[1px] border-gray rounded-md"
+                    minLength={16}
+                    maxLength={16}
                     required
                   />
                 </div>

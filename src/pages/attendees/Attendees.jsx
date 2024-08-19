@@ -33,7 +33,7 @@ const validationSchema = Yup.object().shape({
 
 function Attendees() {
   const [addNewAttendee, setaddNewAttendee] = useState(false);
-  const headers = ['Id', 'Name', 'Role', 'Status', 'Actions'];
+  const headers = ['Id', 'National ID', 'Name', 'Role', 'Status', 'Actions'];
   const [tab, setTab] = useState('active attendees');
   const [extraPeople, setExtraPeople] = useState(
     parseInt(localStorage.getItem('extraPeople'), 10) || 5
@@ -247,6 +247,7 @@ function Attendees() {
 
   const attendeesData = allAttendees.map((attendeeDetails) => [
     attendeeDetails.id,
+    attendeeDetails.nationalId,
     attendeeDetails.name,
     attendeeDetails.roleName,
     attendeeDetails.status,
@@ -265,6 +266,7 @@ function Attendees() {
     )
     .map((attendeeDetails, index) => [
       ++index,
+      attendeeDetails.nationalId,
       attendeeDetails.name,
       attendeeDetails.roleName,
       attendeeDetails.status,
@@ -704,7 +706,7 @@ function Attendees() {
           onClick={() => setaddNewAttendee(true)}
         >
           <div>
-            <MainButton text={'+ Add Attendee(s)'} />
+            <MainButton text={'+ Add Employee / Intern'} />
           </div>
         </div>
       </div>

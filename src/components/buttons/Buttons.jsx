@@ -24,6 +24,8 @@ import { API_BASE_URL } from '../../utils/api';
 import { Bounce, toast } from 'react-toastify';
 import { MdDangerous } from 'react-icons/md';
 import Toast from '../toast/Toast';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
 const token = sessionStorage.getItem('token');
 
 export function MainButton({ text }) {
@@ -103,13 +105,13 @@ export function UpdateAttendeeButton({ attendeeDetails }) {
     useEffect(() => {
       // Get today's date
       const today = new Date();
-  
+
       // Format the date as yyyy-mm-dd
       const year = today.getFullYear();
       const month = String(today.getMonth() + 1).padStart(2, '0'); // Months are zero-based
       const day = String(today.getDate()).padStart(2, '0');
       const formattedDate = `${year}-${month}-${day}`;
-  
+
       // Set the default value
       setDefaultDate(formattedDate);
     }, []);
@@ -463,6 +465,7 @@ export function UpdateGuestButton({ guest }) {
   const [showUpdateForm, setShowUpdateForm] = useState(false);
   const [updatingGuest, setUpdatingGuest] = useState(false);
   const [departments, setDepartments] = useState([]);
+  const [errorMessage, setErrorMessage] = useState('');
   const [roles, setRoles] = useState([]);
   const [statuses] = useState([
     { id: 1, name: 'Approved', value: 'approved' },
@@ -524,6 +527,7 @@ export function UpdateGuestButton({ guest }) {
       names: values.name,
       email: values.email,
       purpose: values.purpose,
+      nationalId: values.nationalId,
       startingDate: values.startDate,
       endDate: values.endDate,
       attendanceStatus: values.status,
@@ -562,7 +566,8 @@ export function UpdateGuestButton({ guest }) {
       resetForm();
     } catch (error) {
       console.log('error: ', error);
-      toast.error(error.response?.data?.message || error.message, {
+      setErrorMessage(error?.response?.data?.message || error?.message);
+      toast.error(error?.response?.data?.message || error?.message, {
         position: 'top-right',
         autoClose: 1000,
         hideProgressBar: false,
@@ -640,6 +645,7 @@ export function UpdateGuestButton({ guest }) {
               initialValues={{
                 name: guest.name || '',
                 purpose: guest.purpose || '',
+                nationalId: guest.nationalId || '',
                 email: guest.email || '',
                 startDate: guest.startingDate || '',
                 endDate: guest.endDate || '',
@@ -673,6 +679,18 @@ export function UpdateGuestButton({ guest }) {
                     id="purpose"
                     name="purpose"
                     placeholder="Enter guest purpose: eg. consultant"
+                    className="outline-none text-sm py-2 px-4 border-[1px] border-gray rounded-md"
+                  />
+                </div>
+                <div className="flex flex-col mb-2">
+                  <label htmlFor="nationalId" className="text-xs text-gray-600">
+                    National Id
+                  </label>
+                  <Field
+                    type="text"
+                    id="nationalId"
+                    name="nationalId"
+                    placeholder="Enter guest national Id"
                     className="outline-none text-sm py-2 px-4 border-[1px] border-gray rounded-md"
                   />
                 </div>
@@ -734,6 +752,11 @@ export function UpdateGuestButton({ guest }) {
                   </Field>
                 </div>
                 <ConditionalFields />
+                {errorMessage && (
+                  <p className="text-red-400 text-sm font-semibold">
+                    {errorMessage}
+                  </p>
+                )}
                 <button
                   type="submit"
                   className={`btn border-2 text-md font-semibold text-white py-2 px-4 rounded-md w-full mt-3 ${
@@ -1594,27 +1617,14 @@ export function ViewRestaurantReceiptButton({
         'Failed to fetch receipt attendees',
         error?.response?.data?.message || error.message
       );
-      // setErrorMessage(error.response.data.message);
-      // toast.error('Failed to Fetch Stats' + error.response.data.message, {
-      //   position: 'top-right',
-      //   autoClose: 1000,
-      //   hideProgressBar: false,
-      //   closeOnClick: true,
-      //   pauseOnHover: true,
-      //   draggable: true,
-      //   progress: undefined,
-      //   theme: 'light',
-      //   transition: Bounce,
-      // });
     } finally {
       setIsLoading(false);
     }
   };
 
-  // console.log('receiptId: ', receiptData.receiptId)
-  useEffect(()=>{
+  useEffect(() => {
     getReceiptsAttendees(receiptData.receiptId);
-  },[])
+  }, []);
 
   const receiptAttendeesData = receiptAttendees.map((attendee, index) => [
     ++index,
@@ -1622,6 +1632,31 @@ export function ViewRestaurantReceiptButton({
     attendee.department,
     attendee.isScanned,
   ]);
+
+  const exportToPDF = () => {
+    const doc = new jsPDF();
+
+    // Title
+    doc.setFontSize(18);
+    doc.text('Cafeteria Attendees', 14, 20);
+
+    // Date
+    doc.setFontSize(12);
+    doc.text(`Date: ${receiptDate}`, 14, 30);
+
+    // Total Count
+    doc.text(`Total Count: ${receiptAttendees.length}`, 14, 36);
+
+    // Table
+    doc.autoTable({
+      head: [receiptHeaders],
+      body: receiptAttendeesData,
+      startY: 45, // Start after the text
+    });
+
+    doc.save(`Cafeteria-attendees-${receiptDate}.pdf`);
+  };
+
   return (
     <div>
       {viewReceipt && (
@@ -1660,6 +1695,14 @@ export function ViewRestaurantReceiptButton({
                   />
                 </div>
               )}
+              <div className="flex justify-end mt-2">
+                <button
+                  onClick={exportToPDF}
+                  className="bg-mainBlue text-white py-2 px-4 rounded-md"
+                >
+                  Download PDF
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -1672,6 +1715,8 @@ export function ViewRestaurantReceiptButton({
   );
 }
 
+
+
 export function ViewRestaurantInvoiceButton({ invoice, invoiceHeaders }) {
   const [viewInvoice, setViewInvoice] = useState(false);
   const invoiceRef = useRef();
@@ -1681,6 +1726,26 @@ export function ViewRestaurantInvoiceButton({ invoice, invoiceHeaders }) {
     receipt.createdAt,
     receipt.numberOfAttendees,
   ]);
+
+  const exportToPDF = () => {
+    const doc = new jsPDF();
+    doc.text('Cafeteria Invoice', 14, 20);
+
+    // Smaller and gray text for month and counts
+    doc.setFontSize(10);
+    doc.setTextColor(100);
+    doc.text(`Month: ${invoice.month}`, 14, 30);
+    doc.text(`Total Receipts: ${invoice.totalReceipts}`, 14, 35);
+    doc.text(`Total Attendance: ${invoice.totalAttendees}`, 14, 40);
+
+    doc.autoTable({
+      head: [invoiceHeaders],
+      body: invoiceReceipts,
+      startY: 50,
+    });
+
+    doc.save(`Cafeteria-Invoice-${invoice.month}.pdf`);
+  };
 
   return (
     <div>
@@ -1695,16 +1760,16 @@ export function ViewRestaurantInvoiceButton({ invoice, invoiceHeaders }) {
                 x
               </button>
               <div className="flex flex-col md:flex-row gap-3 md:items-center mb-2">
-                <h2 className="md:w-1/3 text-lg text-gray-500 font-semibold">
-                  <span className="text-sm mr-4">Month: </span>
+                <h2 className="md:w-1/3 text-sm text-gray-500 font-semibold">
+                  <span className="text-xs mr-4">Month: </span>
                   {invoice.month}
                 </h2>
-                <h2 className="flex items-center text-mainGray text-3xl px-4 py-4 font-semibold border-[1px] border-gray-200 w-max">
-                  <span className="text-sm mr-4">Total receipts: </span>
+                <h2 className="flex items-center text-mainGray text-xl px-4 py-2 font-semibold border-[1px] border-gray-200 w-max">
+                  <span className="text-xs mr-4">Total receipts: </span>
                   {invoice.totalReceipts}
                 </h2>
-                <h2 className="flex items-center text-mainGray text-3xl px-4 py-4 font-semibold border-[1px] border-gray-200 w-max">
-                  <span className="text-sm mr-4">Total attendence: </span>
+                <h2 className="flex items-center text-mainGray text-xl px-4 py-2 font-semibold border-[1px] border-gray-200 w-max">
+                  <span className="text-xs mr-4">Total attendance: </span>
                   {invoice.totalAttendees}
                 </h2>
               </div>
@@ -1714,6 +1779,14 @@ export function ViewRestaurantInvoiceButton({ invoice, invoiceHeaders }) {
                   data={invoiceReceipts}
                   showFilter={false}
                 />
+              </div>
+              <div className="flex justify-end mt-2">
+                <button
+                  onClick={exportToPDF}
+                  className="bg-mainBlue text-white py-2 px-4 rounded-md"
+                >
+                  Download PDF
+                </button>
               </div>
             </div>
           </div>
