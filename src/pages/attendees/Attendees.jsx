@@ -33,7 +33,7 @@ const validationSchema = Yup.object().shape({
 
 function Attendees() {
   const [addNewAttendee, setaddNewAttendee] = useState(false);
-  const headers = ['Id', 'National ID', 'Name', 'Role', 'Status', 'Actions'];
+  const headers = ['Id', 'National ID', 'Name', 'Role','Department', 'Status', 'Actions'];
   const [tab, setTab] = useState('active attendees');
   const [extraPeople, setExtraPeople] = useState(
     parseInt(localStorage.getItem('extraPeople'), 10) || 5
@@ -92,10 +92,12 @@ function Attendees() {
         },
       });
 
-      const allRoles = response.data.data.filter((role)=> role.role !== "GUEST").map((role) => ({
-        id: role.id,
-        role: role.role,
-      }));
+      const allRoles = response.data.data
+        .filter((role) => role.role !== 'GUEST')
+        .map((role) => ({
+          id: role.id,
+          role: role.role,
+        }));
       setRoles(allRoles);
       sessionStorage.setItem('roles', JSON.stringify(roles));
     } catch (error) {
@@ -250,6 +252,7 @@ function Attendees() {
     attendeeDetails.nationalId,
     attendeeDetails.name,
     attendeeDetails.roleName,
+    attendeeDetails.departmentName,
     attendeeDetails.status,
     <AttendeeButtons
       attendeeDetails={attendeeDetails}
@@ -269,6 +272,7 @@ function Attendees() {
       attendeeDetails.nationalId,
       attendeeDetails.name,
       attendeeDetails.roleName,
+      attendeeDetails.departmentName,
       attendeeDetails.status,
       <AttendeeButtons attendeeDetails={attendeeDetails} />,
     ]);
