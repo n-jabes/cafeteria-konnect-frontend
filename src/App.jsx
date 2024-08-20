@@ -16,6 +16,8 @@ import { BsPeopleFill } from 'react-icons/bs';
 import { IoReceipt } from 'react-icons/io5';
 import PublicRoutes from './components/publicRoutes/PublicRoutes';
 import ProtectedRoutes from './components/protectedRoutes/ProtectedRoutes';
+import ForgotPassword from './components/forgotPassword/ForgotPassword';
+import ResetPassword from './components/forgotPassword/ResetPassword';
 
 function App() {
   const hrHeaderTitle = 'HR Dashboard';
@@ -84,7 +86,10 @@ function App() {
             path="/hr/*"
             element={
               <ProtectedRoutes>
-                <Layout sidebarFields={hrSidebarFields} headerTitle={hrHeaderTitle}>
+                <Layout
+                  sidebarFields={hrSidebarFields}
+                  headerTitle={hrHeaderTitle}
+                >
                   <HRRoutes />
                 </Layout>
               </ProtectedRoutes>
@@ -94,16 +99,30 @@ function App() {
             path="/restaurant/*"
             element={
               <ProtectedRoutes>
-                <Layout sidebarFields={restaurantSidebarFields} headerTitle={restaurantHeaderTitle}>
+                <Layout
+                  sidebarFields={restaurantSidebarFields}
+                  headerTitle={restaurantHeaderTitle}
+                >
                   <RestaurantRoutes />
                 </Layout>
               </ProtectedRoutes>
             }
           />
+          <Route path="/" element={<Navigate to="/login" />} />
           <Route
-            path="/"
+            path="/forgot-password"
             element={
-              <Navigate to="/login" />
+              <PublicRoutes>
+                <ForgotPassword />
+              </PublicRoutes>
+            }
+          />
+          <Route
+            path="/reset-password"
+            element={
+              <PublicRoutes>
+                <ResetPassword />
+              </PublicRoutes>
             }
           />
         </Routes>

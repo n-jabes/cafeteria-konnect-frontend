@@ -1064,15 +1064,16 @@ export function AttendeeQrCodeButton({ attendeeDetails }) {
 
     try {
       const response = await axios.post(
-        `${API_BASE_URL}/userQrcodes/save`,
-        {
+    {
           //remember to use the dynamic data sent form the qrCodeData
           userId: qrCodeData.userId,
           userEmail: qrCodeData.userEmail,
           qrCodeId: qrCodeData.qrCodeId,
         },
         { headers: { Authorization: `Bearer ${token}` } }
-      );
+      );     `${API_BASE_URL}/userQrcodes/save`,
+       
+
       console.log('response: ', response);
       QRCode.toDataURL(encryptedData).then((value) => setSrc(value));
       toast.success('QrCode created successfully', {
