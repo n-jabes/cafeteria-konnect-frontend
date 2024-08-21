@@ -383,6 +383,7 @@ function Attendees() {
       getAllRoles();
       getAllDepartments();
       getAllAttendees(); // Initial data load from API
+      getEstimatedAttendees();
 
       // Create a reference to the 'users' collection
       const usersCollectionRef = collection(firestoreDB, 'users');

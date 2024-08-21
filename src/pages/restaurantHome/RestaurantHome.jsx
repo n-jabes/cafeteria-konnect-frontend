@@ -216,40 +216,126 @@ function RestaurantHome(props) {
     return () => unsubscribeStats();
   }, []);
 
+  // only use this function when working with encrypted qrCode data
+
+  // const processScannedData = useCallback(async () => {
+  //   setErrorMessage('');
+
+  //   const isValidScanObject = (obj) => {
+  //     return (
+  //       obj &&
+  //       typeof obj === 'object' &&
+  //       typeof obj.userId === 'string' &&
+  //       obj.userId.trim() !== '' &&
+  //       typeof obj.userEmail === 'string' &&
+  //       /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(obj.userEmail) &&
+  //       typeof obj.qrCodeId === 'string' &&
+  //       obj.qrCodeId.trim() !== '' &&
+  //       Object.keys(obj).length === 3
+  //     );
+  //   };
+
+  //   // const decryptedData = decryptData(scannedInput, secretKey);
+  //   const decryptedData = scannedInput
+
+  //   if (
+  //     decryptedData &&
+  //     typeof decryptedData === 'string' &&
+  //     decryptedData.trim().endsWith('}')
+  //   ) {
+  //     const scannedObject = JSON.parse(decryptedData);
+
+  //     if (isValidScanObject(scannedObject)) {
+  //       let response;
+  //       // console.log("uniqueIdentifier: ", scannedObject.qrCodeId)
+
+  //       try {
+  //         response = await axios.post(
+  //           `${API_BASE_URL}/attendance/record`,
+  //           { qrCodeId: String(scannedObject.qrCodeId) },
+  //           {
+  //             headers: {
+  //               Authorization: `Bearer ${token}`,
+  //             },
+  //           }
+  //         );
+
+  //         if (response.status === 201) {
+  //           setScannedList((prevList) => [
+  //             ...prevList,
+  //             {
+  //               id: String(scannedObject.userId),
+  //               email: scannedObject.userEmail,
+  //               uniqueIdentifier: scannedObject.qrCodeId,
+  //             },
+  //           ]);
+
+  //           toast.success('Successfully scanned and validated', {
+  //             position: 'top-right',
+  //             autoClose: 1000,
+  //             hideProgressBar: false,
+  //             closeOnClick: true,
+  //             pauseOnHover: true,
+  //             draggable: true,
+  //             progress: undefined,
+  //             theme: 'light',
+  //             transition: Bounce,
+  //           });
+  //         } else {
+  //           throw new Error(
+  //             response.data.message || 'Error validating scanned data'
+  //           );
+  //         }
+  //       } catch (error) {
+  //         console.log(error);
+  //         handleError(error?.response?.data?.message || error.message);
+  //       }
+  //     } else {
+  //       handleError('Invalid QR Code');
+  //     }
+  //   } else {
+  //     handleError('Invalid QR Code');
+  //   }
+
+  //   setScannedInput('');
+  // }, [scannedInput, decryptData, secretKey, token]);
+
   const processScannedData = useCallback(async () => {
     setErrorMessage('');
 
-    const isValidScanObject = (obj) => {
+    const isValidScanObject = (parts) => {
       return (
-        obj &&
-        typeof obj === 'object' &&
-        typeof obj.userId === 'string' &&
-        obj.userId.trim() !== '' &&
-        typeof obj.userEmail === 'string' &&
-        /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(obj.userEmail) &&
-        typeof obj.qrCodeId === 'string' &&
-        obj.qrCodeId.trim() !== '' &&
-        Object.keys(obj).length === 3
+        parts.length === 3 &&
+        typeof parts[0] === 'string' &&
+        parts[0].trim() !== '' &&
+        typeof parts[1] === 'string' &&
+        /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(parts[1]) &&
+        typeof parts[2] === 'string' &&
+        parts[2].trim() !== ''
       );
     };
 
-    const decryptedData = decryptData(scannedInput, secretKey);
+    // const decryptedData = decryptData(scannedInput, secretKey);
+    const decryptedData = scannedInput;
 
     if (
       decryptedData &&
       typeof decryptedData === 'string' &&
-      decryptedData.trim().endsWith('}')
+      decryptedData.trim().includes('>>>')
     ) {
-      const scannedObject = JSON.parse(decryptedData);
+      const parts = decryptedData.split('>>>');
 
-      if (isValidScanObject(scannedObject)) {
-        let response;
-        // console.log("uniqueIdentifier: ", scannedObject.qrCodeId)
+      if (isValidScanObject(parts)) {
+        const scannedObject = {
+          userId: parts[0],
+          userEmail: parts[1],
+          qrCodeId: parts[2],
+        };
 
         try {
-          response = await axios.post(
+          const response = await axios.post(
             `${API_BASE_URL}/attendance/record`,
-            { qrCodeId: String(scannedObject.qrCodeId) },
+            { qrCodeId: scannedObject.qrCodeId },
             {
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -261,7 +347,7 @@ function RestaurantHome(props) {
             setScannedList((prevList) => [
               ...prevList,
               {
-                id: String(scannedObject.userId),
+                id: scannedObject.userId,
                 email: scannedObject.userEmail,
                 uniqueIdentifier: scannedObject.qrCodeId,
               },
@@ -295,7 +381,7 @@ function RestaurantHome(props) {
     }
 
     setScannedInput('');
-  }, [scannedInput, decryptData, secretKey, token]);
+  }, [scannedInput, token]);
 
   const handleError = (message) => {
     setErrorMessage(message);
@@ -317,7 +403,7 @@ function RestaurantHome(props) {
     if (scannedInput) {
       timer = setTimeout(() => {
         processScannedData();
-      }, 1500);
+      }, 500);
       // Adjust this delay as needed
     }
     return () => {
@@ -485,7 +571,7 @@ function RestaurantHome(props) {
                       placeholder="Scan Qr codes"
                       value={scannedInput}
                       onChange={handleInputChange}
-                      className="border-[1px] px-4 py-2 text-sm outline-none w-full mb-4 rounded-full focus:ring-2 focus:ring-inset focus:ring-green-500"
+                      className="border-[1px] text-white px-4 py-2 text-sm outline-none w-full mb-4 rounded-full focus:ring-2 focus:ring-inset focus:ring-green-500"
                     />
                   </form>
                   {errorMessage && (

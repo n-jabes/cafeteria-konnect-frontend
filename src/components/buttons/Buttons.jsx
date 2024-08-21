@@ -1049,31 +1049,35 @@ export function AttendeeQrCodeButton({ attendeeDetails }) {
   const handleGenerateCode = async () => {
     const uniqueIdentifier = generateUniqueIdentifier();
 
-    const qrCodeData = {
-      userId: `${attendeeDetails.userId}`,
-      userEmail: `${attendeeDetails.email}`,
-      qrCodeId: `${uniqueIdentifier}`,
-    };
+    // const qrCodeData = {
+    //   userId: `${attendeeDetails.userId}`,
+    //   userEmail: `${attendeeDetails.email}`,
+    //   qrCodeId: `${uniqueIdentifier}`,
+    // };
 
     // console.log('qrCodeData: ', qrCodeData);
 
-    const encryptedData = await encryptData(
-      JSON.stringify(qrCodeData),
-      secretKey
-    );
+    // const encryptedData = await encryptData(
+    //   JSON.stringify(qrCodeData),
+    //   secretKey
+    // );
+
+    //replace this encrypted data with the one above for hiding the data of the user
+    const encryptedData = `${attendeeDetails.userId}>>>${attendeeDetails.email}>>>${uniqueIdentifier}`;
+
 
     try {
       const response = await axios.post(
-    {
+        `${API_BASE_URL}/userQrcodes/save`,
+        {
           //remember to use the dynamic data sent form the qrCodeData
-          userId: qrCodeData.userId,
-          userEmail: qrCodeData.userEmail,
-          qrCodeId: qrCodeData.qrCodeId,
+          userId: attendeeDetails.userId,
+          userEmail: attendeeDetails.email,
+          qrCodeId: uniqueIdentifier,
         },
         { headers: { Authorization: `Bearer ${token}` } }
-      );     `${API_BASE_URL}/userQrcodes/save`,
-       
-
+      );
+      
       console.log('response: ', response);
       QRCode.toDataURL(encryptedData).then((value) => setSrc(value));
       toast.success('QrCode created successfully', {
