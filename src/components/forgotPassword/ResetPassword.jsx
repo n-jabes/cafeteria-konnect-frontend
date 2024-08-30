@@ -45,7 +45,7 @@ function ResetPassword(props) {
             <img className="w-[4rem] h-[4rem] mr-3" src={Coat_of_arms} alt="" />
           </div>
           <div className="mr-3">
-            <h1 className="font-black text-xl">2. Reset Password</h1>
+            <h1 className="font-black text-xl">Reset Password</h1>
           </div>
         </div>
 

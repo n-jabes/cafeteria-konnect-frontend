@@ -33,7 +33,15 @@ const validationSchema = Yup.object().shape({
 
 function Attendees() {
   const [addNewAttendee, setaddNewAttendee] = useState(false);
-  const headers = ['Id', 'National ID', 'Name', 'Role','Department', 'Status', 'Actions'];
+  const headers = [
+    'Id',
+    'National ID',
+    'Name',
+    'Role',
+    'Department',
+    'Status',
+    'Actions',
+  ];
   const [tab, setTab] = useState('active attendees');
   const [extraPeople, setExtraPeople] = useState(
     parseInt(localStorage.getItem('extraPeople'), 10) || 5
@@ -48,6 +56,8 @@ function Attendees() {
   const [allReceipts, setAllReceipts] = useState([]);
   const [allAttendeesErrorMessage, setAllAttendeesErrorMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isUpdatingEstimatedAttendees, setIsUpdatingEstimatedAttendees] =
+    useState(false);
   const [isFetchingTodayReceipt, setIsFetchingTodayReceipt] = useState(false);
   const [manuallyAddedAttendeesCount, setManuallyAddedAttendeesCount] =
     useState(0);
@@ -137,6 +147,7 @@ function Attendees() {
 
   //setting the number all estimated attendees
   const setEstimatedAttendees = async (extraPeople) => {
+    setIsUpdatingEstimatedAttendees(true);
     // console.log('extra people: ', extraPeople);
     try {
       const response = await axios.post(
@@ -177,6 +188,8 @@ function Attendees() {
         theme: 'light',
         transition: Bounce,
       });
+    } finally {
+      setIsUpdatingEstimatedAttendees(false);
     }
   };
 
@@ -739,9 +752,14 @@ function Attendees() {
                   />
                   <button
                     type="submit"
-                    className="py-2 px-4 rounded-sm bg-mainBlue text-white text-xs"
+                    className={`py-2 px-4 rounded-sm text-white text-xs ${
+                      isUpdatingEstimatedAttendees
+                        ? 'bg-gray-400 text-white cursor-not-allowed'
+                        : 'bg-mainBlue text-white'
+                    } transition-all duration-300 ease-in-out`}
+                    disabled={isUpdatingEstimatedAttendees}
                   >
-                    Confirm
+                    {isUpdatingEstimatedAttendees ? 'Confirming...' : 'Confirm'}
                   </button>
                 </form>
                 <p>=</p>

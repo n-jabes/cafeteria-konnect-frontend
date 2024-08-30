@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
-
-import BlueLogo from '../../assets/BLueLogo.png';
 import Coat_of_arms from '/Coat_of_arms.png';
 import LoginBg from '../../assets/Login.png';
+import axios from 'axios';
+import { API_BASE_URL } from '../../utils/api';
 
 const validationSchema = Yup.object().shape({
   email: Yup.string()
@@ -17,23 +17,37 @@ function ForgotPassword(props) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
   const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(null);
 
   const handleSubmit = async (values) => {
-    // setIsSubmitting(true);
-    // const { email } = values;
-    // try {
-    //   const response = await axios.post(API_BASE_URL + '/sendEmail', {
-    //     email,
-    //   });
+    setIsSubmitting(true);
+    setError('');
+    const { email } = values;
+    // console.log('email: ', email);
+    try {
+      const response = await axios.put(
+        API_BASE_URL + '/users/reset-password/checkEmail',
+        {
+          email,
+        }
+      );
 
-    //   navigate('/');
-    // } catch (error) {
-    //   console.error('Failed to send Email:', error);
-    //   setError(error?.response?.data?.message);
-    // } finally {
-    //   setIsSubmitting(false);
-    // }
-    navigate('/reset-password')
+      // console.log('response: ', response.data.status);
+      if (
+        response?.data?.status === 200 &&
+        response?.data?.message === 'Email exists!'
+      ) {
+        setSuccess('Check your email to reset your password');
+        // navigate('/reset-password');
+      } else {
+        setError('Failed to verify email');
+      }
+    } catch (error) {
+      console.error('Failed to send Email:', error);
+      setError(error?.response?.data?.message);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -47,7 +61,7 @@ function ForgotPassword(props) {
             <img className="w-[4rem] h-[4rem] mr-3" src={Coat_of_arms} alt="" />
           </div>
           <div className="mr-3">
-            <h1 className="font-black text-xl">1. Email Verification</h1>
+            <h1 className="font-black text-xl">Email Verification</h1>
           </div>
         </div>
 
@@ -72,6 +86,9 @@ function ForgotPassword(props) {
 
               {error && (
                 <div className="text-red-500 text-sm mt-2">{error}</div>
+              )}
+              {success && (
+                <div className="text-green-500 text-sm mt-2">{success}</div>
               )}
               <button
                 type="submit"
