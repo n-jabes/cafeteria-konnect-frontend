@@ -7,7 +7,8 @@ import {
   FaDownload,
   FaEdit,
   FaTimes,
-  FaWhatsapp,FaPrint 
+  FaWhatsapp,
+  FaPrint,
 } from 'react-icons/fa';
 import InvoiceTable from '../table/InvoiceTable';
 import { IoPrint } from 'react-icons/io5';
@@ -1036,17 +1037,27 @@ export function ViewAttendeeButton({ attendeeDetails }) {
 
 export function AttendeeQrCodeButton({ attendeeDetails }) {
   const [showViewCode, setShowViewCode] = useState(false);
+  const [isGenerating, setIsGenerating] = useState(false);
   const [src, setSrc] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const qrCodeRef = useRef(null);
-  const { encryptData, secretKey } = useAuth();
   const token = sessionStorage.getItem('token');
+
+  useEffect(() => {
+    const savedQRCode = localStorage.getItem('qrCodeSrc');
+    const savedAttendeeDetails = localStorage.getItem('attendeeDetails');
+    if (savedQRCode && savedAttendeeDetails) {
+      setSrc(savedQRCode);
+      attendeeDetails = JSON.parse(savedAttendeeDetails);
+    }
+  }, []);
 
   const generateUniqueIdentifier = () => {
     return `${Date.now()}-${Math.floor(Math.random() * 1000000)}`;
   };
 
   const handleGenerateCode = async () => {
+    setIsGenerating(true);
     const uniqueIdentifier = generateUniqueIdentifier();
     const encryptedData = `${attendeeDetails.userId}>>>${attendeeDetails.email}>>>${uniqueIdentifier}`;
 
@@ -1062,8 +1073,13 @@ export function AttendeeQrCodeButton({ attendeeDetails }) {
       );
 
       console.log('response: ', response);
-      QRCode.toDataURL(encryptedData).then((value) => setSrc(value));
-      toast.success('QrCode created successfully', {
+      QRCode.toDataURL(encryptedData).then((value) => {
+        setSrc(value);
+        localStorage.setItem('qrCodeSrc', value);
+        localStorage.setItem('attendeeDetails', JSON.stringify(attendeeDetails));
+      });
+
+      toast.success('QR code created successfully', {
         position: 'top-right',
         autoClose: 1000,
         hideProgressBar: false,
@@ -1077,10 +1093,10 @@ export function AttendeeQrCodeButton({ attendeeDetails }) {
     } catch (error) {
       console.log(
         'Failed to create QR code',
-        error.response.data.message || error.message
+        error.response?.data?.message || error.message
       );
-      setErrorMessage(error.response.data.message);
-      toast.error(error.response.data.message, {
+      setErrorMessage(error.response?.data?.message || 'Error occurred');
+      toast.error(error.response?.data?.message, {
         position: 'top-right',
         autoClose: 1000,
         hideProgressBar: false,
@@ -1091,6 +1107,8 @@ export function AttendeeQrCodeButton({ attendeeDetails }) {
         theme: 'light',
         transition: Bounce,
       });
+    } finally {
+      setIsGenerating(false);
     }
   };
 
@@ -1121,7 +1139,7 @@ export function AttendeeQrCodeButton({ attendeeDetails }) {
               </button>
 
               <h1 className="text-gray-500 font-semibold text-md md:text-[1.1rem]">
-                Qr Code For:
+                QR Code For:
                 <span className=" text-mainBlue pl-2">
                   {attendeeDetails.name}
                 </span>
@@ -1130,7 +1148,7 @@ export function AttendeeQrCodeButton({ attendeeDetails }) {
                 className="text-white flex items-center py-2 px-4 gap-2 border-[1px] border-gray-400 bg-gray-400 hover:text-gray-400 hover:bg-white mx-auto"
                 onClick={handleGenerateCode}
               >
-                Generate Code
+                {isGenerating ? 'Generating...' : 'Generate Code'}
               </button>
               <div
                 ref={qrCodeRef}
@@ -1138,7 +1156,7 @@ export function AttendeeQrCodeButton({ attendeeDetails }) {
               >
                 <span className="font-bold mb-2">{attendeeDetails.name}</span>
                 {src === '' ? (
-                  "Don't have Qr code yet"
+                  "Don't have a QR code yet"
                 ) : (
                   <img className="h-[90%] w-[70%] text-mainBlue" src={src} />
                 )}
@@ -1155,27 +1173,29 @@ export function AttendeeQrCodeButton({ attendeeDetails }) {
                   <p className="w-[80%] text-sm">{errorMessage}</p>
                 </div>
               )}
-              <div className="my-2 flex w-[80%] md:w-[60%] flex-col md:flex-row items-start md:items-center md:justify-between gap-4 md:gap-8 mx-auto">
-                <button
-                  className="text-white flex items-center py-2 px-4 gap-2 border-[1px] border-mainBlue bg-mainBlue hover:bg-white hover:text-mainBlue"
-                  onClick={handleDownload}
-                >
-                  <FaDownload /> Download
-                </button>
+              {src && (
+                <div className="my-2 flex w-[80%] md:w-[60%] flex-col md:flex-row items-start md:items-center md:justify-evenly gap-4 md:gap-8 mx-auto">
+                  <button
+                    className="text-white flex items-center py-2 px-4 gap-2 border-[1px] border-mainBlue bg-mainBlue hover:bg-white hover:text-mainBlue"
+                    onClick={handleDownload}
+                  >
+                    <FaDownload /> Download
+                  </button>
 
-                <button
-                  className="text-white flex items-center py-2 px-4 gap-2 border-[1px] border-gray-400 bg-gray-400 hover:text-gray-400 hover:bg-white"
-                  onClick={handlePrint}
-                >
-                  <FaPrint /> Print
-                </button>
-              </div>
+                  <button
+                    className="text-white flex items-center py-2 px-4 gap-2 border-[1px] border-gray-400 bg-gray-400 hover:text-gray-400 hover:bg-white"
+                    onClick={handlePrint}
+                  >
+                    <FaPrint /> Print
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         </div>
       )}
       <button
-        className="text-lg text-gray-500 mx-2 cursor-pointer  rounded-md hover:text-mainBlue "
+        className="text-lg text-gray-500 mx-2 cursor-pointer rounded-md hover:text-mainBlue"
         onClick={() => setShowViewCode(true)}
       >
         <BsQrCode />
@@ -1231,6 +1251,7 @@ export function AttendeeQrCodeButton({ attendeeDetails }) {
     </div>
   );
 }
+
 
 export function SendToCBMButton({ guest }) {
   const [isLoading, setIsLoading] = useState(false);
