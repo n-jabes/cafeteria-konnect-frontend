@@ -542,8 +542,8 @@ function Attendees() {
                 >
                   x
                 </button>
-                <h1 className="w-[70%] sm:h-[2rem] h-max capitalize text-mainBlue font-semibold text-xl mb-4">
-                  Add New attendee
+                <h1 className="w-[70%] sm:h-[2rem] h-max capitalize text-mainBlue font-semibold text-lg mb-4">
+                  Add New Employee / Intern
                 </h1>
 
                 <Formik

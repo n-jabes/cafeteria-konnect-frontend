@@ -7,7 +7,7 @@ import {
   FaDownload,
   FaEdit,
   FaTimes,
-  FaWhatsapp,
+  FaWhatsapp,FaPrint 
 } from 'react-icons/fa';
 import InvoiceTable from '../table/InvoiceTable';
 import { IoPrint } from 'react-icons/io5';
@@ -1048,36 +1048,19 @@ export function AttendeeQrCodeButton({ attendeeDetails }) {
 
   const handleGenerateCode = async () => {
     const uniqueIdentifier = generateUniqueIdentifier();
-
-    // const qrCodeData = {
-    //   userId: `${attendeeDetails.userId}`,
-    //   userEmail: `${attendeeDetails.email}`,
-    //   qrCodeId: `${uniqueIdentifier}`,
-    // };
-
-    // console.log('qrCodeData: ', qrCodeData);
-
-    // const encryptedData = await encryptData(
-    //   JSON.stringify(qrCodeData),
-    //   secretKey
-    // );
-
-    //replace this encrypted data with the one above for hiding the data of the user
     const encryptedData = `${attendeeDetails.userId}>>>${attendeeDetails.email}>>>${uniqueIdentifier}`;
-
 
     try {
       const response = await axios.post(
         `${API_BASE_URL}/userQrcodes/save`,
         {
-          //remember to use the dynamic data sent form the qrCodeData
           userId: attendeeDetails.userId,
           userEmail: attendeeDetails.email,
           qrCodeId: uniqueIdentifier,
         },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      
+
       console.log('response: ', response);
       QRCode.toDataURL(encryptedData).then((value) => setSrc(value));
       toast.success('QrCode created successfully', {
@@ -1120,12 +1103,8 @@ export function AttendeeQrCodeButton({ attendeeDetails }) {
     document.body.removeChild(link);
   };
 
-  // const handleShareViaWhatsApp = () => {
-  //   console.log('via whatsapp');
-  // };
-
-  const handleShareViaWhatsApp = () => {
-    console.log('sharing via whatsapp');
+  const handlePrint = () => {
+    window.print();
   };
 
   return (
@@ -1155,8 +1134,9 @@ export function AttendeeQrCodeButton({ attendeeDetails }) {
               </button>
               <div
                 ref={qrCodeRef}
-                className="w-[80%] md:w-[60%] h-[25vh] md:h-[40vh] border-[1px] border-gray-300 mx-auto flex items-center justify-center"
+                className="w-[80%] md:w-[60%] h-[25vh] md:h-[40vh] border-[1px] border-gray-300 mx-auto flex flex-col items-center justify-center"
               >
+                <span className="font-bold mb-2">{attendeeDetails.name}</span>
                 {src === '' ? (
                   "Don't have Qr code yet"
                 ) : (
@@ -1167,7 +1147,7 @@ export function AttendeeQrCodeButton({ attendeeDetails }) {
                 <div className="error text-red-500 mt-2 relative border-[1px] min-h-[10vh] h-max p-2 flex flex-col md:flex-row gap-2 items-start md:items-center">
                   <button
                     className="close border-[1px] border-mainRed rounded-md px-2 text-mainRed absolute right-2 top-2 text-sm"
-                    onClick={() => setErrorMessage()}
+                    onClick={() => setErrorMessage('')}
                   >
                     x
                   </button>
@@ -1183,35 +1163,71 @@ export function AttendeeQrCodeButton({ attendeeDetails }) {
                   <FaDownload /> Download
                 </button>
 
-                {/* share on whatsapp button  */}
-
-                {/* <div
-                  className="text-white flex items-center py-2 px-4 gap-2 border-[1px] border-green-500 bg-green-500 hover:text-green-500 hover:bg-white"
-                  onClick={handleShareViaWhatsApp}
+                <button
+                  className="text-white flex items-center py-2 px-4 gap-2 border-[1px] border-gray-400 bg-gray-400 hover:text-gray-400 hover:bg-white"
+                  onClick={handlePrint}
                 >
-                  <WhatsappShareButton className="flex items-center gap-2">
-                    <FaWhatsapp />
-                    Share via Whatsapp
-                  </WhatsappShareButton>
-                </div> */}
+                  <FaPrint /> Print
+                </button>
               </div>
             </div>
           </div>
         </div>
       )}
-      {/* <button
-        className="text-xs text-mainBlue mx-2 cursor-pointer py-1 px-[4px] hover:bg-gray-400  rounded-md border-[1px] border-green-200 hover:bg-mainBlue hover:text-white"
-        onClick={() => setShowViewCode(true)}
-      >
-        Qr Code
-      </button> */}
-
       <button
         className="text-lg text-gray-500 mx-2 cursor-pointer  rounded-md hover:text-mainBlue "
         onClick={() => setShowViewCode(true)}
       >
         <BsQrCode />
       </button>
+
+      {/* Hidden print-only content */}
+      <div className="hidden print:block">
+        <div className="print-container">
+          <div className="print-content">
+            <span className="print-name">{attendeeDetails.name}</span>
+            <img className="print-qr-code" src={src} alt="QR Code" />
+          </div>
+        </div>
+      </div>
+
+      {/* CSS for printing */}
+      <style jsx global>{`
+        @media print {
+          body * {
+            visibility: hidden;
+          }
+          .print-container,
+          .print-container * {
+            visibility: visible;
+          }
+          .print-container {
+            position: absolute;
+            left: 0;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+          }
+          .print-content {
+            border: 2px solid black;
+            padding: 20px;
+            text-align: center;
+          }
+          .print-name {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            display: block;
+          }
+          .print-qr-code {
+            width: 200px;
+            height: 200px;
+          }
+        }
+      `}</style>
     </div>
   );
 }
@@ -1719,8 +1735,6 @@ export function ViewRestaurantReceiptButton({
     </div>
   );
 }
-
-
 
 export function ViewRestaurantInvoiceButton({ invoice, invoiceHeaders }) {
   const [viewInvoice, setViewInvoice] = useState(false);

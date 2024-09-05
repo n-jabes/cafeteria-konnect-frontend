@@ -109,7 +109,9 @@ const Header = ({ toggleSidebar, headerTitle }) => {
             </button>
           </div>
           <img
-            src="/profile.jpg"
+            src={
+              role === 'HR' ? '/Coat_of_arms.png' : '/Bourbon_Coffee_Logo.png'
+            }
             alt="Profile"
             className="h-[5rem] w-[5rem] rounded-md"
           />
