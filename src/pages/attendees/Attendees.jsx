@@ -793,6 +793,13 @@ function Attendees() {
             </div>
           ) : (
             <div className="overflow-x-auto relative h-[70vh] border border-3 border-gray rounded-md pl-4 py-4">
+              {/* <button
+                className="text-white text-xs absolute top-4 right-5 bg-mainBlue py-2 px-4 rounded-md hover:bg-darkBlue"
+                onClick={() => downloadAllQrCodes(activeAttendees)}
+              >
+                Download All QR Codes
+              </button> */}
+
               <TableComponent
                 headers={headers}
                 data={activeAttendeesData}
