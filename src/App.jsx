@@ -18,6 +18,7 @@ import PublicRoutes from './components/publicRoutes/PublicRoutes';
 import ProtectedRoutes from './components/protectedRoutes/ProtectedRoutes';
 import ForgotPassword from './components/forgotPassword/ForgotPassword';
 import ResetPassword from './components/forgotPassword/ResetPassword';
+import Signup from './pages/auth/Signup';
 
 function App() {
   const hrHeaderTitle = 'HR Dashboard';
@@ -122,6 +123,15 @@ function App() {
             element={
               <PublicRoutes>
                 <ResetPassword />
+              </PublicRoutes>
+            }
+          />
+
+          <Route
+            path="/sign-up"
+            element={
+              <PublicRoutes>
+                <Signup />
               </PublicRoutes>
             }
           />
